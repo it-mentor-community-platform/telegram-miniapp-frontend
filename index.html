@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Telegram Init Data Viewer</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2rem;
+            background: #f7f7f7;
+        }
+        pre {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            background-color: #0088cc;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h2>Telegram Init Data</h2>
+<pre id="initData">Loading...</pre>
+<button id="copyBtn">Copy to clipboard</button>
+
+<script>
+    const tg = window.Telegram.WebApp;
+    const initData = tg.initData || window.location.search || 'No initData found';
+    document.getElementById('initData').innerText = initData;
+    document.getElementById('copyBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText(initData)
+            .then(() => alert('initData copied!'))
+            .catch(() => alert('Failed to copy.'));
+    });
+    tg.ready();
+</script>
+</body>
+</html>
