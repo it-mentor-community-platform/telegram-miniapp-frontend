@@ -2,8 +2,7 @@ name: CI - Build & Push Docker Image
 
 on:
   push:
-    branches:
-      - staging
+    branches: ['**']
 
 jobs:
   build-and-push:
