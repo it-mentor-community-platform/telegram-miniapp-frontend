@@ -36,3 +36,10 @@ docker build -t telegram-miniapp-frontend:local .
 ```bash
 docker run --rm -p 80:80 telegram-miniapp-frontend:local
 ```
+
+## 🎨 Проектирование интерфейса
+
+Текстовые спецификации интерфейса, конфигурация Penpot и инструкции по
+дизайн-процессу находятся в каталоге [`design/`](design/).
+
+Инструкция для участников команды: [`design/USAGE.md`](design/USAGE.md).
