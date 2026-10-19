@@ -1,0 +1,47 @@
+{
+  "name": "ActivityItem",
+  "variants": {
+    "default": {
+      "bg": "color.surface",
+      "border": "color.border",
+      "iconBg": "color.primary"
+    },
+    "success": {
+      "bg": "color.surface",
+      "border": "color.border",
+      "iconBg": "color.success"
+    },
+    "achievement": {
+      "bg": "color.surface",
+      "border": "color.border",
+      "iconBg": "color.gold"
+    }
+  },
+  "layout": {
+    "padding": "spacing.md",
+    "radius": "radius.md",
+    "gap": "spacing.sm",
+    "iconSize": 32
+  },
+  "typography": {
+    "title": {
+      "fontFamily": "font.family.base",
+      "fontSize": "font.size.md",
+      "fontWeight": "font.weight.medium",
+      "color": "color.text"
+    },
+    "description": {
+      "fontFamily": "font.family.base",
+      "fontSize": "font.size.sm",
+      "fontWeight": "font.weight.regular",
+      "color": "color.mutedText"
+    },
+    "time": {
+      "fontFamily": "font.family.base",
+      "fontSize": "font.size.xs",
+      "fontWeight": "font.weight.regular",
+      "color": "color.mutedText"
+    }
+  },
+  "layers": ["container", "icon", "content"]
+}

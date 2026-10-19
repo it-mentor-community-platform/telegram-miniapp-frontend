@@ -1,0 +1,22 @@
+{
+  "name": "Button",
+  "variants": {
+    "primary": {
+      "bg": "color.primary",
+      "text": "#FFFFFF",
+      "border": null
+    }
+  },
+  "layout": {
+    "height": 44,
+    "paddingX": "spacing.md",
+    "radius": "radius.md",
+    "gap": "spacing.sm"
+  },
+  "typography": {
+    "fontFamily": "font.family.base",
+    "fontSize": "font.size.md",
+    "fontWeight": "font.weight.medium"
+  },
+  "layers": ["container", "label"]
+}

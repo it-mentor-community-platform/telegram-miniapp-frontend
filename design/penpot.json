@@ -1,0 +1,9 @@
+{
+  "server": "penpot",
+  "projectName": "it-mentor-community-platform-miniapp",
+  "generatedFileName": "Generated UI (do not edit)",
+  "componentsPageName": "Components",
+  "pageFramePrefix": "Page/",
+  "componentPrefix": "Component/",
+  "renderStrategy": "replace-by-name"
+}
