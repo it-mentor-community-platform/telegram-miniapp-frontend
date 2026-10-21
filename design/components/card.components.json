@@ -1,0 +1,36 @@
+{
+  "name": "Card",
+  "variants": {
+    "default": {
+      "bg": "color.cardBg",
+      "border": "color.border",
+      "shadow": "0 1px 3px rgba(0, 0, 0, 0.1)"
+    },
+    "action": {
+      "bg": "color.primary",
+      "border": null,
+      "shadow": "0 2px 8px rgba(59, 130, 246, 0.2)"
+    },
+    "list": {
+      "bg": "color.background",
+      "border": "color.border",
+      "shadow": null
+    },
+    "highlighted": {
+      "bg": "color.primarySurface",
+      "border": "color.primary",
+      "shadow": null
+    }
+  },
+  "layout": {
+    "padding": "spacing.md",
+    "radius": "radius.lg",
+    "gap": "spacing.sm"
+  },
+  "typography": {
+    "fontFamily": "font.family.base",
+    "fontSize": "font.size.md",
+    "fontWeight": "font.weight.medium"
+  },
+  "layers": ["container", "content"]
+}

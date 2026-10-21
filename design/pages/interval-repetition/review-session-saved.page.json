@@ -1,0 +1,17 @@
+{
+  "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
+  "page": "ReviewSessionSaved",
+  "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
+  "layout": { "type": "column", "gap": "spacing.lg", "align": "center" },
+  "children": [
+    { "type": "component", "component": "PageHeader", "variant": "close", "props": { "title": "Повторение" } },
+    { "type": "section", "name": "SavedTransition", "children": [
+      { "type": "component", "component": "FeedbackState", "variant": "success", "props": { "icon": "✓", "title": "Ответ сохранён", "description": "Загружаем следующий вопрос…", "showProgress": true } }
+    ] }
+  ],
+  "states": { "slowNextQuestion": "Keep success confirmation visible with progress indicator", "nextQuestion": "Replace with ReviewSession content" },
+  "requirements": {
+    "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],
+    "approvedAssumptions": ["Saved feedback appears only after server confirmation", "The transition is brief but remains visible while a slow next question loads"]
+  }
+}

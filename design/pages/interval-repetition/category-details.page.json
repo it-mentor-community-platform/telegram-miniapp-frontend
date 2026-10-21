@@ -1,0 +1,37 @@
+{
+  "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
+  "page": "CategoryDetails",
+  "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
+  "layout": { "type": "column", "gap": "spacing.md", "align": "stretch" },
+  "children": [
+    { "type": "component", "component": "PageHeader", "variant": "back", "props": { "title": "Core" } },
+    { "type": "component", "component": "SpecializationBadge", "variant": "default", "props": { "label": "Java" } },
+    { "type": "grid", "name": "MetricsGrid", "columns": 3, "gap": "spacing.sm", "children": [
+      { "type": "component", "component": "MetricTile", "variant": "total", "props": { "value": "38", "label": "всего" } },
+      { "type": "component", "component": "MetricTile", "variant": "due", "props": { "value": "6", "label": "к повторению" } },
+      { "type": "component", "component": "MetricTile", "variant": "new", "props": { "value": "24", "label": "новых" } }
+    ] },
+    { "type": "component", "component": "Button", "variant": "danger", "props": { "text": "Удалить из повторения" } },
+    { "type": "section", "name": "QuestionList", "children": [
+      { "type": "text", "name": "QuestionListTitle", "value": "Вопросы", "style": { "fontSize": "font.size.lg", "fontWeight": "font.weight.bold", "color": "color.text" } },
+      { "type": "component", "component": "QuestionAccordion", "variant": "due", "props": { "question": "Как работает HashMap внутри?", "action": "Показать ответ" } },
+      { "type": "component", "component": "QuestionAccordion", "variant": "expanded", "props": { "question": "В чём разница между equals и hashCode?", "answerLabel": "Каноничный ответ", "answer": "Равные объекты должны возвращать одинаковый hashCode. Обратное правило не обязательно.", "action": "Скрыть ответ" } },
+      { "type": "component", "component": "QuestionAccordion", "variant": "new", "props": { "question": "Что такое immutable-объект?", "action": "Показать ответ" } },
+      { "type": "component", "component": "QuestionAccordion", "variant": "scheduled", "props": { "question": "Как устроен String Pool?", "action": "Показать ответ" } }
+    ] },
+    { "type": "section", "name": "StickyActionBar", "children": [
+      { "type": "component", "component": "Button", "variant": "primary", "props": { "text": "Повторить тему", "icon": "▶", "destination": "ReviewSession" } }
+    ] }
+  ],
+  "states": {
+    "loading": "Metrics and questions use neutral placeholders",
+    "emptyQuestions": "EmptyState.noResults replaces QuestionList",
+    "addOrRemoveSaving": "Selection action uses Button.loading",
+    "nothingDue": "Review category uses Button.disabled",
+    "error": "FeedbackState.error offers retry"
+  },
+  "requirements": {
+    "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],
+    "approvedAssumptions": ["Canonical answers may be browsed outside a review session", "Learned status is not displayed unless the backend formally supplies it"]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "CategorySelectionRow",
+  "variants": {
+    "available": { "bg": "color.background", "border": "color.border", "action": "color.primary" },
+    "selected": { "bg": "color.primarySurface", "border": "color.primary", "action": "color.danger" },
+    "saving": { "bg": "color.surface", "border": "color.border", "action": "color.mutedText" },
+    "disabled": { "bg": "color.surface", "border": "color.border", "action": "color.border" }
+  },
+  "layout": { "padding": "spacing.md", "radius": "radius.md", "gap": "spacing.sm", "minHeight": 72 },
+  "layers": ["container", "title", "questionCount", "progress", "selectionAction", "detailsAction"]
+}
