@@ -28,7 +28,7 @@ Resolve targets by stable names from `design/penpot.json`:
 - component page: `componentsPageName`;
 - feature page: `featurePagePrefix + feature.label` from the page JSON;
 - page frames: `pageFramePrefix + page`;
-- generated components: `componentPrefix + name`.
+- native component families: `componentPrefix + name`.
 
 For a page at `design/pages/<feature>/<screen>.page.json`, require
 `feature.key == <feature>`. If the canonical page frame exists on another
@@ -42,18 +42,39 @@ Never assume IDs from an earlier session.
 1. Locate or create only the configured generated file.
 2. Locate or create the configured components page.
 3. Synchronize tokens as concrete Penpot properties; do not invent values.
-4. Synchronize components before pages.
+4. Synchronize components before pages. Create native library components with
+   `penpot.library.local.createComponent(...)`. For multiple JSON states, create
+   one complete main component per state and combine them into a native variant
+   set with property `componentVariantProperty` and exact JSON variant values.
 5. Locate or create the exact feature page after every referenced component
    exists.
 6. Synchronize the page frame on that feature page. Keep all generated page
    artwork inside the canonical page frame and mirror named JSON structural
    nodes as nested generated containers where supported.
-7. Keep generated component layers inside their canonical component frame.
-   Feature-page roots should contain canonical `Page/...` frames; the
-   components-page root should contain canonical `Component/...` frames, not
-   loose generated artwork.
-8. Re-read generated objects and check names, counts, dimensions, colors,
-   typography, and duplicate stable names.
+7. Render every page node with `type: component` as a copy instance from the
+   native library component and select its requested variant. Apply supported
+   property overrides without detaching the instance.
+8. Feature-page roots should contain canonical `Page/...` frames. The
+   components page should contain native main instances and native variant
+   containers only; do not create enclosing documentation boards or component
+   specification cards.
+9. Re-read generated objects and check names, counts, dimensions, colors,
+   typography, duplicate stable names, native main-instance status, variant
+   coverage, and page copy-instance status.
+
+## Native component requirements
+
+- A component JSON file with one variant maps to one normal native component.
+- A component JSON file with multiple variants maps to one native variant set.
+- Variant values must exactly equal the JSON keys and use the configured
+  `componentVariantProperty` (normally `State`).
+- Composite components should use nested component instances where the JSON
+  design system defines reusable primitives.
+- Component references on pages must remain usable instances. A detached clone,
+  group, board, or manually redrawn substitute is a synchronization failure.
+- A board is acceptable only when Penpot uses it as an actual component main
+  instance or variant container. A board that merely lists variants, layers, or
+  component documentation is prohibited.
 
 ## Active-page writes
 
@@ -85,8 +106,8 @@ In particular:
 
 - if parent/child hierarchy, auto-layout, component variants, exports, or
   screenshots cannot be represented, preserve the JSON and report the gap;
-- do not replace real components with misleading flat artwork without saying
-  so;
+- never replace a required native component or component instance with flat
+  artwork; stop the synchronization instead;
 - a successful MCP call proves only that the call completed, not that the
   visual result is correct;
 - request manual visual review when screenshot/export comparison is
@@ -109,6 +130,7 @@ Report:
 - target project, file, and pages;
 - objects created, updated, recreated, or left unchanged;
 - duplicate-name and structural verification;
+- native component families, variants, main instances, and page copy instances;
 - unsupported properties or operations;
 - whether automated visual comparison was available;
 - manual review required.

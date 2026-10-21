@@ -90,6 +90,9 @@ After explicit approval:
    `spacing.md`, `radius.lg`, and `font.size.md`.
 10. Reference components by their declared `name` and a declared variant.
 11. Preserve existing approved behavior unless the new approval changes it.
+12. Treat every component specification as a contract for a native reusable
+    Penpot component. Multiple JSON states become native variants; they must
+    never be synchronized as documentation boards or detached artwork.
 
 Run:
 

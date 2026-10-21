@@ -10,6 +10,16 @@
       "bg": "color.primary",
       "border": null,
       "shadow": "0 2px 8px rgba(59, 130, 246, 0.2)"
+    },
+    "list": {
+      "bg": "color.background",
+      "border": "color.border",
+      "shadow": null
+    },
+    "highlighted": {
+      "bg": "color.primarySurface",
+      "border": "color.primary",
+      "shadow": null
     }
   },
   "layout": {

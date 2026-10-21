@@ -30,11 +30,19 @@ source of truth.
 - Product pages are grouped by feature on Penpot pages named
   `featurePagePrefix + feature.label`, for example `Pages / Home`.
 - Page frames are named `Page/<PageName>`, for example `Page/Login`.
-- Components are named `Component/<Name>`, for example `Component/Button`.
+- Native reusable component families are named `Component/<Name>`, for example
+  `Component/Button`.
 - Named sections and layout nodes in page JSON must be represented as nested
   generated layers inside their `Page/<PageName>` frame.
-- Generated page and component artwork must be contained by its canonical
-  frame. It must not remain loose at a Penpot page root.
+- Every component specification must become a native Penpot library component.
+  Specifications with multiple variants become native variant sets using the
+  `State` property and exact JSON variant names.
+- Page component nodes must be native copy instances. Detached drawings and
+  flattened or redrawn substitutes are invalid.
+- The components page contains native main instances and variant containers,
+  not documentation boards that list component names, states, or layers.
+- Generated page artwork must be contained by its canonical page frame. It must
+  not remain loose at a Penpot page root.
 - Generated objects must be updated by stable name and never duplicated.
 
 ## Page organization
@@ -78,6 +86,8 @@ change JSON or Penpot before approval.
 - Delete and recreate generated objects only when incremental updates are not
   supported and doing so is safe.
 - Never append duplicate page frames or components.
+- Never replace a native component, variant, or page instance with a
+  documentation board or detached artwork.
 - Never delete manually maintained Penpot content.
 
 ## Token rule

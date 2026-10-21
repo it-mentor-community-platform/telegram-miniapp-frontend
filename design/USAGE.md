@@ -200,7 +200,9 @@ python3 scripts/validate-design.py
 The validator checks JSON syntax, feature-directory structure and metadata,
 supported structures and structural node names, duplicate names, token
 references, component references, component variants, requirement source paths,
-and Penpot configuration.
+and Penpot configuration. The Penpot configuration requires native reusable
+components, `State` variant sets, and page component instances. Live Penpot
+review additionally verifies that those native objects actually exist.
 
 ## Expected completion report
 
@@ -229,11 +231,16 @@ After implementation or synchronization, Cline should report:
 - Do not make a generated design change only in Penpot.
 - Do not treat a successful MCP request as proof of visual correctness.
 - Do not commit Penpot credentials, API tokens, or private screenshots.
-- Do not accept duplicate `Page/<Name>` frames or `Component/<Name>` objects.
+- Do not accept duplicate `Page/<Name>` frames or native
+  `Component/<Name>` families.
 - Do not accept page files outside `design/pages/<feature>/` or mismatched
   `feature.key` values.
-- Do not accept loose generated artwork outside its canonical page or component
-  frame.
+- Do not accept component documentation boards, specification cards, detached
+  component drawings, or page component nodes that are not native copy
+  instances.
+- Do not accept variant values that differ from the component JSON keys.
+- Keep page artwork inside its canonical page frame and native component main
+  instances or variant containers on the configured components page.
 - Run `/design-review` before merging substantial design changes.
 
 ## Troubleshooting

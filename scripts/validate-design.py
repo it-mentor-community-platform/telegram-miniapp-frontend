@@ -332,12 +332,33 @@ class Validator:
             "featurePagePrefix",
             "pageFramePrefix",
             "componentPrefix",
+            "componentRepresentation",
+            "componentVariantProperty",
+            "pageComponentRepresentation",
             "renderStrategy",
         ):
             if not isinstance(value.get(key), str) or not value[key].strip():
                 self.error(document.path, f"$.{key}", "must be a non-empty string")
         if value.get("renderStrategy") not in {"replace-by-name"}:
             self.error(document.path, "$.renderStrategy", "unsupported render strategy")
+        if value.get("componentRepresentation") != "native":
+            self.error(
+                document.path,
+                "$.componentRepresentation",
+                "must be 'native'; component specifications must synchronize to reusable Penpot components",
+            )
+        if value.get("componentVariantProperty") != "State":
+            self.error(
+                document.path,
+                "$.componentVariantProperty",
+                "must be 'State' so JSON variant names map consistently to Penpot variants",
+            )
+        if value.get("pageComponentRepresentation") != "instance":
+            self.error(
+                document.path,
+                "$.pageComponentRepresentation",
+                "must be 'instance'; page component nodes may not synchronize as detached artwork",
+            )
         if value.get("pageFramePrefix") == value.get("componentPrefix"):
             self.error(document.path, "$", "page and component prefixes must differ")
 

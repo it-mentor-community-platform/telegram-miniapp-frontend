@@ -52,6 +52,9 @@ Do not modify JSON or Penpot merely to make the review pass.
 - Reusable values use existing tokens or introduce intentional new tokens.
 - Repeated patterns use components rather than page-specific copies.
 - Component references and variants exist.
+- Every component specification has a native reusable Penpot component family.
+- Multi-state components use native variant sets whose `State` values exactly
+  match the JSON variant names.
 - Names are stable and unique.
 - Text contrast, target size, focus/disabled states, labels, and content clarity
   receive an accessibility review.
@@ -71,8 +74,12 @@ Do not modify JSON or Penpot merely to make the review pass.
   feature-page root.
 - Named JSON sections and layout nodes have corresponding nested generated
   containers where the MCP supports them.
-- Generated component layers are contained inside their canonical
-  `Component/<Name>` frame rather than left loose at the components-page root.
+- Native component main instances and variant containers are on the configured
+  components page without documentation-board wrappers.
+- Every page node with `type: component` is a component copy instance of the
+  requested family and variant, not detached or redrawn artwork.
+- Generated boards that merely document a component name, variants, or layers
+  are a blocking defect.
 - Dimensions, colors, typography, spacing, and visible content agree with JSON.
 - Manual content has not been overwritten.
 - Unsupported MCP properties and visual checks are explicitly identified.

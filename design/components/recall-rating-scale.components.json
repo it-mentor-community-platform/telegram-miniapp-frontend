@@ -1,0 +1,15 @@
+{
+  "name": "RecallRatingScale",
+  "variants": {
+    "idle": { "bg": "color.background", "selected": "color.primary" },
+    "submitting": { "bg": "color.surface", "selected": "color.primary" },
+    "disabled": { "bg": "color.surface", "selected": "color.mutedText" }
+  },
+  "layout": { "optionHeight": 56, "gap": "spacing.xs", "radius": "radius.md" },
+  "typography": {
+    "fontFamily": "font.family.base",
+    "numberSize": "font.size.md",
+    "labelSize": "font.size.xs"
+  },
+  "layers": ["container", "option0", "option1", "option2", "option3", "option4", "option5"]
+}

@@ -5,6 +5,36 @@
       "bg": "color.primary",
       "text": "#FFFFFF",
       "border": null
+    },
+    "secondary": {
+      "bg": "color.primarySurface",
+      "text": "color.primary",
+      "border": null
+    },
+    "outline": {
+      "bg": "color.background",
+      "text": "color.primary",
+      "border": "color.primary"
+    },
+    "ghost": {
+      "bg": "color.background",
+      "text": "color.text",
+      "border": null
+    },
+    "danger": {
+      "bg": "color.dangerSurface",
+      "text": "color.danger",
+      "border": "color.danger"
+    },
+    "disabled": {
+      "bg": "color.border",
+      "text": "color.mutedText",
+      "border": null
+    },
+    "loading": {
+      "bg": "color.primary",
+      "text": "#FFFFFF",
+      "border": null
     }
   },
   "layout": {

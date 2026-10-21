@@ -6,5 +6,8 @@
   "featurePagePrefix": "Pages / ",
   "pageFramePrefix": "Page/",
   "componentPrefix": "Component/",
+  "componentRepresentation": "native",
+  "componentVariantProperty": "State",
+  "pageComponentRepresentation": "instance",
   "renderStrategy": "replace-by-name"
 }

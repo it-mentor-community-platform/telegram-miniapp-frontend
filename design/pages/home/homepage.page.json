@@ -105,6 +105,21 @@
               "style": {
                 "minHeight": 100
               }
+            },
+            {
+              "type": "component",
+              "component": "Card",
+              "variant": "highlighted",
+              "props": {
+                "icon": "🧠",
+                "title": "Повторение вопросов",
+                "subtitle": "Новые и запланированные вопросы",
+                "destination": "RepetitionDashboard",
+                "emptyDestination": "CategorySetup"
+              },
+              "style": {
+                "minHeight": 100
+              }
             }
           ]
         }
@@ -357,5 +372,15 @@
         }
       ]
     }
-  ]
+  ],
+  "requirements": {
+    "sources": [
+      "meta/business-analytics/functionality/interview-questions-interval-repetition.md",
+      "meta/system-analytics/functionality/interview-questions-interval-repetition.md"
+    ],
+    "approvedAssumptions": [
+      "The homepage exposes an interval-repetition entry point",
+      "The entry opens CategorySetup when no categories are selected and RepetitionDashboard otherwise"
+    ]
+  }
 }
