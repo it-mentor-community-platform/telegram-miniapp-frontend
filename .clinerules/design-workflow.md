@@ -24,6 +24,9 @@ These rules apply to UI design work in this repository.
 
 - Update tokens, then components, then pages.
 - Reuse existing tokens and components when they match the intent.
+- Store every page at `design/pages/<feature>/<screen>.page.json`, with exactly
+  one kebab-case feature directory level. The page's `feature.key` must match
+  that directory and `feature.label` provides its Penpot display name.
 - Record requirement sources and approved assumptions on new or materially
   revised pages.
 - Run `python3 scripts/validate-design.py` after changing design JSON and before
@@ -33,6 +36,12 @@ These rules apply to UI design work in this repository.
 
 - Read `design/penpot.json` and discover current IDs before every sync.
 - Check authentication with a read-only request before writes.
+- Synchronize each feature to
+  `featurePagePrefix + feature.label` and each screen to
+  `pageFramePrefix + page`.
+- Keep generated screen layers inside their canonical page frame and generated
+  component layers inside their canonical component frame. Do not leave loose
+  generated artwork at a Penpot page root.
 - Update generated objects by exact stable name and never create duplicates.
 - Never delete or overwrite manually maintained Penpot content.
 - Do not claim synchronization or visual parity when a call failed or tooling

@@ -34,6 +34,8 @@ Present a concrete proposal covering:
 
 - target users and goals;
 - pages, entry points, and navigation;
+- each page's feature key, feature label, local path, Penpot feature page, and
+  stable page-frame name;
 - information hierarchy;
 - actions, permissions, and validation;
 - reusable components and variants;
@@ -67,12 +69,27 @@ After explicit approval:
    }
    ```
 
-5. Use stable PascalCase component and page names. File names use kebab-case
+5. Store each page at `design/pages/<feature>/<screen>.page.json`, with exactly
+   one kebab-case feature directory. Related screens share that directory.
+6. Add feature metadata to every page and keep it consistent with the path:
+
+   ```json
+   "feature": {
+     "key": "user-profile",
+     "label": "User Profile"
+   }
+   ```
+
+   The Penpot feature page is `featurePagePrefix + feature.label`; the screen
+   frame is `pageFramePrefix + page`.
+7. Use stable PascalCase component and page names. File names use kebab-case
    with `.components.json` or `.page.json` suffixes.
-6. Reference reusable values with dotted token paths such as `color.primary`,
+8. Give semantic names to structural page nodes so their hierarchy can be
+   represented inside the generated page frame.
+9. Reference reusable values with dotted token paths such as `color.primary`,
    `spacing.md`, `radius.lg`, and `font.size.md`.
-7. Reference components by their declared `name` and a declared variant.
-8. Preserve existing approved behavior unless the new approval changes it.
+10. Reference components by their declared `name` and a declared variant.
+11. Preserve existing approved behavior unless the new approval changes it.
 
 Run:
 

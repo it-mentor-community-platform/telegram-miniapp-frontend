@@ -7,7 +7,9 @@ Telegram Mini App UI. See [USAGE.md](USAGE.md) for the team workflow.
 
 - `tokens/` defines reusable visual values.
 - `components/` defines reusable UI components.
-- `pages/` defines approved page layouts and states.
+- `pages/` defines approved page layouts and states. Every page must use exactly
+  one feature directory: `pages/<feature>/<screen>.page.json`, for example
+  `pages/home/homepage.page.json`.
 - `penpot.json` identifies the generated Penpot target.
 - `references/` contains input screenshots and other visual references.
 - `exports/` contains generated artifacts and is not a source of truth.
@@ -25,9 +27,43 @@ source of truth.
 
 - The target file is named by `generatedFileName` in `penpot.json`.
 - The components page is named by `componentsPageName`.
+- Product pages are grouped by feature on Penpot pages named
+  `featurePagePrefix + feature.label`, for example `Pages / Home`.
 - Page frames are named `Page/<PageName>`, for example `Page/Login`.
 - Components are named `Component/<Name>`, for example `Component/Button`.
+- Named sections and layout nodes in page JSON must be represented as nested
+  generated layers inside their `Page/<PageName>` frame.
+- Generated page and component artwork must be contained by its canonical
+  frame. It must not remain loose at a Penpot page root.
 - Generated objects must be updated by stable name and never duplicated.
+
+## Page organization
+
+Each page specification must declare its feature:
+
+```json
+{
+  "feature": {
+    "key": "home",
+    "label": "Home"
+  },
+  "page": "Homepage"
+}
+```
+
+The contract is:
+
+```text
+Local file:          design/pages/<feature.key>/<screen>.page.json
+Penpot feature page: featurePagePrefix + feature.label
+Penpot page frame:   pageFramePrefix + page
+```
+
+Feature directories and screen filenames use kebab-case. `feature.key` must
+match the directory exactly. Pages with the same feature key must use the same
+feature label, and one feature label may not represent multiple feature keys.
+Structural `section`, `row`, `column`, and `grid` nodes must have stable
+PascalCase names so synchronization and review can map their Penpot containers.
 
 ## Approval rule
 

@@ -57,6 +57,8 @@ tokens, components, pages, and relevant Penpot objects. It will then propose:
 
 - users and their goals;
 - pages and navigation;
+- each page's feature key and label, local path, Penpot feature page, and stable
+  frame name;
 - information hierarchy;
 - actions and permissions;
 - reusable components;
@@ -97,6 +99,36 @@ Probably fine.
 After approval, Cline may update tokens, components, and pages, then synchronize
 the approved result to Penpot.
 
+## Organize pages by feature
+
+Every page uses exactly one feature directory and declares matching feature
+metadata. For example:
+
+```text
+design/pages/home/homepage.page.json
+```
+
+```json
+{
+  "feature": {
+    "key": "home",
+    "label": "Home"
+  },
+  "page": "Homepage"
+}
+```
+
+With the default `design/penpot.json` prefixes, this maps to:
+
+```text
+Penpot page:  Pages / Home
+Screen frame: Page/Homepage
+```
+
+Related screens share the same feature directory and Penpot page. Do not put a
+page specification directly under `design/pages/`, and do not add deeper page
+directory nesting without first revising the documented contract and validator.
+
 ## Use screenshots
 
 You can paste or attach an image in Cline. Permanent references should be added
@@ -126,8 +158,9 @@ Use the Penpot skill when the JSON is already approved:
 /penpot-design
 
 Synchronize
-@telegram-miniapp-frontend/design/pages/user-profile.page.json with Penpot.
-Update the existing Page/UserProfile frame and do not create duplicates.
+@telegram-miniapp-frontend/design/pages/profile/user-profile.page.json with Penpot.
+Use its feature metadata to target Pages / Profile. Update the existing
+Page/UserProfile frame and do not create duplicates or loose root-level artwork.
 ```
 
 The same command should be safe to run repeatedly. A second run must update the
@@ -142,9 +175,10 @@ Use the review skill for a read-only consistency check:
 
 Review:
 @meta/business-analytics/functionality/user-profiles.md
-@telegram-miniapp-frontend/design/pages/user-profile.page.json
+@telegram-miniapp-frontend/design/pages/profile/user-profile.page.json
 
-Compare them with Page/UserProfile in Penpot. Do not modify anything.
+Compare them with Page/UserProfile under Pages / Profile in Penpot. Verify that
+generated layers are contained by the canonical frame. Do not modify anything.
 ```
 
 The review should distinguish:
@@ -163,9 +197,10 @@ Run from the `telegram-miniapp-frontend` repository root:
 python3 scripts/validate-design.py
 ```
 
-The validator checks JSON syntax, supported structures, duplicate names, token
-references, component references, component variants, and requirement source
-paths.
+The validator checks JSON syntax, feature-directory structure and metadata,
+supported structures and structural node names, duplicate names, token
+references, component references, component variants, requirement source paths,
+and Penpot configuration.
 
 ## Expected completion report
 
@@ -195,6 +230,10 @@ After implementation or synchronization, Cline should report:
 - Do not treat a successful MCP request as proof of visual correctness.
 - Do not commit Penpot credentials, API tokens, or private screenshots.
 - Do not accept duplicate `Page/<Name>` frames or `Component/<Name>` objects.
+- Do not accept page files outside `design/pages/<feature>/` or mismatched
+  `feature.key` values.
+- Do not accept loose generated artwork outside its canonical page or component
+  frame.
 - Run `/design-review` before merging substantial design changes.
 
 ## Troubleshooting

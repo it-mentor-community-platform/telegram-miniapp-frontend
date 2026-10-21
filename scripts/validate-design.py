@@ -21,6 +21,7 @@ WORKSPACE_ROOT = ROOT.parent
 
 TOKEN_REFERENCE = re.compile(r"^(color|spacing|radius|font)\.[A-Za-z0-9_.-]+$")
 NAME = re.compile(r"^[A-Z][A-Za-z0-9]*$")
+KEBAB_CASE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 SUPPORTED_NODE_TYPES = {
     "component",
     "column",
@@ -29,6 +30,7 @@ SUPPORTED_NODE_TYPES = {
     "section",
     "text",
 }
+STRUCTURAL_NODE_TYPES = {"column", "grid", "row", "section"}
 
 
 @dataclass(frozen=True)
@@ -43,6 +45,8 @@ class Validator:
         self.tokens: dict[str, Any] = {}
         self.components: dict[str, LoadedJson] = {}
         self.pages: dict[str, LoadedJson] = {}
+        self.features: dict[str, tuple[str, Path]] = {}
+        self.feature_labels: dict[str, tuple[str, Path]] = {}
 
     def error(self, path: Path, location: str, message: str) -> None:
         relative = path.relative_to(ROOT)
@@ -154,16 +158,73 @@ class Validator:
             self.validate_token_references(value, path)
 
     def validate_pages(self) -> None:
-        paths = sorted(PAGES_DIR.glob("*.page.json"))
+        paths = sorted(PAGES_DIR.rglob("*.page.json"))
         if not paths:
             self.error(PAGES_DIR, "", "no page specifications found")
         for path in paths:
+            relative = path.relative_to(PAGES_DIR)
+            if len(relative.parts) != 2:
+                self.error(
+                    path,
+                    "",
+                    "page specifications must use design/pages/<feature>/<screen>.page.json",
+                )
+                continue
+            feature_directory = relative.parts[0]
+            screen_filename = path.name.removesuffix(".page.json")
+            if not KEBAB_CASE.fullmatch(feature_directory):
+                self.error(path, "", "feature directory must use kebab-case")
+            if not KEBAB_CASE.fullmatch(screen_filename):
+                self.error(path, "", "page filename must use kebab-case before .page.json")
             document = self.load_json(path)
             if document is None:
                 continue
             value = self.require_object(document, "page specification")
             if value is None:
                 continue
+            feature = value.get("feature")
+            if not isinstance(feature, dict):
+                self.error(path, "$.feature", "must be an object")
+            else:
+                feature_key = feature.get("key")
+                feature_label = feature.get("label")
+                if not isinstance(feature_key, str) or not KEBAB_CASE.fullmatch(feature_key):
+                    self.error(path, "$.feature.key", "must be a non-empty kebab-case key")
+                elif feature_key != feature_directory:
+                    self.error(
+                        path,
+                        "$.feature.key",
+                        f"must match feature directory {feature_directory!r}",
+                    )
+                if not isinstance(feature_label, str) or not feature_label.strip():
+                    self.error(path, "$.feature.label", "must be a non-empty string")
+                if (
+                    isinstance(feature_key, str)
+                    and KEBAB_CASE.fullmatch(feature_key)
+                    and isinstance(feature_label, str)
+                    and feature_label.strip()
+                ):
+                    normalized_label = feature_label.strip()
+                    existing_feature = self.features.get(feature_key)
+                    if existing_feature is not None and existing_feature[0] != normalized_label:
+                        original = existing_feature[1].relative_to(ROOT)
+                        self.error(
+                            path,
+                            "$.feature.label",
+                            f"feature {feature_key!r} uses label {existing_feature[0]!r} in {original}",
+                        )
+                    else:
+                        self.features.setdefault(feature_key, (normalized_label, path))
+                    existing_label = self.feature_labels.get(normalized_label)
+                    if existing_label is not None and existing_label[0] != feature_key:
+                        original = existing_label[1].relative_to(ROOT)
+                        self.error(
+                            path,
+                            "$.feature.label",
+                            f"label {normalized_label!r} is already used by feature {existing_label[0]!r} in {original}",
+                        )
+                    else:
+                        self.feature_labels.setdefault(normalized_label, (feature_key, path))
             name = value.get("page")
             if not isinstance(name, str) or not NAME.fullmatch(name):
                 self.error(path, "$.page", "must be a non-empty PascalCase name")
@@ -198,6 +259,14 @@ class Validator:
         if node_type not in SUPPORTED_NODE_TYPES:
             self.error(path, f"{location}.type", f"unsupported node type {node_type!r}")
             return
+        if node_type in STRUCTURAL_NODE_TYPES:
+            name = node.get("name")
+            if not isinstance(name, str) or not NAME.fullmatch(name):
+                self.error(
+                    path,
+                    f"{location}.name",
+                    "structural node must have a non-empty PascalCase name",
+                )
         if node_type == "component":
             component = node.get("component")
             variant = node.get("variant")
@@ -260,6 +329,7 @@ class Validator:
             "projectName",
             "generatedFileName",
             "componentsPageName",
+            "featurePagePrefix",
             "pageFramePrefix",
             "componentPrefix",
             "renderStrategy",
@@ -274,7 +344,7 @@ class Validator:
     def find_unrecognized_json(self) -> None:
         recognized = {TOKENS_FILE, PENPOT_FILE}
         recognized.update(COMPONENTS_DIR.glob("*.components.json"))
-        recognized.update(PAGES_DIR.glob("*.page.json"))
+        recognized.update(PAGES_DIR.rglob("*.page.json"))
         for path in sorted(DESIGN_DIR.rglob("*.json")):
             if path not in recognized:
                 self.error(path, "", "JSON file is outside a supported design location")

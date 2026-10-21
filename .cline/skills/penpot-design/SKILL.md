@@ -26,8 +26,13 @@ Resolve targets by stable names from `design/penpot.json`:
 - project: `projectName`;
 - generated file: `generatedFileName`;
 - component page: `componentsPageName`;
+- feature page: `featurePagePrefix + feature.label` from the page JSON;
 - page frames: `pageFramePrefix + page`;
 - generated components: `componentPrefix + name`.
+
+For a page at `design/pages/<feature>/<screen>.page.json`, require
+`feature.key == <feature>`. If the canonical page frame exists on another
+Penpot page, stop and report the mismatch instead of creating a duplicate.
 
 List existing projects, files, pages, components, and shapes before writing.
 Never assume IDs from an earlier session.
@@ -38,9 +43,31 @@ Never assume IDs from an earlier session.
 2. Locate or create the configured components page.
 3. Synchronize tokens as concrete Penpot properties; do not invent values.
 4. Synchronize components before pages.
-5. Synchronize page frames after every referenced component exists.
-6. Re-read generated objects and check names, counts, dimensions, colors,
+5. Locate or create the exact feature page after every referenced component
+   exists.
+6. Synchronize the page frame on that feature page. Keep all generated page
+   artwork inside the canonical page frame and mirror named JSON structural
+   nodes as nested generated containers where supported.
+7. Keep generated component layers inside their canonical component frame.
+   Feature-page roots should contain canonical `Page/...` frames; the
+   components-page root should contain canonical `Component/...` frames, not
+   loose generated artwork.
+8. Re-read generated objects and check names, counts, dimensions, colors,
    typography, and duplicate stable names.
+
+## Active-page writes
+
+Penpot may reject hierarchy changes on pages other than `penpot.currentPage`.
+Before modifying a page:
+
+1. call `penpot.openPage(page)`;
+2. confirm in a separate read that `penpot.currentPage.id == page.id`;
+3. write only that page in the current operation;
+4. re-read the page before switching to another page.
+
+Do not combine writes to multiple Penpot pages in one call. A failed multi-step
+call may have applied earlier operations; always re-read state after any error
+before retrying.
 
 Follow `renderStrategy` from `design/penpot.json`. For `replace-by-name`:
 

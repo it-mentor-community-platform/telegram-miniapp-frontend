@@ -17,7 +17,7 @@ Read, as applicable:
 - `design/README.md` and `design/USAGE.md`;
 - `design/tokens/tokens.json`;
 - relevant `design/components/*.components.json`;
-- relevant `design/pages/*.page.json`;
+- relevant `design/pages/**/*.page.json`;
 - `design/penpot.json`;
 - relevant Penpot projects, files, pages, components, and shapes read-only.
 
@@ -59,8 +59,20 @@ Do not modify JSON or Penpot merely to make the review pass.
 ### Penpot consistency
 
 - The configured project and generated file are used.
+- Each page file is under `design/pages/<feature>/<screen>.page.json`, its
+  `feature.key` matches the directory, and pages sharing a feature key use one
+  consistent feature label.
+- Each feature maps to the Penpot page
+  `featurePagePrefix + feature.label`.
 - Components and page frames match configured stable-name prefixes.
 - There are no duplicate generated names.
+- Each `Page/<PageName>` frame is on the correct feature page, and generated
+  page artwork is contained inside that frame rather than left loose at the
+  feature-page root.
+- Named JSON sections and layout nodes have corresponding nested generated
+  containers where the MCP supports them.
+- Generated component layers are contained inside their canonical
+  `Component/<Name>` frame rather than left loose at the components-page root.
 - Dimensions, colors, typography, spacing, and visible content agree with JSON.
 - Manual content has not been overwritten.
 - Unsupported MCP properties and visual checks are explicitly identified.
