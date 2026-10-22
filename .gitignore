@@ -1,1 +1,15 @@
 .idea/
+.DS_Store
+
+node_modules/
+dist/
+*.local
+*.log
+
+.env
+.env.*
+!.env.example
+
+coverage/
+.vite/
+*.tsbuildinfo
