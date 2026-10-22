@@ -132,6 +132,17 @@ Button as a button, Toolbar as a header, ProgressBar as progress, and so on.
 Exact CSS metrics, transitions, and browser rendering are not acceptance
 criteria.
 
+Generated Penpot pages are reference-quality layout and implementation guides.
+They should communicate hierarchy, grouping, reading order, responsive/mobile
+composition, readable content, and sensible relative proportions. Clipped or
+unreadable text, labels outside controls, broken containment, obvious
+misalignment, disproportionate controls, and excessive unexplained empty space
+are defects. Small pixel differences and cosmetic runtime variance are not.
+
+When a task supplies a visual reference, inspect it before synchronization and
+use its important hierarchy and proportions as guidance. Exact pixel matching
+is required only when a requirement explicitly says so.
+
 For controls whose registry declares representative variants or sizes, every
 JSON node must state them explicitly under `design`. Runtime choices remain in
 `props`; for example, a filled normal Button uses `design.variant: filled` and
@@ -142,8 +153,19 @@ props because those are the library defaults.
 
 Review library-first selection, custom rationales, accessibility, states,
 requirements, native Penpot instance sources, duplicate names, and page
-containment. Report changed JSON, registry entries, retained custom components,
-Penpot operations, validation, unsupported tooling, and manual review needs.
+containment. Before a write, record the target bounds/component roots and nearby
+generated sibling frame summaries. Afterward, re-read them and check text
+readability, approximate label alignment, relative proportions, containment,
+instance ancestry, duplicates, and unintended sibling changes.
+
+For visual verification, try one full-frame PNG export. If it fails, try one
+smaller export of the changed section or control. Do not repeatedly retry or
+run exports concurrently with other Penpot operations. If both fail, complete
+the structural and bounds checks, report visual export as unavailable, and
+request manual visual review. Do not claim visual verification.
+
+Report changed JSON, registry entries, retained custom components, Penpot
+operations, validation, unsupported tooling, and manual review needs.
 
 Never commit credentials, tokens, or private screenshots. Never overwrite
 manual Penpot content or claim synchronization/visual parity after a failed or
@@ -160,8 +182,9 @@ python3 scripts/audit-penpot-drift.py --emit-penpot-js /tmp/audit-penpot-drift.j
 ```
 
 Run that JavaScript through the authenticated Penpot plugin context. Its result
-contains `ok`, `errors`, `warnings`, and a portable `snapshot`. Save only the
-`snapshot` object when a file-based comparison is needed, then run:
+contains `ok`, `errors`, `warnings`, a portable `snapshot`, and `snapshotJson`
+for direct file persistence. The comparison command accepts either the raw
+`snapshot` object or the complete plugin result containing `snapshot`:
 
 ```bash
 python3 scripts/audit-penpot-drift.py --snapshot /tmp/penpot-live-snapshot.json

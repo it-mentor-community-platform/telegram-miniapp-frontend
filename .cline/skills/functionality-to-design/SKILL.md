@@ -26,6 +26,17 @@ wrapper. Present pages/navigation, information hierarchy, actions,
 permissions, states, responsive behavior, tokens, component source, custom
 rationales, assumptions, and unresolved questions. Wait for explicit approval.
 
+Design Penpot mockups as reference-quality implementation guides rather than
+pixel-perfect browser specifications. Make hierarchy, grouping, reading order,
+responsive/mobile composition, and relative proportions clear while avoiding
+unnecessary exact geometry. Content must remain readable and controls must look
+sensible for their context.
+
+When a visual reference is provided, inspect it before proposing the layout,
+identify the important hierarchy and proportion cues, and state which cues the
+proposal follows. Treat exact pixels and cosmetic browser details as
+non-authoritative unless the requirement explicitly says otherwise.
+
 ## Implement an approved proposal
 
 Update in order:

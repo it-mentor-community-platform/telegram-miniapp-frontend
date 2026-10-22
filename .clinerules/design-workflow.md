@@ -6,6 +6,9 @@
   workspace.
 - Approved JSON under `design/` is the UI source of truth; Penpot is generated.
 - `design/exports/` is generated output.
+- Generated Penpot mockups are reference-quality layout and implementation
+  guides, not pixel-perfect browser specifications. They must communicate clear
+  hierarchy, readable content, sensible proportions, and recognizable controls.
 - Present material designs and schema/custom-component changes for explicit
   approval before writing JSON or Penpot.
 
@@ -38,6 +41,16 @@
   family. Detached reproductions are invalid.
 - Representative semantic fidelity is required for library templates;
   pixel-for-pixel PrimeVue parity is not.
+- Before writes, inspect and record the target bounds and nearby generated
+  sibling frame summaries. After writes, re-read the changed scope and reject
+  material clipping, unreadable labels, broken alignment, disproportionate
+  controls, containment failures, detached instances, duplicates, and
+  unintended sibling changes. Minor pixel variance is acceptable.
+- When a visual reference is supplied, inspect it and follow its important
+  hierarchy and proportions without treating it as a pixel-perfect target.
+- Visual export fallback is bounded: try the full frame once, then one smaller
+  changed section. If both fail, complete structural/bounds checks, report that
+  visual verification is unavailable, and require manual review.
 - Keep generated artwork in canonical frames, update by stable name, avoid
   duplicates, and never overwrite manual content.
 - If required native operations are unsupported, stop and report the block.

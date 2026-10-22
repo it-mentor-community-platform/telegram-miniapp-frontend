@@ -25,6 +25,14 @@ components, pages, Penpot config, and related live Penpot objects. Run
 - PrimeVue Penpot templates are native, correctly named, recognizable as their
   controls, and approximately token-aligned. Cosmetic runtime differences are
   not defects.
+- Penpot mockups provide reference-quality hierarchy and layout guidance, not
+  pixel-perfect implementation specifications. Exact CSS metrics and minor
+  cosmetic variance are not defects.
+- Text is readable and not materially clipped, overlapping, or implausibly
+  constrained; labels remain within controls and are approximately aligned.
+- Spacing, relative proportions, information hierarchy, and mobile composition
+  are sensible. Grossly oversized controls, excessive unexplained empty space,
+  and obviously unusable targets are defects.
 - Custom Penpot families/variants are native and retain specified nested
   library copies.
 - Page nodes are instances from the correct library/custom family, frames are
@@ -35,4 +43,8 @@ components, pages, Penpot config, and related live Penpot objects. Run
 
 List findings by Blocking, Major, then Minor, with exact path/object, evidence,
 impact, and correction. State assumptions, checks completed, checks blocked,
-and residual manual visual-review risk even when no findings exist.
+and residual manual visual-review risk even when no findings exist. When a
+visual reference is supplied, inspect it and state which hierarchy and
+proportion cues were followed; do not score pixel-by-pixel similarity. If
+exports are unavailable, review live structure and bounds but explicitly mark
+visual verification as blocked.

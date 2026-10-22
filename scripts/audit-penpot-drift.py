@@ -28,6 +28,29 @@ def load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def load_snapshot(path: Path) -> dict[str, Any]:
+    """Load either a raw snapshot or a complete Penpot audit result."""
+
+    try:
+        value = load(path)
+    except FileNotFoundError as error:
+        raise ValueError(f"snapshot file not found: {path}") from error
+    except OSError as error:
+        raise ValueError(f"could not read snapshot file {path}: {error}") from error
+    except json.JSONDecodeError as error:
+        raise ValueError(
+            f"snapshot file {path} is not valid JSON: line {error.lineno}, column {error.colno}"
+        ) from error
+
+    if not isinstance(value, dict):
+        raise ValueError("snapshot input must be a JSON object")
+    if "snapshot" in value:
+        value = value["snapshot"]
+        if not isinstance(value, dict):
+            raise ValueError("plugin result snapshot must be a JSON object")
+    return value
+
+
 def stable_family(prefix: str, name: str) -> str:
     return f"{prefix}{name}"
 
@@ -226,11 +249,13 @@ else {{
   }}
 }}
 
+const snapshot = {{version: 1, frames: frameSnapshots, totals: Object.fromEntries(Object.entries(totals).sort(([a], [b]) => a.localeCompare(b))), records}};
 return {{
   ok: errors.length === 0,
   errors,
   warnings,
-  snapshot: {{version: 1, frames: frameSnapshots, totals: Object.fromEntries(Object.entries(totals).sort(([a], [b]) => a.localeCompare(b))), records}},
+  snapshot,
+  snapshotJson: JSON.stringify(snapshot),
 }};
 """
 
@@ -244,6 +269,14 @@ def compare_snapshot(manifest: dict[str, Any], snapshot: dict[str, Any]) -> list
     if not isinstance(actual_frames, dict):
         return errors + ["snapshot.frames must be an object"]
 
+    actual_totals_value = snapshot.get("totals")
+    if not isinstance(actual_totals_value, dict):
+        return errors + ["snapshot.totals must be an object"]
+
+    records = snapshot.get("records")
+    if not isinstance(records, list):
+        return errors + ["snapshot.records must be an array"]
+
     expected_frames = manifest["frames"]
     for key in sorted(set(expected_frames) | set(actual_frames)):
         if key not in expected_frames:
@@ -252,7 +285,14 @@ def compare_snapshot(manifest: dict[str, Any], snapshot: dict[str, Any]) -> list
         if key not in actual_frames:
             errors.append(f"missing generated frame: {key.replace(chr(10), ' / ')}")
             continue
-        actual_families = actual_frames[key].get("families", {})
+        actual_frame = actual_frames[key]
+        if not isinstance(actual_frame, dict):
+            errors.append(f"{key.replace(chr(10), ' / ')}: frame snapshot must be an object")
+            continue
+        actual_families = actual_frame.get("families", {})
+        if not isinstance(actual_families, dict):
+            errors.append(f"{key.replace(chr(10), ' / ')}: families must be an object")
+            continue
         unknown = sorted(set(actual_families) - set(manifest["libraryFamilies"]) - set(manifest["customFamilies"]))
         for family in unknown:
             errors.append(f"{key.replace(chr(10), ' / ')}: unapproved page component family {family}")
@@ -271,7 +311,7 @@ def compare_snapshot(manifest: dict[str, Any], snapshot: dict[str, Any]) -> list
 
     actual_totals = {
         family: count
-        for family, count in snapshot.get("totals", {}).items()
+        for family, count in actual_totals_value.items()
         if family.startswith(manifest["customPrefix"])
     }
     for family in sorted(set(manifest["customTotals"]) | set(actual_totals)):
@@ -280,9 +320,13 @@ def compare_snapshot(manifest: dict[str, Any], snapshot: dict[str, Any]) -> list
         if wanted != actual:
             errors.append(f"all generated page frames: {family} expected {wanted}, found {actual}")
 
-    records = snapshot.get("records", [])
     for family in manifest["customFamilies"]:
-        mains = sum(record.get("family") == family and record.get("hasMain") is True for record in records)
+        mains = sum(
+            isinstance(record, dict)
+            and record.get("family") == family
+            and record.get("hasMain") is True
+            for record in records
+        )
         if mains != 1:
             errors.append(f"custom family {family} expected one main, found {mains}")
     return errors
@@ -316,7 +360,12 @@ def main() -> int:
         performed = True
 
     if args.snapshot:
-        errors = compare_snapshot(manifest, load(args.snapshot))
+        try:
+            snapshot = load_snapshot(args.snapshot)
+        except ValueError as error:
+            print(f"Penpot drift audit input error: {error}", file=sys.stderr)
+            return 2
+        errors = compare_snapshot(manifest, snapshot)
         if errors:
             print(f"Penpot drift audit failed with {len(errors)} error(s):")
             for error in errors:
