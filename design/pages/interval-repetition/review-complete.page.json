@@ -1,0 +1,21 @@
+{
+  "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
+  "page": "ReviewComplete",
+  "frame": { "width": 390, "background": "color.background", "padding": "spacing.lg" },
+  "layout": { "type": "column", "gap": "spacing.lg", "align": "center" },
+  "children": [
+    { "type": "section", "name": "CompletionSummary", "children": [
+      { "type": "component", "component": "FeedbackState", "variant": "success", "props": { "icon": "✓", "title": "Повторение завершено", "description": "Сегодня вы повторили 12 вопросов. Следующие вопросы появятся по расписанию." } },
+      { "type": "component", "component": "MetricTile", "variant": "learned", "props": { "value": "12", "label": "повторено сегодня" } }
+    ] },
+    { "type": "section", "name": "CompletionActions", "children": [
+      { "type": "component", "component": "Button", "variant": "primary", "props": { "text": "Вернуться к темам", "destination": "RepetitionDashboard" } },
+      { "type": "component", "component": "Button", "variant": "secondary", "props": { "text": "Управлять темами", "destination": "CategoryCatalog" } }
+    ] }
+  ],
+  "states": { "countUnavailable": "Hide the reviewed-count metric and use a generic completion description" },
+  "requirements": {
+    "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],
+    "approvedAssumptions": ["Review completion has a dedicated screen", "Reviewed count is displayed only when reliably tracked or returned"]
+  }
+}

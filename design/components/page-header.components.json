@@ -1,0 +1,16 @@
+{
+  "name": "PageHeader",
+  "variants": {
+    "root": { "leading": null, "trailing": "optional" },
+    "back": { "leading": "back", "trailing": "optional" },
+    "close": { "leading": "close", "trailing": "optional" }
+  },
+  "layout": { "height": 48, "gap": "spacing.sm", "align": "center" },
+  "typography": {
+    "fontFamily": "font.family.base",
+    "fontSize": "font.size.lg",
+    "fontWeight": "font.weight.bold",
+    "color": "color.text"
+  },
+  "layers": ["container", "leadingAction", "title", "trailingAction"]
+}

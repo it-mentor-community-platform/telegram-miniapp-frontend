@@ -1,0 +1,13 @@
+{
+  "name": "QuestionAccordion",
+  "variants": {
+    "collapsed": { "bg": "color.background", "status": "color.border", "answerVisible": false },
+    "expanded": { "bg": "color.surface", "status": "color.primary", "answerVisible": true },
+    "new": { "bg": "color.background", "status": "color.primary", "answerVisible": false },
+    "due": { "bg": "color.background", "status": "color.danger", "answerVisible": false },
+    "scheduled": { "bg": "color.background", "status": "color.success", "answerVisible": false },
+    "learned": { "bg": "color.successSurface", "status": "color.success", "answerVisible": false }
+  },
+  "layout": { "padding": "spacing.md", "radius": "radius.md", "gap": "spacing.sm" },
+  "layers": ["container", "status", "question", "expandAction", "answer"]
+}

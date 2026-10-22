@@ -1,0 +1,16 @@
+{
+  "name": "MetricTile",
+  "variants": {
+    "total": { "bg": "color.surface", "value": "color.text" },
+    "new": { "bg": "color.primarySurface", "value": "color.primary" },
+    "due": { "bg": "color.dangerSurface", "value": "color.danger" },
+    "learned": { "bg": "color.successSurface", "value": "color.success" }
+  },
+  "layout": { "padding": "spacing.sm", "radius": "radius.md", "minHeight": 64 },
+  "typography": {
+    "valueSize": "font.size.lg",
+    "labelSize": "font.size.xs",
+    "fontFamily": "font.family.base"
+  },
+  "layers": ["container", "value", "label"]
+}

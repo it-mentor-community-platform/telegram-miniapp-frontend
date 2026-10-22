@@ -1,0 +1,10 @@
+{
+  "name": "CategoryReviewCard",
+  "variants": {
+    "active": { "bg": "color.background", "border": "color.border", "action": "color.primary" },
+    "nothingDue": { "bg": "color.surface", "border": "color.border", "action": "color.mutedText" },
+    "loading": { "bg": "color.surface", "border": "color.border", "action": "color.border" }
+  },
+  "layout": { "padding": "spacing.md", "radius": "radius.lg", "gap": "spacing.sm", "minHeight": 124 },
+  "layers": ["container", "title", "specialization", "metrics", "primaryAction", "detailsAction"]
+}
