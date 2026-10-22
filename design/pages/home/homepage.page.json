@@ -56,6 +56,10 @@
           "name": "QuickActions",
           "columns": 2,
           "gap": "spacing.md",
+          "style": {
+            "width": "100%",
+            "alignItems": "stretch"
+          },
           "children": [
             { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "action", "state": "default" }, "action": { "type": "command", "name": "openProjectSubmission" }, "slots": { "content": [{ "type": "text", "name": "SubmitProjectAction", "value": "➕\nСдать проект" }] } },
             { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "default", "state": "default" }, "action": { "type": "command", "name": "openOwnProfile" }, "slots": { "content": [{ "type": "text", "name": "OwnProfileAction", "value": "👤\nМой профиль" }] } },
@@ -115,6 +119,9 @@
     {
       "type": "section",
       "name": "ActivitySection",
+      "style": {
+        "width": "100%"
+      },
       "children": [
         {
           "type": "text",
@@ -147,6 +154,7 @@
       "type": "section",
       "name": "CommunityStatsSection",
       "style": {
+        "width": "100%",
         "padding": "spacing.md",
         "background": "color.surface",
         "borderRadius": "radius.lg"
@@ -168,6 +176,9 @@
           "type": "column",
           "name": "StatsList",
           "gap": "spacing.xs",
+          "style": {
+            "width": "100%"
+          },
           "children": [
             {
               "type": "text",
@@ -209,6 +220,9 @@
     {
       "type": "section",
       "name": "UsefulLinksSection",
+      "style": {
+        "width": "100%"
+      },
       "children": [
         {
           "type": "text",
@@ -225,6 +239,9 @@
           "type": "column",
           "name": "UsefulLinks",
           "gap": "spacing.sm",
+          "style": {
+            "width": "100%"
+          },
           "children": [
             { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📖 Java роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "java-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
             { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "🐍 Python роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "python-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
@@ -237,10 +254,18 @@
   ],
   "requirements": {
     "sources": [
+      "meta/business-analytics/functionality/user-profiles.md",
+      "meta/business-analytics/functionality/projects-bookkeeping.md",
+      "meta/system-analytics/functionality/projects-bookkeeping.md",
       "meta/business-analytics/functionality/interview-questions-interval-repetition.md",
       "meta/system-analytics/functionality/interview-questions-interval-repetition.md"
     ],
     "approvedAssumptions": [
+      "Profile identity, role, project count, achievement states, activity entries, dates, and community totals are representative personalized mock data",
+      "The homepage offers mentor discovery as a product navigation entry even though the current mentor requirements do not yet define the discovery flow",
+      "The homepage includes a representative recent-activity feed and community-wide promotional statistics",
+      "Roadmap, community chat, and YouTube identifiers are application-configured external destinations rather than literal URLs in this specification",
+      "Quick-action labels, timeline content, statistics, and external-link labels wrap within the 342-pixel mobile content width",
       "The homepage exposes an interval-repetition entry point",
       "The entry opens CategorySetup when no categories are selected and RepetitionDashboard otherwise"
     ]
