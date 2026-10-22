@@ -1,45 +1,98 @@
 # Telegram Mini App Frontend
 
-Frontend-сервис для раздачи статических файлов Telegram Mini App.
+Vue frontend for the IT Mentor Community Platform Telegram Mini App.
 
+## Technology stack
 
-## 🧠 Контекст
+- Vue 3 and TypeScript
+- Vite
+- PrimeVue 4 with the Aura theme
+- PrimeIcons
+- nginx
+- Docker
 
-Сервис предназначен раздачи frontend-части Telegram Mini App.  
-Используется как точка входа для пользовательского интерфейса и взаимодействия с Telegram Web Apps API.
+PrimeVue is intentionally pinned to the latest MIT-licensed major version. PrimeVue 5 uses a
+different license and should only be adopted after its licensing requirements have been reviewed.
 
+## Prerequisites
 
-## ⚙️ Технологический стек
+- Node.js `^20.19.0` or `>=22.12.0`
+- npm
+- Docker (optional, for the production container)
 
-- HTML / CSS / JavaScript
-- **nginx** 
-- **Docker**
+## Local development
 
+Install dependencies:
 
-## 🔄 Взаимодействие
+```bash
+npm install
+```
 
-Сервис:
+Start the Vite development server:
 
-- Раздаёт статические файлы через HTTP
-- Может выполнять HTTP-запросы к backend-сервисам в рамках логики клиентского приложения
-- Работает в составе общей микросервисной архитектуры проекта
+```bash
+npm run dev
+```
 
+Vite prints the local development URL in the terminal. When opened outside Telegram, the starter
+screen runs in browser-preview mode. Add query parameters to the URL to exercise the init-data
+display locally.
 
-## ▶️ Запуск сервиса локально
+## Validation and production build
 
-### Сборка Docker-образа
+Run the TypeScript checks:
+
+```bash
+npm run typecheck
+```
+
+Create a production build in `dist/`:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Docker
+
+The Dockerfile builds the Vite application in a Node.js stage and serves the generated `dist/`
+directory from nginx.
+
+Build the image:
 
 ```bash
 docker build -t telegram-miniapp-frontend:local .
 ```
-### Запуск контейнера
+
+Run the container:
+
 ```bash
-docker run --rm -p 80:80 telegram-miniapp-frontend:local
+docker run --rm -p 8080:80 telegram-miniapp-frontend:local
 ```
 
-## 🎨 Проектирование интерфейса
+Open `http://localhost:8080`.
 
-Текстовые спецификации интерфейса, конфигурация Penpot и инструкции по
-дизайн-процессу находятся в каталоге [`design/`](design/).
+## Telegram Web App integration
 
-Инструкция для участников команды: [`design/USAGE.md`](design/USAGE.md).
+The Telegram Web App SDK is loaded from the official Telegram script in `index.html`. At startup,
+the application:
+
+1. detects `window.Telegram.WebApp`;
+2. reads `initData`;
+3. applies Telegram's light or dark color scheme;
+4. calls `ready()` and requests the expanded viewport;
+5. displays the value locally with an optional copy-to-clipboard action.
+
+The starter page does not transmit init data. A backend must validate Telegram init data before it
+is trusted for authentication or authorization.
+
+## UI design workflow
+
+Version-controlled UI specifications, Penpot configuration, and workflow instructions are stored
+in [`design/`](design/). See [`design/USAGE.md`](design/USAGE.md) before implementing material UI
+changes from product requirements.

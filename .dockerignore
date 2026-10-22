@@ -1,0 +1,10 @@
+.git
+.github
+.cline
+.clinerules
+.DS_Store
+node_modules
+dist
+design
+tmp
+*.log
