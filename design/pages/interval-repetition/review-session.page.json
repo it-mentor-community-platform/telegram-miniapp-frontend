@@ -1,35 +1,39 @@
 {
+  "$schema": "../../schemas/page.schema.json",
   "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
   "page": "ReviewSession",
   "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
   "layout": { "type": "column", "gap": "spacing.lg", "align": "stretch" },
   "children": [
-    { "type": "component", "component": "PageHeader", "variant": "close", "props": { "title": "Повторение" } },
-    { "type": "component", "component": "ReviewProgress", "variant": "default", "props": { "label": "Осталось: 7", "progress": 58 } },
-    { "type": "component", "component": "SpecializationBadge", "variant": "default", "props": { "label": "Java · Core" } },
+    { "type": "library-component", "library": "primevue", "component": "Toolbar", "design": { "appearance": "page-header", "state": "close" }, "slots": { "start": [{ "type": "library-component", "library": "primevue", "component": "Button", "props": { "icon": "pi pi-times", "iconPos": "left", "severity": "primary", "variant": "text" }, "action": { "type": "navigate", "target": "RepetitionDashboard" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } }], "center": [{ "type": "text", "name": "PageTitle", "value": "Повторение" }] } },
+    { "type": "column", "name": "ReviewProgress", "gap": "spacing.xs", "children": [
+      { "type": "text", "name": "ReviewProgressLabel", "value": "Осталось: 7", "style": { "fontSize": "font.size.sm", "fontWeight": "font.weight.medium", "color": "color.mutedText" } },
+      { "type": "library-component", "library": "primevue", "component": "ProgressBar", "props": { "value": 58, "showValue": false }, "design": { "appearance": "default", "state": "determinate" } }
+    ] },
+    { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Java · Core", "severity": "info" }, "design": { "appearance": "specialization", "state": "default" } },
     { "type": "section", "name": "QuestionSection", "children": [
       { "type": "text", "name": "QuestionLabel", "value": "Вопрос", "style": { "fontSize": "font.size.sm", "fontWeight": "font.weight.semibold", "color": "color.mutedText" } },
       { "type": "text", "name": "QuestionText", "value": "Как работает HashMap внутри?", "style": { "fontSize": "font.size.xl", "fontWeight": "font.weight.bold", "color": "color.text" } },
-      { "type": "component", "component": "Button", "variant": "outline", "props": { "text": "Показать ответ" } }
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Показать ответ", "severity": "primary", "variant": "outlined" }, "action": { "type": "command", "name": "showCanonicalAnswer" }, "design": { "appearance": "primary", "variant": "outlined", "size": "normal", "state": "default" } }
     ] },
     { "type": "section", "name": "AnswerSection", "children": [
       { "type": "text", "name": "AnswerLabel", "value": "Каноничный ответ", "style": { "fontSize": "font.size.sm", "fontWeight": "font.weight.semibold", "color": "color.primary" } },
       { "type": "text", "name": "CanonicalAnswer", "value": "HashMap хранит пары ключ-значение в массиве бакетов. Позиция определяется по хешу ключа, а коллизии разрешаются внутри бакета.", "style": { "fontSize": "font.size.md", "color": "color.text" } },
-      { "type": "component", "component": "Button", "variant": "ghost", "props": { "text": "Скрыть ответ" } }
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Скрыть ответ", "severity": "primary", "variant": "text" }, "action": { "type": "command", "name": "hideCanonicalAnswer" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } }
     ] },
     { "type": "section", "name": "RatingSection", "children": [
       { "type": "text", "name": "RatingPrompt", "value": "Насколько хорошо вы помнили ответ?", "style": { "fontSize": "font.size.md", "fontWeight": "font.weight.bold", "color": "color.text" } },
       { "type": "text", "name": "RatingHelpText", "value": "Оценка сохранит результат и откроет следующий вопрос.", "style": { "fontSize": "font.size.sm", "color": "color.mutedText" } },
-      { "type": "component", "component": "RecallRatingScale", "variant": "idle", "props": { "options": ["0 · Не помню", "1 · Очень трудно", "2 · Трудно", "3 · С подсказкой", "4 · Помню", "5 · Отлично"] } }
+      { "type": "library-component", "library": "primevue", "component": "SelectButton", "props": { "options": ["0 · Не помню", "1 · Очень трудно", "2 · Трудно", "3 · С подсказкой", "4 · Помню", "5 · Отлично"], "allowEmpty": false }, "action": { "type": "submit", "name": "saveRecallRating" }, "design": { "appearance": "rating-scale", "state": "default" } }
     ] },
     { "type": "section", "name": "SubmissionStatus", "children": [] }
   ],
   "states": {
-    "loading": "FeedbackState.loading appears while the first question is fetched",
+    "loading": "A PrimeVue ProgressSpinner and Message appear while the first question is fetched",
     "answerHidden": "AnswerSection is hidden and Show answer remains visible",
     "answerShown": "AnswerSection is visible; rating remains available",
-    "submitting": "RecallRatingScale.submitting disables all choices",
-    "saveFailure": "Current question and selected quality are preserved; FeedbackState.error offers Повторить отправку",
+    "submitting": "PrimeVue SelectButton is disabled while the selected quality is submitted",
+    "saveFailure": "Current question and selected quality are preserved; a PrimeVue Message offers Повторить отправку",
     "noQuestions": "Navigate to ReviewComplete",
     "close": "Return to RepetitionDashboard"
   },

@@ -1,0 +1,124 @@
+{
+  "$schema": "../schemas/library.schema.json",
+  "library": "primevue",
+  "label": "PrimeVue",
+  "implementation": {
+    "package": "primevue",
+    "majorVersion": 4
+  },
+  "penpot": {
+    "pageName": "Library / PrimeVue",
+    "componentPrefix": "Library / PrimeVue/",
+    "fidelity": "representative"
+  },
+  "components": {
+    "Accordion": {
+      "import": "primevue/accordion",
+      "props": { "value": { "type": "array" }, "multiple": { "type": "boolean" } },
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["default"], "states": ["collapsed", "expanded"] }
+    },
+    "AccordionPanel": {
+      "import": "primevue/accordionpanel",
+      "props": { "value": { "type": "string", "required": true }, "disabled": { "type": "boolean" } },
+      "slots": ["header", "content"],
+      "penpotTemplate": { "appearances": ["default", "new", "due", "scheduled", "learned"], "states": ["collapsed", "expanded", "disabled"] }
+    },
+    "Avatar": {
+      "import": "primevue/avatar",
+      "props": { "label": { "type": "string" }, "icon": { "type": "string" }, "image": { "type": "string" }, "shape": { "type": "string", "enum": ["square", "circle"] }, "size": { "type": "string", "enum": ["normal", "large", "xlarge"] } },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default", "achievement"], "states": ["default", "locked"] }
+    },
+    "Badge": {
+      "import": "primevue/badge",
+      "props": { "value": { "type": "string" }, "severity": { "type": "string", "enum": ["secondary", "success", "info", "warn", "danger", "contrast"] } },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default"], "states": ["default"] }
+    },
+    "Button": {
+      "import": "primevue/button",
+      "props": { "label": { "type": "string" }, "icon": { "type": "string" }, "iconPos": { "type": "string", "enum": ["left", "right", "top", "bottom"] }, "severity": { "type": "string", "enum": ["primary", "secondary", "success", "info", "warn", "help", "danger", "contrast"] }, "variant": { "type": "string", "enum": ["outlined", "text", "link"] }, "size": { "type": "string", "enum": ["small", "large"] }, "disabled": { "type": "boolean" }, "loading": { "type": "boolean" }, "fluid": { "type": "boolean" } },
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["primary", "secondary", "danger"], "variants": ["filled", "outlined", "text", "link"], "sizes": ["small", "normal", "large"], "states": ["default", "disabled", "loading"] }
+    },
+    "Card": {
+      "import": "primevue/card",
+      "props": {},
+      "slots": ["header", "title", "subtitle", "content", "footer"],
+      "penpotTemplate": { "appearances": ["default", "action", "highlighted", "metric"], "states": ["default", "disabled", "loading"] }
+    },
+    "IconField": {
+      "import": "primevue/iconfield",
+      "props": {},
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["default"], "variants": ["outlined", "filled"], "sizes": ["small", "normal", "large"], "states": ["default", "focused", "disabled"] }
+    },
+    "InputText": {
+      "import": "primevue/inputtext",
+      "props": { "placeholder": { "type": "string" }, "variant": { "type": "string", "enum": ["outlined", "filled"] }, "size": { "type": "string", "enum": ["small", "large"] }, "fluid": { "type": "boolean" }, "disabled": { "type": "boolean" }, "invalid": { "type": "boolean" }, "modelValue": { "type": "string" } },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default", "search"], "variants": ["outlined", "filled"], "sizes": ["small", "normal", "large"], "states": ["default", "focused", "disabled", "invalid"] }
+    },
+    "Message": {
+      "import": "primevue/message",
+      "props": { "severity": { "type": "string", "enum": ["success", "info", "warn", "error", "secondary", "contrast"] }, "closable": { "type": "boolean" } },
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["success", "info", "error"], "states": ["default", "loading"] }
+    },
+    "OverlayBadge": {
+      "import": "primevue/overlaybadge",
+      "props": { "value": { "type": "string" }, "severity": { "type": "string", "enum": ["secondary", "success", "info", "warn", "danger", "contrast"] } },
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["default"], "states": ["default"] }
+    },
+    "ProgressBar": {
+      "import": "primevue/progressbar",
+      "props": { "value": { "type": "number" }, "showValue": { "type": "boolean" }, "mode": { "type": "string", "enum": ["determinate", "indeterminate"] } },
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["default"], "states": ["determinate", "indeterminate"] }
+    },
+    "ProgressSpinner": {
+      "import": "primevue/progressspinner",
+      "props": { "strokeWidth": { "type": "string" } },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default"], "states": ["loading"] }
+    },
+    "SelectButton": {
+      "import": "primevue/selectbutton",
+      "props": { "options": { "type": "array", "required": true }, "modelValue": { "type": "number" }, "disabled": { "type": "boolean" }, "allowEmpty": { "type": "boolean" } },
+      "slots": ["option"],
+      "penpotTemplate": { "appearances": ["rating-scale"], "states": ["default", "selected", "disabled", "loading"] }
+    },
+    "Skeleton": {
+      "import": "primevue/skeleton",
+      "props": { "width": { "type": "string" }, "height": { "type": "string" }, "shape": { "type": "string", "enum": ["rectangle", "circle"] } },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default"], "states": ["loading"] }
+    },
+    "Tag": {
+      "import": "primevue/tag",
+      "props": { "value": { "type": "string", "required": true }, "severity": { "type": "string", "enum": ["secondary", "success", "info", "warn", "danger", "contrast"] }, "icon": { "type": "string" } },
+      "slots": ["default"],
+      "penpotTemplate": { "appearances": ["default", "specialization"], "states": ["default"] }
+    },
+    "Textarea": {
+      "import": "primevue/textarea",
+      "props": { "placeholder": { "type": "string" }, "variant": { "type": "string", "enum": ["outlined", "filled"] }, "size": { "type": "string", "enum": ["small", "large"] }, "fluid": { "type": "boolean" }, "autoResize": { "type": "boolean" }, "disabled": { "type": "boolean" }, "invalid": { "type": "boolean" }, "rows": { "type": "number" } },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default"], "variants": ["outlined", "filled"], "sizes": ["small", "normal", "large"], "states": ["default", "focused", "disabled", "invalid"] }
+    },
+    "Timeline": {
+      "import": "primevue/timeline",
+      "props": { "value": { "type": "array" }, "align": { "type": "string", "enum": ["left", "right", "alternate"] }, "layout": { "type": "string", "enum": ["vertical", "horizontal"] } },
+      "slots": ["marker", "content", "opposite"],
+      "penpotTemplate": { "appearances": ["activity"], "states": ["default"] }
+    },
+    "Toolbar": {
+      "import": "primevue/toolbar",
+      "props": {},
+      "slots": ["start", "center", "end"],
+      "penpotTemplate": { "appearances": ["page-header"], "states": ["root", "back", "close"] }
+    }
+  }
+}

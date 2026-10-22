@@ -1,4 +1,5 @@
 {
+  "$schema": "../../schemas/page.schema.json",
   "feature": {
     "key": "home",
     "label": "Home"
@@ -20,15 +21,17 @@
       "name": "ProfileSection",
       "children": [
         {
-          "type": "component",
-          "component": "ProfileHeader",
-          "variant": "default",
-          "props": {
-            "name": "Иван Петров",
-            "role": "Студент",
-            "stats": "5 проектов",
-            "avatarIcon": "👤",
-            "achievements": ["🌟", "🎯", "🌐"]
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Card",
+          "design": { "appearance": "default", "state": "default" },
+          "slots": {
+            "content": [
+              { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "ИП", "shape": "circle", "size": "large" }, "design": { "appearance": "default", "state": "default" } },
+              { "type": "text", "name": "ProfileName", "value": "Иван Петров" },
+              { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Студент", "severity": "info" }, "design": { "appearance": "default", "state": "default" } },
+              { "type": "text", "name": "ProfileStats", "value": "5 проектов" }
+            ]
           }
         }
       ]
@@ -54,73 +57,11 @@
           "columns": 2,
           "gap": "spacing.md",
           "children": [
-            {
-              "type": "component",
-              "component": "Card",
-              "variant": "action",
-              "props": {
-                "icon": "➕",
-                "title": "Сдать проект",
-                "subtitle": ""
-              },
-              "style": {
-                "minHeight": 100
-              }
-            },
-            {
-              "type": "component",
-              "component": "Card",
-              "variant": "default",
-              "props": {
-                "icon": "👤",
-                "title": "Мой профиль",
-                "subtitle": ""
-              },
-              "style": {
-                "minHeight": 100
-              }
-            },
-            {
-              "type": "component",
-              "component": "Card",
-              "variant": "default",
-              "props": {
-                "icon": "📚",
-                "title": "Мои проекты",
-                "subtitle": ""
-              },
-              "style": {
-                "minHeight": 100
-              }
-            },
-            {
-              "type": "component",
-              "component": "Card",
-              "variant": "default",
-              "props": {
-                "icon": "🔍",
-                "title": "Найти ментора",
-                "subtitle": ""
-              },
-              "style": {
-                "minHeight": 100
-              }
-            },
-            {
-              "type": "component",
-              "component": "Card",
-              "variant": "highlighted",
-              "props": {
-                "icon": "🧠",
-                "title": "Повторение вопросов",
-                "subtitle": "Новые и запланированные вопросы",
-                "destination": "RepetitionDashboard",
-                "emptyDestination": "CategorySetup"
-              },
-              "style": {
-                "minHeight": 100
-              }
-            }
+            { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "action", "state": "default" }, "action": { "type": "command", "name": "openProjectSubmission" }, "slots": { "content": [{ "type": "text", "name": "SubmitProjectAction", "value": "➕\nСдать проект" }] } },
+            { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "default", "state": "default" }, "action": { "type": "command", "name": "openOwnProfile" }, "slots": { "content": [{ "type": "text", "name": "OwnProfileAction", "value": "👤\nМой профиль" }] } },
+            { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "default", "state": "default" }, "action": { "type": "command", "name": "openOwnProjects" }, "slots": { "content": [{ "type": "text", "name": "OwnProjectsAction", "value": "📚\nМои проекты" }] } },
+            { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "default", "state": "default" }, "action": { "type": "command", "name": "openMentorSearch" }, "slots": { "content": [{ "type": "text", "name": "MentorSearchAction", "value": "🔍\nНайти ментора" }] } },
+            { "type": "library-component", "library": "primevue", "component": "Card", "style": { "minHeight": 100 }, "design": { "appearance": "highlighted", "state": "default" }, "action": { "type": "navigate", "target": "RepetitionDashboard", "fallbackTarget": "CategorySetup" }, "slots": { "content": [{ "type": "text", "name": "RepetitionAction", "value": "🧠\nПовторение вопросов\nНовые и запланированные вопросы" }] } }
           ]
         }
       ]
@@ -151,42 +92,10 @@
           "name": "AchievementsList",
           "gap": "spacing.sm",
           "children": [
-            {
-              "type": "component",
-              "component": "AchievementBadge",
-              "variant": "unlocked",
-              "props": {
-                "icon": "🌟",
-                "label": "Первый проект"
-              }
-            },
-            {
-              "type": "component",
-              "component": "AchievementBadge",
-              "variant": "locked",
-              "props": {
-                "icon": "🎯",
-                "label": "Спринтер"
-              }
-            },
-            {
-              "type": "component",
-              "component": "AchievementBadge",
-              "variant": "locked",
-              "props": {
-                "icon": "🌐",
-                "label": "Билингв"
-              }
-            },
-            {
-              "type": "component",
-              "component": "AchievementBadge",
-              "variant": "locked",
-              "props": {
-                "icon": "🏅",
-                "label": "Все проекты"
-              }
-            }
+            { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "🌟", "size": "large" }, "design": { "appearance": "achievement", "state": "default" } },
+            { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "🎯", "size": "large" }, "design": { "appearance": "achievement", "state": "locked" } },
+            { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "🌐", "size": "large" }, "design": { "appearance": "achievement", "state": "locked" } },
+            { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "🏅", "size": "large" }, "design": { "appearance": "achievement", "state": "locked" } }
           ]
         },
         {
@@ -219,33 +128,18 @@
           }
         },
         {
-          "type": "column",
-          "name": "ActivityFeed",
-          "gap": "spacing.sm",
-          "children": [
-            {
-              "type": "component",
-              "component": "ActivityItem",
-              "variant": "success",
-              "props": {
-                "icon": "✅",
-                "title": "Сдан проект: Виселица",
-                "description": "Java • Проект #1",
-                "time": "Сегодня, 15:30"
-              }
-            },
-            {
-              "type": "component",
-              "component": "ActivityItem",
-              "variant": "achievement",
-              "props": {
-                "icon": "🏆",
-                "title": "Получена ачивка",
-                "description": "Первый проект",
-                "time": "Вчера, 20:15"
-              }
-            }
-          ]
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Timeline",
+          "props": {
+            "value": [
+              { "icon": "✅", "title": "Сдан проект: Виселица", "description": "Java • Проект #1", "time": "Сегодня, 15:30" },
+              { "icon": "🏆", "title": "Получена ачивка", "description": "Первый проект", "time": "Вчера, 20:15" }
+            ],
+            "align": "left",
+            "layout": "vertical"
+          },
+          "design": { "appearance": "activity", "state": "default" }
         }
       ]
     },
@@ -332,42 +226,10 @@
           "name": "UsefulLinks",
           "gap": "spacing.sm",
           "children": [
-            {
-              "type": "component",
-              "component": "Button",
-              "variant": "primary",
-              "props": {
-                "text": "📖 Java роадмап",
-                "icon": "→"
-              }
-            },
-            {
-              "type": "component",
-              "component": "Button",
-              "variant": "primary",
-              "props": {
-                "text": "🐍 Python роадмап",
-                "icon": "→"
-              }
-            },
-            {
-              "type": "component",
-              "component": "Button",
-              "variant": "primary",
-              "props": {
-                "text": "💬 Перейти в чат",
-                "icon": "→"
-              }
-            },
-            {
-              "type": "component",
-              "component": "Button",
-              "variant": "primary",
-              "props": {
-                "text": "📺 YouTube канал",
-                "icon": "→"
-              }
-            }
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📖 Java роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "java-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "🐍 Python роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "python-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "💬 Перейти в чат", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "community-chat" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📺 YouTube канал", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "youtube-channel" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } }
           ]
         }
       ]

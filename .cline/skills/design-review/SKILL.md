@@ -1,112 +1,38 @@
 ---
 name: design-review
-description: Review business requirements, JSON design specifications, and generated Penpot objects without changing them. Use for requirement coverage, token/component integrity, structural consistency, duplicate detection, accessibility concerns, and pre-merge design review.
+description: Read-only review of requirements, library-first JSON specifications, and generated Penpot library/custom instances.
 ---
 
 # Design review
 
-Perform a read-only review unless the user explicitly asks to fix findings.
-Distinguish confirmed defects from recommendations and from checks blocked by
-tooling.
+Review without changes unless fixes are explicitly requested. Read referenced
+requirements, design documentation, tokens, PrimeVue registry, custom
+components, pages, Penpot config, and related live Penpot objects. Run
+`python3 scripts/validate-design.py`.
 
-## Inputs
+## Checks
 
-Read, as applicable:
+- Every user-facing requirement maps to a page/action/state or justified
+  exclusion; roles, validation, and failure states are represented.
+- Generic controls use registered `library-component` nodes.
+- Page-local composition is preferred over unjustified custom components.
+- Every custom component has a domain rationale, valid props/variants, and
+  non-cyclic composition using nested library instances where applicable.
+- Library props, slots, actions, appearances, states, bindings, tokens, and
+  references are valid.
+- Accessibility covers labels, target size, contrast, focus/disabled/loading
+  states, keyboard behavior, and content clarity.
+- PrimeVue Penpot templates are native, correctly named, recognizable as their
+  controls, and approximately token-aligned. Cosmetic runtime differences are
+  not defects.
+- Custom Penpot families/variants are native and retain specified nested
+  library copies.
+- Page nodes are instances from the correct library/custom family, frames are
+  on correct feature pages, generated content is contained, and stable names
+  are unique.
+- Detached substitutes, component documentation boards, unknown library
+  controls, ambiguous legacy nodes, and generic custom duplicates are blocking.
 
-- referenced business requirements under `../meta/`;
-- `design/README.md` and `design/USAGE.md`;
-- `design/tokens/tokens.json`;
-- relevant `design/components/*.components.json`;
-- relevant `design/pages/**/*.page.json`;
-- `design/penpot.json`;
-- relevant Penpot projects, files, pages, components, and shapes read-only.
-
-Run:
-
-```bash
-python3 scripts/validate-design.py
-```
-
-Do not modify JSON or Penpot merely to make the review pass.
-
-## Review checklist
-
-### Requirement coverage
-
-- Each user-facing requirement has a corresponding page, action, state, or an
-  explicit reason for exclusion.
-- Backend-only requirements are not exposed as arbitrary UI.
-- Roles, permissions, validation, and error behavior are represented.
-- `requirements.sources` and `approvedAssumptions` are accurate when present.
-- Unapproved assumptions are called out.
-
-### Information architecture and interaction
-
-- Primary tasks and calls to action are clear.
-- Navigation and back behavior are understandable in a Telegram Mini App.
-- Loading, empty, error, success, disabled, and permission states are covered.
-- Content order and progressive disclosure fit a mobile-first viewport.
-
-### Design-system integrity
-
-- Reusable values use existing tokens or introduce intentional new tokens.
-- Repeated patterns use components rather than page-specific copies.
-- Component references and variants exist.
-- Every component specification has a native reusable Penpot component family.
-- Multi-state components use native variant sets whose `State` values exactly
-  match the JSON variant names.
-- Names are stable and unique.
-- Text contrast, target size, focus/disabled states, labels, and content clarity
-  receive an accessibility review.
-
-### Penpot consistency
-
-- The configured project and generated file are used.
-- Each page file is under `design/pages/<feature>/<screen>.page.json`, its
-  `feature.key` matches the directory, and pages sharing a feature key use one
-  consistent feature label.
-- Each feature maps to the Penpot page
-  `featurePagePrefix + feature.label`.
-- Components and page frames match configured stable-name prefixes.
-- There are no duplicate generated names.
-- Each `Page/<PageName>` frame is on the correct feature page, and generated
-  page artwork is contained inside that frame rather than left loose at the
-  feature-page root.
-- Named JSON sections and layout nodes have corresponding nested generated
-  containers where the MCP supports them.
-- Native component main instances and variant containers are on the configured
-  components page without documentation-board wrappers.
-- Every page node with `type: component` is a component copy instance of the
-  requested family and variant, not detached or redrawn artwork.
-- Generated boards that merely document a component name, variants, or layers
-  are a blocking defect.
-- Dimensions, colors, typography, spacing, and visible content agree with JSON.
-- Manual content has not been overwritten.
-- Unsupported MCP properties and visual checks are explicitly identified.
-
-## Findings format
-
-List findings first, ordered by severity:
-
-1. **Blocking** — unsafe synchronization, invalid references, missing approval,
-   duplicate generated objects, or major requirement omissions.
-2. **Major** — incorrect behavior, hierarchy, permissions, or important states.
-3. **Minor** — consistency, accessibility, maintainability, or polish issues.
-
-For each finding include:
-
-- severity and concise title;
-- exact file/path, JSON location, or Penpot object;
-- evidence;
-- user or workflow impact;
-- recommended correction.
-
-Then include:
-
-- assumptions and questions;
-- validation and Penpot checks completed;
-- checks not performed and why;
-- a short overall assessment.
-
-If no findings exist, say so explicitly and still state residual risks such as
-unavailable pixel-level comparison.
+List findings by Blocking, Major, then Minor, with exact path/object, evidence,
+impact, and correction. State assumptions, checks completed, checks blocked,
+and residual manual visual-review risk even when no findings exist.

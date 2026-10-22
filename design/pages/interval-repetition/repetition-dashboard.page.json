@@ -1,39 +1,40 @@
 {
+  "$schema": "../../schemas/page.schema.json",
   "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
   "page": "RepetitionDashboard",
   "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
   "layout": { "type": "column", "gap": "spacing.md", "align": "stretch" },
   "children": [
-    { "type": "component", "component": "PageHeader", "variant": "root", "props": { "title": "Вопросы на повторение", "trailingAction": "Управлять" } },
+    { "type": "library-component", "library": "primevue", "component": "Toolbar", "design": { "appearance": "page-header", "state": "root" }, "slots": { "center": [{ "type": "text", "name": "PageTitle", "value": "Вопросы на повторение" }], "end": [{ "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Управлять", "severity": "primary", "variant": "text" }, "action": { "type": "navigate", "target": "CategoryCatalog" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } }] } },
     {
       "type": "section", "name": "SummarySection",
       "children": [
         { "type": "text", "name": "SummaryTitle", "value": "Сегодня", "style": { "fontSize": "font.size.lg", "fontWeight": "font.weight.bold", "color": "color.text" } },
         { "type": "grid", "name": "SummaryMetrics", "columns": 3, "gap": "spacing.sm", "children": [
-          { "type": "component", "component": "MetricTile", "variant": "total", "props": { "value": "4", "label": "темы" } },
-          { "type": "component", "component": "MetricTile", "variant": "due", "props": { "value": "12", "label": "к повторению" } },
-          { "type": "component", "component": "MetricTile", "variant": "new", "props": { "value": "38", "label": "новых" } }
+          { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "CategoryCount", "value": "4\nтемы" }] } },
+          { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "DueCount", "value": "12\nк повторению" }] } },
+          { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "NewCount", "value": "38\nновых" }] } }
         ] }
       ]
     },
     {
       "type": "section", "name": "CategoryList",
       "children": [
-        { "type": "component", "component": "CategoryReviewCard", "variant": "active", "props": { "title": "Core", "specialization": "Java", "due": "6 к повторению", "new": "24 новых", "total": "38 всего", "primaryAction": "Повторить" } },
-        { "type": "component", "component": "CategoryReviewCard", "variant": "active", "props": { "title": "Spring", "specialization": "Java", "due": "4 к повторению", "new": "8 новых", "total": "31 всего", "primaryAction": "Повторить" } },
-        { "type": "component", "component": "CategoryReviewCard", "variant": "nothingDue", "props": { "title": "SQL", "specialization": "Backend", "due": "0 к повторению", "new": "0 новых", "total": "22 всего", "primaryAction": "Пока всё" } }
+        { "type": "custom-component", "component": "CategoryReviewCard", "variant": "active", "props": { "title": "Core", "specialization": "Java", "due": "6 к повторению", "new": "24 новых", "total": "38 всего", "primaryAction": "Повторить" } },
+        { "type": "custom-component", "component": "CategoryReviewCard", "variant": "active", "props": { "title": "Spring", "specialization": "Java", "due": "4 к повторению", "new": "8 новых", "total": "31 всего", "primaryAction": "Повторить" } },
+        { "type": "custom-component", "component": "CategoryReviewCard", "variant": "nothingDue", "props": { "title": "SQL", "specialization": "Backend", "due": "0 к повторению", "new": "0 новых", "total": "22 всего", "primaryAction": "Пока всё" } }
       ]
     },
     { "type": "section", "name": "StickyActionBar", "children": [
-      { "type": "component", "component": "Button", "variant": "primary", "props": { "text": "Повторить всё", "icon": "▶", "destination": "ReviewSession" } }
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Повторить всё", "icon": "pi pi-play", "iconPos": "left", "severity": "primary", "fluid": true }, "action": { "type": "navigate", "target": "ReviewSession" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } }
     ] }
   ],
   "states": {
     "loading": "Category cards use CategoryReviewCard.loading skeletons",
-    "noSelection": "EmptyState.noSelection with action Выбрать темы",
-    "nothingDue": "EmptyState.nothingDue while category details remain available",
-    "error": "FeedbackState.error with Повторить action",
-    "disabled": "Review all is Button.disabled when no new or due questions are available"
+    "noSelection": "A page-local empty composition offers Выбрать темы",
+    "nothingDue": "A page-local success composition is shown while category details remain available",
+    "error": "A PrimeVue Message with Повторить action is shown",
+    "disabled": "Review all uses PrimeVue Button disabled state when no new or due questions are available"
   },
   "requirements": {
     "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],

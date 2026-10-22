@@ -2,12 +2,20 @@
   "server": "penpot",
   "projectName": "it-mentor-community-platform-miniapp",
   "generatedFileName": "Generated UI (do not edit)",
-  "componentsPageName": "Components",
+  "libraryComponents": {
+    "pageName": "Library / PrimeVue",
+    "componentPrefix": "Library / PrimeVue/",
+    "representation": "native",
+    "fidelity": "representative"
+  },
+  "customComponents": {
+    "pageName": "Components",
+    "componentPrefix": "Component/",
+    "representation": "native",
+    "variantProperty": "State"
+  },
   "featurePagePrefix": "Pages / ",
   "pageFramePrefix": "Page/",
-  "componentPrefix": "Component/",
-  "componentRepresentation": "native",
-  "componentVariantProperty": "State",
   "pageComponentRepresentation": "instance",
   "renderStrategy": "replace-by-name"
 }

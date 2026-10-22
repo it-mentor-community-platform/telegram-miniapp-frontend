@@ -1,34 +1,40 @@
 {
+  "$schema": "../../schemas/page.schema.json",
   "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
   "page": "CategoryDetails",
   "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
   "layout": { "type": "column", "gap": "spacing.md", "align": "stretch" },
   "children": [
-    { "type": "component", "component": "PageHeader", "variant": "back", "props": { "title": "Core" } },
-    { "type": "component", "component": "SpecializationBadge", "variant": "default", "props": { "label": "Java" } },
+    { "type": "library-component", "library": "primevue", "component": "Toolbar", "design": { "appearance": "page-header", "state": "back" }, "slots": { "start": [
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "icon": "pi pi-arrow-left", "iconPos": "left", "severity": "primary", "variant": "text" }, "action": { "type": "command", "name": "goBack" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } },
+      { "type": "text", "name": "PageTitle", "value": "Core" }
+    ] } },
+    { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Java", "severity": "info" }, "design": { "appearance": "specialization", "state": "default" } },
     { "type": "grid", "name": "MetricsGrid", "columns": 3, "gap": "spacing.sm", "children": [
-      { "type": "component", "component": "MetricTile", "variant": "total", "props": { "value": "38", "label": "всего" } },
-      { "type": "component", "component": "MetricTile", "variant": "due", "props": { "value": "6", "label": "к повторению" } },
-      { "type": "component", "component": "MetricTile", "variant": "new", "props": { "value": "24", "label": "новых" } }
+      { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "TotalMetric", "value": "38\nвсего" }] } },
+      { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "DueMetric", "value": "6\nк повторению" }] } },
+      { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "NewMetric", "value": "24\nновых" }] } }
     ] },
-    { "type": "component", "component": "Button", "variant": "danger", "props": { "text": "Удалить из повторения" } },
+    { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Удалить из повторения", "severity": "danger" }, "action": { "type": "command", "name": "removeCategory" }, "design": { "appearance": "danger", "variant": "filled", "size": "normal", "state": "default" } },
     { "type": "section", "name": "QuestionList", "children": [
       { "type": "text", "name": "QuestionListTitle", "value": "Вопросы", "style": { "fontSize": "font.size.lg", "fontWeight": "font.weight.bold", "color": "color.text" } },
-      { "type": "component", "component": "QuestionAccordion", "variant": "due", "props": { "question": "Как работает HashMap внутри?", "action": "Показать ответ" } },
-      { "type": "component", "component": "QuestionAccordion", "variant": "expanded", "props": { "question": "В чём разница между equals и hashCode?", "answerLabel": "Каноничный ответ", "answer": "Равные объекты должны возвращать одинаковый hashCode. Обратное правило не обязательно.", "action": "Скрыть ответ" } },
-      { "type": "component", "component": "QuestionAccordion", "variant": "new", "props": { "question": "Что такое immutable-объект?", "action": "Показать ответ" } },
-      { "type": "component", "component": "QuestionAccordion", "variant": "scheduled", "props": { "question": "Как устроен String Pool?", "action": "Показать ответ" } }
+      { "type": "library-component", "library": "primevue", "component": "Accordion", "props": { "value": ["question-2"], "multiple": true }, "design": { "appearance": "default", "state": "expanded" }, "slots": { "default": [
+        { "type": "library-component", "library": "primevue", "component": "AccordionPanel", "props": { "value": "question-1" }, "design": { "appearance": "due", "state": "collapsed" }, "slots": { "header": [{ "type": "text", "name": "QuestionOne", "value": "Как работает HashMap внутри?" }], "content": [{ "type": "text", "name": "AnswerOne", "value": "Каноничный ответ скрыт до раскрытия вопроса." }] } },
+        { "type": "library-component", "library": "primevue", "component": "AccordionPanel", "props": { "value": "question-2" }, "design": { "appearance": "default", "state": "expanded" }, "slots": { "header": [{ "type": "text", "name": "QuestionTwo", "value": "В чём разница между equals и hashCode?" }], "content": [{ "type": "text", "name": "AnswerTwo", "value": "Равные объекты должны возвращать одинаковый hashCode. Обратное правило не обязательно." }] } },
+        { "type": "library-component", "library": "primevue", "component": "AccordionPanel", "props": { "value": "question-3" }, "design": { "appearance": "new", "state": "collapsed" }, "slots": { "header": [{ "type": "text", "name": "QuestionThree", "value": "Что такое immutable-объект?" }], "content": [{ "type": "text", "name": "AnswerThree", "value": "Каноничный ответ скрыт до раскрытия вопроса." }] } },
+        { "type": "library-component", "library": "primevue", "component": "AccordionPanel", "props": { "value": "question-4" }, "design": { "appearance": "scheduled", "state": "collapsed" }, "slots": { "header": [{ "type": "text", "name": "QuestionFour", "value": "Как устроен String Pool?" }], "content": [{ "type": "text", "name": "AnswerFour", "value": "Каноничный ответ скрыт до раскрытия вопроса." }] } }
+      ] } }
     ] },
     { "type": "section", "name": "StickyActionBar", "children": [
-      { "type": "component", "component": "Button", "variant": "primary", "props": { "text": "Повторить тему", "icon": "▶", "destination": "ReviewSession" } }
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Повторить тему", "icon": "pi pi-play", "iconPos": "left", "severity": "primary", "fluid": true }, "action": { "type": "navigate", "target": "ReviewSession" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } }
     ] }
   ],
   "states": {
-    "loading": "Metrics and questions use neutral placeholders",
-    "emptyQuestions": "EmptyState.noResults replaces QuestionList",
-    "addOrRemoveSaving": "Selection action uses Button.loading",
-    "nothingDue": "Review category uses Button.disabled",
-    "error": "FeedbackState.error offers retry"
+    "loading": "Metrics and questions use PrimeVue Skeleton placeholders",
+    "emptyQuestions": "A page-local empty composition replaces QuestionList",
+    "addOrRemoveSaving": "Selection action uses PrimeVue Button loading state",
+    "nothingDue": "Review category uses PrimeVue Button disabled state",
+    "error": "A PrimeVue Message offers retry"
   },
   "requirements": {
     "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],

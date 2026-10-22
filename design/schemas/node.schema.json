@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "node.schema.json",
+  "title": "Design tree node",
+  "oneOf": [
+    { "$ref": "#/$defs/text" },
+    { "$ref": "#/$defs/structural" },
+    { "$ref": "#/$defs/libraryComponent" },
+    { "$ref": "#/$defs/customComponent" }
+  ],
+  "$defs": {
+    "base": {
+      "type": "object",
+      "properties": {
+        "style": { "type": "object" },
+        "design": {
+          "type": "object",
+          "properties": {
+            "appearance": { "type": "string", "minLength": 1 },
+            "variant": { "type": "string", "minLength": 1 },
+            "size": { "type": "string", "minLength": 1 },
+            "state": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "text": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "required": ["type", "name", "value"],
+          "properties": {
+            "type": { "const": "text" },
+            "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+            "value": {}
+          }
+        }
+      ]
+    },
+    "structural": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "required": ["type", "name", "children"],
+          "properties": {
+            "type": { "enum": ["section", "row", "column", "grid"] },
+            "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+            "children": {
+              "type": "array",
+              "items": { "$ref": "#" }
+            }
+          }
+        }
+      ]
+    },
+    "libraryComponent": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "required": ["type", "library", "component"],
+          "properties": {
+            "type": { "const": "library-component" },
+            "library": { "type": "string", "minLength": 1 },
+            "component": { "type": "string", "minLength": 1 },
+            "props": { "type": "object" },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": { "$ref": "#" }
+              }
+            },
+            "action": { "$ref": "#/$defs/action" }
+          }
+        }
+      ]
+    },
+    "customComponent": {
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "type": "object",
+          "required": ["type", "component", "variant"],
+          "properties": {
+            "type": { "const": "custom-component" },
+            "component": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+            "variant": { "type": "string", "minLength": 1 },
+            "props": { "type": "object" },
+            "action": { "$ref": "#/$defs/action" }
+          }
+        }
+      ]
+    },
+    "action": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["navigate", "submit", "command", "external-link"] },
+        "target": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "minLength": 1 },
+        "fallbackTarget": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

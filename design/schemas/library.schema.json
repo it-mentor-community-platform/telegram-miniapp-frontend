@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "library.schema.json",
+  "title": "Design component library registry",
+  "type": "object",
+  "required": ["library", "label", "implementation", "penpot", "components"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "library": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "label": { "type": "string", "minLength": 1 },
+    "implementation": {
+      "type": "object",
+      "required": ["package", "majorVersion"],
+      "properties": {
+        "package": { "type": "string", "minLength": 1 },
+        "majorVersion": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "penpot": {
+      "type": "object",
+      "required": ["pageName", "componentPrefix", "fidelity"],
+      "properties": {
+        "pageName": { "type": "string", "minLength": 1 },
+        "componentPrefix": { "type": "string", "minLength": 1 },
+        "fidelity": { "const": "representative" }
+      },
+      "additionalProperties": false
+    },
+    "components": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/component" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "component": {
+      "type": "object",
+      "required": ["import", "props", "slots", "penpotTemplate"],
+      "properties": {
+        "import": { "type": "string", "minLength": 1 },
+        "props": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/prop" }
+        },
+        "slots": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "penpotTemplate": {
+          "type": "object",
+          "required": ["appearances", "states"],
+          "properties": {
+            "appearances": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "states": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "variants": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "sizes": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "prop": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["string", "number", "boolean", "array", "object"]
+        },
+        "required": { "type": "boolean" },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

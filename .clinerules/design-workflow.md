@@ -1,69 +1,50 @@
 # Repository design workflow
 
-These rules apply to UI design work in this repository.
+## Sources and approval
 
-## Sources of truth
-
-- Business behavior is defined by referenced documents in the sibling `meta`
+- Business behavior comes from referenced documents in the sibling `meta`
   workspace.
-- Approved UI specifications under `design/` are the design source of truth.
-- Penpot is generated output and must not be the only place a design change is
-  made.
-- `design/exports/` is generated output, not an editable source.
+- Approved JSON under `design/` is the UI source of truth; Penpot is generated.
+- `design/exports/` is generated output.
+- Present material designs and schema/custom-component changes for explicit
+  approval before writing JSON or Penpot.
 
-## Approval boundary
+## Library-first JSON
 
-- For a new design or a material change derived from requirements, inspect the
-  requirements and existing design system, present a proposal, and wait for
-  explicit approval before changing design JSON or Penpot.
-- Do not interpret tentative feedback as approval.
-- If review feedback materially changes the proposal, request approval for the
-  revised proposal.
-
-## JSON-first implementation
-
-- Update tokens, then components, then pages.
-- Reuse existing tokens and components when they match the intent.
-- Store every page at `design/pages/<feature>/<screen>.page.json`, with exactly
-  one kebab-case feature directory level. The page's `feature.key` must match
-  that directory and `feature.label` provides its Penpot display name.
-- Record requirement sources and approved assumptions on new or materially
-  revised pages.
-- Run `python3 scripts/validate-design.py` after changing design JSON and before
-  Penpot synchronization.
+- Inspect `design/libraries/primevue.library.json` before proposing components.
+- Use `type: library-component` for registered generic controls.
+- Compose one-off arrangements directly on pages.
+- Use `type: custom-component` only for recurring domain concepts with an
+  approved rationale in `design/components/*.component.json`.
+- Never create a custom wrapper merely to rename a registered control.
+- Keep runtime props in `props`; keep product behavior in `action`.
+- `design.appearance` and `design.state` are representative Penpot metadata and
+  must be allowlisted by the registry.
+- Update registry, then tokens, then custom components, then pages.
+- Store pages at `design/pages/<feature>/<screen>.page.json` and record sources
+  and assumptions on new or materially revised pages.
+- Run `python3 scripts/validate-design.py` before Penpot synchronization.
 
 ## Penpot safety
 
 - Read `design/penpot.json` and discover current IDs before every sync.
-- Check authentication with a read-only request before writes.
-- Synchronize each feature to
-  `featurePagePrefix + feature.label` and each screen to
-  `pageFramePrefix + page`.
-- Every component specification must synchronize to a native reusable Penpot
-  library component. A multi-state specification must use a native variant set
-  whose `State` values exactly match the JSON variant names.
-- Never substitute a documentation board, specification card, group, or
-  detached drawing for a native component. If native component or variant
-  creation is unsupported, stop and report the synchronization as blocked.
-- Every page node with `type: component` must synchronize to a component copy
-  instance of the requested family and variant. Detached visual reproductions
-  are invalid.
-- Keep generated screen layers inside their canonical page frame. Native
-  component main instances and variant containers belong on the configured
-  components page without documentation-board wrappers.
-- Update generated objects by exact stable name and never create duplicates.
-- Never delete or overwrite manually maintained Penpot content.
-- Do not claim synchronization or visual parity when a call failed or tooling
-  cannot verify it.
-- Report unsupported MCP operations and require manual visual review when
-  screenshots or exports are unavailable.
-- Verify native main instances, variant coverage, page copy instances, and the
-  absence of generated component documentation boards before reporting success.
+- Authenticate read-only before writes.
+- Synchronize PrimeVue templates to the configured library page and prefix.
+- Synchronize project custom components to the configured custom page/prefix.
+- Both kinds must be native reusable components; custom components must retain
+  nested library instances where specified.
+- Multi-state custom components use native `State` variants matching JSON.
+- Page library/custom nodes are native copy instances from the requested
+  family. Detached reproductions are invalid.
+- Representative semantic fidelity is required for library templates;
+  pixel-for-pixel PrimeVue parity is not.
+- Keep generated artwork in canonical frames, update by stable name, avoid
+  duplicates, and never overwrite manual content.
+- If required native operations are unsupported, stop and report the block.
 
-## Verification and reporting
+## Review and reporting
 
-- Design review is read-only unless fixes are explicitly requested.
-- Report requirement inputs, approved assumptions, changed JSON, reused or new
-  tokens/components, Penpot operations, validation results, and remaining
-  limitations.
-- Never commit credentials, API tokens, private screenshots, or other secrets.
+- Design review is read-only unless fixes are requested.
+- Report requirements, assumptions, registry changes, custom rationales,
+  changed JSON, Penpot operations, validation, and remaining limitations.
+- Never commit credentials, API tokens, or private screenshots.

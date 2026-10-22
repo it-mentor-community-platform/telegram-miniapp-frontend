@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "custom-component.schema.json",
+  "title": "Project-owned custom component",
+  "type": "object",
+  "required": ["kind", "name", "rationale", "props", "variants", "composition"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "kind": { "const": "custom-component" },
+    "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+    "rationale": { "type": "string", "minLength": 1 },
+    "props": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "enum": ["string", "number", "boolean", "array", "object"] },
+          "required": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "variants": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "object" }
+    },
+    "composition": { "$ref": "node.schema.json" }
+  },
+  "additionalProperties": false
+}

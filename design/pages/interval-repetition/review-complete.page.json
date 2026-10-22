@@ -1,16 +1,22 @@
 {
+  "$schema": "../../schemas/page.schema.json",
   "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
   "page": "ReviewComplete",
   "frame": { "width": 390, "background": "color.background", "padding": "spacing.lg" },
   "layout": { "type": "column", "gap": "spacing.lg", "align": "center" },
   "children": [
     { "type": "section", "name": "CompletionSummary", "children": [
-      { "type": "component", "component": "FeedbackState", "variant": "success", "props": { "icon": "✓", "title": "Повторение завершено", "description": "Сегодня вы повторили 12 вопросов. Следующие вопросы появятся по расписанию." } },
-      { "type": "component", "component": "MetricTile", "variant": "learned", "props": { "value": "12", "label": "повторено сегодня" } }
+      { "type": "library-component", "library": "primevue", "component": "Message", "props": { "severity": "success", "closable": false }, "design": { "appearance": "success", "state": "default" }, "slots": { "default": [
+        { "type": "column", "name": "CompletionMessageContent", "gap": "spacing.sm", "children": [
+          { "type": "text", "name": "CompletionTitle", "value": "Повторение завершено" },
+          { "type": "text", "name": "CompletionDescription", "value": "Сегодня вы повторили 12 вопросов. Следующие вопросы появятся по расписанию." }
+        ] }
+      ] } },
+      { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "ReviewedCount", "value": "12\nповторено сегодня" }] } }
     ] },
     { "type": "section", "name": "CompletionActions", "children": [
-      { "type": "component", "component": "Button", "variant": "primary", "props": { "text": "Вернуться к темам", "destination": "RepetitionDashboard" } },
-      { "type": "component", "component": "Button", "variant": "secondary", "props": { "text": "Управлять темами", "destination": "CategoryCatalog" } }
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Вернуться к темам", "severity": "primary", "fluid": true }, "action": { "type": "navigate", "target": "RepetitionDashboard" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
+      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Управлять темами", "severity": "secondary", "fluid": true }, "action": { "type": "navigate", "target": "CategoryCatalog" }, "design": { "appearance": "secondary", "variant": "filled", "size": "normal", "state": "default" } }
     ] }
   ],
   "states": { "countUnavailable": "Hide the reviewed-count metric and use a generic completion description" },

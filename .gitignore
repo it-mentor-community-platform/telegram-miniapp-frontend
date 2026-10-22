@@ -13,3 +13,7 @@ dist/
 coverage/
 .vite/
 *.tsbuildinfo
+
+__pycache__
+
+
