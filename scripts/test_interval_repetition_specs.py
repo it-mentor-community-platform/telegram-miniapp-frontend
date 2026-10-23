@@ -3,6 +3,8 @@ import json
 import unittest
 from pathlib import Path
 
+import penpot_conformance as audit
+
 DESIGN = Path(__file__).resolve().parents[1] / 'design'
 
 
@@ -58,6 +60,23 @@ class IntervalRepetitionSpecTests(unittest.TestCase):
                     self.assertTrue(props.get('aria-label', '').strip(), path)
                     checked += 1
         self.assertGreater(checked, 0)
+
+    def test_catalog_search_has_explicit_accessible_name(self):
+        registry = json.loads((DESIGN / 'libraries/primevue.library.json').read_text())
+        self.assertEqual({'type': 'string'},
+                         registry['components']['InputText']['props']['aria-label'])
+        search = page('category-catalog')['children'][1]['slots']['default'][0]
+        self.assertEqual('InputText', search['component'])
+        self.assertEqual('Поиск тем и специализаций', search['props']['aria-label'])
+        self.assertEqual('Найти тему или специализацию', search['props']['placeholder'])
+
+    def test_search_name_survives_resolution_without_visual_label_claim(self):
+        manifest = audit.build_manifest()
+        search = next(n for n in audit.flatten(manifest['scopes']['CategoryCatalog']['nodes'])
+                      if n.get('family') == 'Library/PrimeVue/InputText')
+        self.assertEqual('Поиск тем и специализаций', search['props']['aria-label'])
+        # Penpot cannot prove a browser accessible name from visible artwork.
+        self.assertNotIn('aria-label', search['contract']['textProps'])
 
 
 if __name__ == '__main__':

@@ -1,5 +1,48 @@
 # Recursive live structural conformance
 
+## Known legacy Penpot records
+
+The deletion-only cleanup removed the unused PrimeVue Select record and its
+three-shape main subtree. The user could not delete the following orphan assets
+through Penpot's UI and moved them to `Component / legacy`:
+
+- `06e51fcf-8bc1-4f3a-9468-797e3619435c`: `Component/legacy/Input`.
+- `045701d0-f4a3-4853-aded-d2b01af1e1f4`: `Component/legacy/Button`.
+
+Both records have no main and no live shape dependencies. The documented plugin
+API available during cleanup exposed no component-record deletion operation.
+The user explicitly approved allowlisting these two undeletable orphans. Leave
+them untouched; do not recreate mains or register their families. The comparator
+accepts only these exact ID/family pairs in file
+`6123a605-f677-80e2-8007-66eb7a88b390`, with a null main, empty variants and no
+live shape dependencies (by component ID, reference ID or family). It reports
+them separately under `acceptedOrphans`, rather than as errors. A changed
+allowlisted record produces `LEGACY_ORPHAN_CHANGED`; other unknown/orphan
+records remain errors. Missing records need no exception. This permission does
+not exempt records from scoped outside-target preservation checks or permit
+legacy artwork, instances, new records, or blanket family exclusions.
+
+A fresh complete recursive capture after the manual cleanup checked all eight
+page scopes and seven custom State scopes. Before this explicit approval, four
+legacy diagnostics were the only findings. Comparison against the historical accepted Homepage snapshot
+found only the three Select shapes removed, no added or changed remaining
+shapes, unchanged pages, and unchanged non-target records. This historical
+comparison is not a fresh pre-deletion preservation gate. No visual exports
+were retried, and runtime accessibility remains unverified.
+
+## Homepage representative evidence
+
+Locked achievement Avatars retain their native copy and visible label, with root
+opacity greater than zero and at most 0.6. A state stamp alone is insufficient.
+Timeline values require ordered direct `TimelineItemN` boards, each with one
+`Content` board containing exact `Title` (icon plus title) and `Time`
+(description plus time, separated by a newline) texts, and one visible ellipse
+`Marker`. Rows must follow value order without overlap. Unaccounted artwork and
+native-reference checks remain unchanged. This verifies representative content,
+not runtime accessibility. Homepage uses the existing scoped accessible-blue
+treatment for its role Tag and four link Buttons, plus the accessible token for
+profile initials and the achievements continuation text; shared mains are unchanged.
+
 The strict gate is `scripts/audit-penpot-drift.py --recursive`. Original
 count-based mode remains for legacy diagnosis only, not structural acceptance.
 The new mode performs no live mutations and never repairs drift.

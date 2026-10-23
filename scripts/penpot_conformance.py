@@ -14,6 +14,13 @@ from pathlib import Path
 VERSION = 2
 ROOT = Path(__file__).resolve().parents[1]
 
+# Explicitly approved, undeletable catalogue artifacts; never reusable families.
+LEGACY_ORPHAN_FILE_ID = "6123a605-f677-80e2-8007-66eb7a88b390"
+LEGACY_ORPHANS = {
+    "06e51fcf-8bc1-4f3a-9468-797e3619435c": "Component/legacy/Input",
+    "045701d0-f4a3-4853-aded-d2b01af1e1f4": "Component/legacy/Button",
+}
+
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
@@ -177,6 +184,7 @@ def emit_collector(manifest, transfer=False):
 
 def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_families=None, inspect=False):
     issues = []
+    accepted_orphans = []
     preservation_checked = False
     def issue(code, location, message, blocked=False):
         issues.append({"code": code, "location": location, "message": message,
@@ -187,7 +195,8 @@ def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_
                 "mode": "inspection" if inspect else "synchronization" if scopes else "full",
                 "preservationChecked": preservation_checked,
                 "requestedScopes": scopes or list(manifest["scopes"]),
-                "allowedFamilies": sorted(allow_families or []), "issues": issues}
+                "allowedFamilies": sorted(allow_families or []),
+                "acceptedOrphans": accepted_orphans, "issues": issues}
     if inspect and (not scopes or baseline is not None or allow_families):
         issue("INVALID_INSPECTION_SCOPE", "scope",
               "inspection requires explicit scopes and forbids baseline/family change permissions", True)
@@ -653,6 +662,21 @@ def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_
                         issue("TEMPLATE_COUNT", family, "changed library must have exactly one main record")
     elif not scopes:
         for record in records:
+            if (snapshot["fileId"] == LEGACY_ORPHAN_FILE_ID
+                    and record["id"] in LEGACY_ORPHANS):
+                expected_family = LEGACY_ORPHANS[record["id"]]
+                dependencies = [n["id"] for n in nodes
+                                if n["componentId"] == record["id"]
+                                or n["refId"] == record["id"]
+                                or n["family"] == expected_family]
+                if (record["family"] == expected_family
+                        and record["mainId"] is None
+                        and record["variant"] == {} and not dependencies):
+                    accepted_orphans.append({"id": record["id"], "family": expected_family,
+                                             "reason": "Approved undeletable orphan; no main or live dependencies"})
+                    continue
+                issue("LEGACY_ORPHAN_CHANGED", record["id"],
+                      "approved orphan must retain its exact family, null main, empty variants and no live dependencies")
             if record["family"] not in manifest["families"]:
                 issue("UNKNOWN_FAMILY", record["id"], record["family"])
             if not record.get("mainId"):
@@ -694,6 +718,37 @@ def verify_control(expected, head, subtree, visible, used, issue):
     adapter = contract["adapter"]
     family = expected.get("family")
     state = expected.get("design", {}).get("state")
+    if family == "Library/PrimeVue/Avatar" and state == "locked":
+        if not 0 < head["opacity"] <= 0.6:
+            issue("LOCKED_APPEARANCE", key, "locked Avatar requires visible muted opacity at most 0.6")
+    if family == "Library/PrimeVue/Timeline":
+        items = props.get("value", [])
+        expected_ids = set()
+        previous_bottom = None
+        for index, item in enumerate(items):
+            rows = role(f"TimelineItem{index}")
+            row = rows[0] if len(rows) == 1 else None
+            content = [n for n in subtree if row and n["parent"] == row["id"] and n["name"] == "Content"]
+            texts = {name: [n for n in subtree if content and n["parent"] == content[0]["id"] and n["name"] == name]
+                     for name in ("Title", "Time")}
+            markers = [n for n in subtree if row and n["parent"] == row["id"] and n["name"] == "Marker"]
+            values = {"Title": f"{item.get('icon', '')} {item.get('title', '')}".strip(),
+                      "Time": f"{item.get('description', '')}\n{item.get('time', '')}"}
+            valid = (row and row["parent"] == head["id"] and row["type"] == "board" and not row["head"]
+                     and len(content) == 1 and content[0]["type"] == "board" and not content[0]["head"]
+                     and len(markers) == 1 and markers[0]["type"] == "ellipse" and not markers[0]["head"]
+                     and all(visible(n) for n in [row, *content, *markers])
+                     and all(len(texts[name]) == 1 and texts[name][0]["type"] == "text"
+                             and not texts[name][0]["head"] and visible(texts[name][0])
+                             and texts[name][0]["text"] == value for name, value in values.items()))
+            if not valid:
+                issue("TIMELINE_ITEM", key, f"TimelineItem{index} must visibly represent its ordered value")
+            if row:
+                if previous_bottom is not None and row["bounds"][1] < previous_bottom - 2:
+                    issue("TIMELINE_ORDER", key, "Timeline rows must follow value order without overlap")
+                previous_bottom = row["bounds"][1] + row["bounds"][3]
+            expected_ids.update(n["id"] for n in [*rows, *content, *markers, *texts["Title"], *texts["Time"]])
+        used.update(expected_ids)
     if family == "Library/PrimeVue/Accordion":
         selected = props.get("value", [])
         panels = expected.get("children", [])

@@ -28,7 +28,7 @@
     },
     "Avatar": {
       "import": "primevue/avatar",
-      "penpotAudit": { "adapter": "text", "internals": ["Label"], "textProps": { "label": "Label" }, "observableStates": ["default"] },
+      "penpotAudit": { "adapter": "text", "internals": ["Label"], "textProps": { "label": "Label" }, "observableStates": ["default", "locked"] },
       "props": { "label": { "type": "string" }, "icon": { "type": "string" }, "image": { "type": "string" }, "shape": { "type": "string", "enum": ["square", "circle"] }, "size": { "type": "string", "enum": ["normal", "large", "xlarge"] } },
       "slots": [],
       "penpotTemplate": { "appearances": ["default", "achievement"], "states": ["default", "locked"] }
@@ -64,7 +64,7 @@
     "InputText": {
       "import": "primevue/inputtext",
       "penpotAudit": { "adapter": "text", "internals": ["Value", "Placeholder", "LeadingIcon"], "textProps": { "modelValue": "Value", "placeholder": "Placeholder" }, "observableStates": ["default"] },
-      "props": { "placeholder": { "type": "string" }, "variant": { "type": "string", "enum": ["outlined", "filled"] }, "size": { "type": "string", "enum": ["small", "large"] }, "fluid": { "type": "boolean" }, "disabled": { "type": "boolean" }, "invalid": { "type": "boolean" }, "modelValue": { "type": "string" } },
+      "props": { "aria-label": { "type": "string" }, "placeholder": { "type": "string" }, "variant": { "type": "string", "enum": ["outlined", "filled"] }, "size": { "type": "string", "enum": ["small", "large"] }, "fluid": { "type": "boolean" }, "disabled": { "type": "boolean" }, "invalid": { "type": "boolean" }, "modelValue": { "type": "string" } },
       "slots": [],
       "penpotTemplate": { "appearances": ["default", "search"], "variants": ["outlined", "filled"], "sizes": ["small", "normal", "large"], "states": ["default", "focused", "disabled", "invalid"] }
     },
@@ -126,7 +126,7 @@
     },
     "Timeline": {
       "import": "primevue/timeline",
-      "penpotAudit": { "adapter": "container", "internals": [], "textProps": {}, "observableStates": [] },
+      "penpotAudit": { "adapter": "container", "internals": [], "textProps": {}, "observableStates": ["default"] },
       "props": { "value": { "type": "array" }, "align": { "type": "string", "enum": ["left", "right", "alternate"] }, "layout": { "type": "string", "enum": ["vertical", "horizontal"] } },
       "slots": ["marker", "content", "opposite"],
       "penpotTemplate": { "appearances": ["activity"], "states": ["default"] }

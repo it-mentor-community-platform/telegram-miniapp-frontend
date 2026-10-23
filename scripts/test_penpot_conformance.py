@@ -76,6 +76,59 @@ class ConformanceTests(unittest.TestCase):
     def test_nested_saved_message_passes(self):
         self.assertEqual('PASS', self.check()['status'], self.check())
 
+    def add_legacy_orphans(self):
+        self.snapshot['fileId'] = audit.LEGACY_ORPHAN_FILE_ID
+        self.snapshot['records'].extend(
+            dict(id=id_, family=family, mainId=None, variant={})
+            for id_, family in audit.LEGACY_ORPHANS.items())
+
+    def test_approved_legacy_orphans_are_reported_without_errors(self):
+        self.add_legacy_orphans()
+        result = self.check()
+        self.assertEqual('PASS', result['status'], result)
+        self.assertEqual(set(audit.LEGACY_ORPHANS),
+                         {r['id'] for r in result['acceptedOrphans']})
+
+    def test_legacy_orphan_exception_requires_exact_record_and_file(self):
+        self.add_legacy_orphans()
+        original = copy.deepcopy(self.snapshot)
+        for changes in ({'id': 'another-record'}, {'family': 'Component/legacy/Other'},
+                        {'mainId': 'main'}, {'variant': {'State': 'active'}}):
+            with self.subTest(changes=changes):
+                self.snapshot = copy.deepcopy(original)
+                self.snapshot['records'][-1].update(changes)
+                self.assertNotEqual('PASS', self.check()['status'])
+        self.snapshot = copy.deepcopy(original)
+        self.snapshot['fileId'] = 'another-file'
+        self.assert_code('ORPHAN_RECORD')
+
+    def test_legacy_orphan_exception_rejects_live_dependencies(self):
+        self.add_legacy_orphans()
+        original = copy.deepcopy(self.snapshot)
+        id_, family = next(iter(audit.LEGACY_ORPHANS.items()))
+        for key, value in (('componentId', id_), ('refId', id_), ('family', family)):
+            with self.subTest(key=key):
+                self.snapshot = copy.deepcopy(original)
+                self.find('ProgressBar')[key] = value
+                self.assert_code('LEGACY_ORPHAN_CHANGED')
+
+    def test_other_legacy_orphans_remain_errors(self):
+        self.add_legacy_orphans()
+        self.snapshot['records'].append(dict(id='other', family='Component/legacy/Input',
+                                             mainId=None, variant={}))
+        self.assert_code('UNKNOWN_FAMILY')
+        self.assert_code('ORPHAN_RECORD')
+
+    def test_removed_legacy_orphans_need_no_exception(self):
+        self.assertEqual([], self.check()['acceptedOrphans'])
+
+    def test_legacy_orphans_remain_protected_in_scoped_sync(self):
+        self.add_legacy_orphans()
+        baseline = copy.deepcopy(self.snapshot)
+        self.snapshot['records'][-1]['family'] = 'Component/legacy/Renamed'
+        result = audit.compare(self.manifest, self.snapshot, ['ReviewSessionSaved'], baseline)
+        self.assertIn('PROTECTED_CHANGE', [i['code'] for i in result['issues']])
+
     def custom_main_fixture(self):
         scope = self.manifest['scopes']['ReviewSessionSaved']
         family = 'Component/TestContainer'

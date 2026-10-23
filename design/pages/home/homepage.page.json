@@ -27,9 +27,9 @@
           "design": { "appearance": "default", "state": "default" },
           "slots": {
             "content": [
-              { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "ИП", "shape": "circle", "size": "large" }, "design": { "appearance": "default", "state": "default" } },
+              { "type": "library-component", "library": "primevue", "component": "Avatar", "props": { "label": "ИП", "shape": "circle", "size": "large" }, "style": { "color": "color.accessiblePrimary" }, "design": { "appearance": "default", "state": "default" } },
               { "type": "text", "name": "ProfileName", "value": "Иван Петров" },
-              { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Студент", "severity": "info" }, "design": { "appearance": "default", "state": "default" } },
+              { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Студент", "severity": "info" }, "design": { "appearance": "default", "state": "default", "colorTreatment": "accessible-blue" } },
               { "type": "text", "name": "ProfileStats", "value": "5 проектов" }
             ]
           }
@@ -110,7 +110,7 @@
             "fontFamily": "font.family.base",
             "fontSize": "font.size.sm",
             "fontWeight": "font.weight.medium",
-            "color": "color.primary",
+            "color": "color.accessiblePrimary",
             "marginTop": "spacing.sm"
           }
         }
@@ -243,10 +243,10 @@
             "width": "100%"
           },
           "children": [
-            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📖 Java роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "java-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
-            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "🐍 Python роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "python-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
-            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "💬 Перейти в чат", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "community-chat" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } },
-            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📺 YouTube канал", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "youtube-channel" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } }
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📖 Java роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "java-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default", "colorTreatment": "accessible-blue" } },
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "🐍 Python роадмап", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "python-roadmap" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default", "colorTreatment": "accessible-blue" } },
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "💬 Перейти в чат", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "community-chat" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default", "colorTreatment": "accessible-blue" } },
+            { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "📺 YouTube канал", "icon": "pi pi-arrow-right", "iconPos": "right", "severity": "primary", "fluid": true }, "action": { "type": "external-link", "url": "youtube-channel" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default", "colorTreatment": "accessible-blue" } }
           ]
         }
       ]
@@ -267,6 +267,7 @@
       "Roadmap, community chat, and YouTube identifiers are application-configured external destinations rather than literal URLs in this specification",
       "Quick-action labels, timeline content, statistics, and external-link labels wrap within the 342-pixel mobile content width",
       "The homepage exposes an interval-repetition entry point",
+      "Homepage-only repair preserves native controls and approved structural Card shells; locked achievement Avatars use muted opacity, activity follows source order, and scoped accessible blue does not change shared mains",
       "The entry opens CategorySetup when no categories are selected and RepetitionDashboard otherwise"
     ]
   }

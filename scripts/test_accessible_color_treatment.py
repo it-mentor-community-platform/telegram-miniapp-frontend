@@ -62,8 +62,10 @@ class AccessibleColorTreatmentTests(unittest.TestCase):
                 if node['component'] == 'Button':
                     self.assertEqual('primary', props['severity'])
         self.assertGreater(treated, 0)
-        for node in walk(read('design/pages/home/homepage.page.json')):
-            self.assertNotIn('colorTreatment', node.get('design', {}))
+        homepage = list(walk(read('design/pages/home/homepage.page.json')))
+        treated = [n for n in homepage if n.get('design', {}).get('colorTreatment') == 'accessible-blue']
+        self.assertEqual(5, len(treated))
+        self.assertEqual(['Button'] * 4 + ['Tag'], sorted(n['component'] for n in treated))
 
 
 if __name__ == '__main__':
