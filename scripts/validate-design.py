@@ -416,8 +416,37 @@ class Validator:
             if library.get("pageName") == custom.get("pageName"): self.error(doc.path, "$", "library and custom pages must differ")
             if library.get("componentPrefix") == custom.get("componentPrefix"): self.error(doc.path, "$", "library and custom prefixes must differ")
         self.validate_page_structural_card_shells(value.get("pageStructuralCardShells", []), doc.path)
+        self.validate_page_structural_shells(value.get("pageStructuralShells", []), doc.path)
         if value.get("pageComponentRepresentation") != "instance": self.error(doc.path, "$.pageComponentRepresentation", "must be 'instance'")
         if value.get("renderStrategy") != "replace-by-name": self.error(doc.path, "$.renderStrategy", "must be 'replace-by-name'")
+
+    def validate_page_structural_shells(self, entries: Any, path: Path) -> None:
+        location = "$.pageStructuralShells"
+        if not isinstance(entries, list):
+            self.error(path, location, "must be an array of scoped shell policies"); return
+        seen = set()
+        for index, entry in enumerate(entries):
+            loc = f"{location}[{index}]"
+            if not isinstance(entry, dict) or set(entry) != {"page", "library", "component"} or not all(isinstance(v, str) and v for v in entry.values()):
+                self.error(path, loc, "requires exactly non-empty page, library, and component strings"); continue
+            key = (entry["page"], entry["library"], entry["component"])
+            if key in seen: self.error(path, loc, "duplicate scoped shell policy")
+            seen.add(key)
+            page = self.pages.get(entry["page"])
+            if not page: self.error(path, loc, f"unknown page {entry['page']!r}")
+            contract = self.library_components.get(key[1:])
+            if not contract:
+                self.error(path, loc, "unknown library component"); continue
+            if not contract.get("slots"):
+                self.error(path, loc, "structural shells require a slot-bearing component")
+            def contains(nodes):
+                for node in nodes:
+                    if node.get("type") == "library-component" and (node.get("library"), node.get("component")) == key[1:]: return True
+                    if contains(node.get("children", [])): return True
+                    if any(contains(children) for children in node.get("slots", {}).values()): return True
+                return False
+            if page and not contains(page.value.get("children", [])):
+                self.error(path, loc, "page does not reference the scoped library component")
 
     def validate_page_structural_card_shells(self, names: Any, path: Path) -> None:
         location = "$.pageStructuralCardShells"

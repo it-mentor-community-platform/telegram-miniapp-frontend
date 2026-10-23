@@ -159,5 +159,53 @@ class PageShellTests(unittest.TestCase):
         self.assertIn('array of page names', self.check([None]))
 
 
+class ScopedShellTests(unittest.TestCase):
+    def setUp(self):
+        self.validator = design.Validator()
+        self.validator.validate_tokens()
+        self.validator.validate_libraries()
+        self.validator.validate_custom_components()
+        self.validator.validate_pages()
+        self.assertEqual([], self.validator.errors)
+        self.policy = {'page': 'ReviewSessionSaved', 'library': 'primevue', 'component': 'Message'}
+
+    def check(self, entries):
+        self.validator.validate_page_structural_shells(entries, design.PENPOT)
+        return '\n'.join(self.validator.errors)
+
+    def test_saved_message_policy(self):
+        self.assertEqual('', self.check([self.policy]))
+
+    def test_empty_policy_list(self):
+        self.assertEqual('', self.check([]))
+
+    def test_invalid_list(self):
+        self.assertIn('array of scoped shell policies', self.check({}))
+
+    def test_malformed_entries(self):
+        for entry in [None, {}, dict(self.policy, extra=True), dict(self.policy, page=None), dict(self.policy, page='')]:
+            with self.subTest(entry=entry):
+                self.validator.errors.clear()
+                self.assertIn('requires exactly', self.check([entry]))
+
+    def test_duplicate_policy(self):
+        self.assertIn('duplicate scoped shell policy', self.check([self.policy, self.policy]))
+
+    def test_unknown_page(self):
+        self.assertIn('unknown page', self.check([dict(self.policy, page='Unknown')]))
+
+    def test_unknown_component(self):
+        self.assertIn('unknown library component', self.check([dict(self.policy, component='Unknown')]))
+
+    def test_unknown_library(self):
+        self.assertIn('unknown library component', self.check([dict(self.policy, library='unknown')]))
+
+    def test_leaf_control_cannot_be_shell(self):
+        self.assertIn('slot-bearing', self.check([dict(self.policy, component='InputText')]))
+
+    def test_component_must_exist_on_page(self):
+        self.assertIn('does not reference', self.check([dict(self.policy, page='CategorySetup')]))
+
+
 if __name__ == '__main__':
     unittest.main()

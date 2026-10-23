@@ -159,6 +159,12 @@ custom-component names use PascalCase.
   and Button controls remain native copies. Detached controls and sibling
   overlays remain prohibited.
 - Custom components use nested library component instances where applicable.
+- `penpot.json.pageStructuralShells` records explicit page/library/component
+  exceptions for slot-bearing containers. The approved ReviewSessionSaved
+  Message uses a structural success-message board containing SavedMessageContent
+  and its native ProgressBar copy. JSON/runtime semantics remain PrimeVue
+  Message. This does not authorize other pages, detached child controls, or
+  implicit fallback. Existing Card exceptions remain unchanged.
 - Library templates must be semantically recognizable and approximately follow
   approved tokens. Pixel-for-pixel PrimeVue reproduction is not required.
 - Detached drawings, documentation boards, and manually redrawn substitutes

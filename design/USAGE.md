@@ -94,6 +94,13 @@ Penpot audit.
 
 ## Pages
 
+Penpot-only container exceptions are declared in `penpot.json.pageStructuralShells`
+as exact `{ "page", "library", "component" }` scopes. ReviewSessionSaved's
+PrimeVue Message is approved as a structural shell; preserve its nested
+SavedMessageContent column and native indeterminate ProgressBar without a value
+label. Keep the page JSON's library-component semantics. Do not broaden a policy
+or substitute a shell when synchronization fails without explicit approval.
+
 Store every page at `design/pages/<feature>/<screen>.page.json`. Its
 `feature.key` must match the directory. Pages sharing a feature key use the same
 feature label. Structural nodes have stable PascalCase names.

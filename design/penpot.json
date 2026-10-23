@@ -19,5 +19,8 @@
   "pageFramePrefix": "Page/",
   "pageComponentRepresentation": "instance",
   "pageStructuralCardShells": ["Homepage"],
+  "pageStructuralShells": [
+    { "page": "ReviewSessionSaved", "library": "primevue", "component": "Message" }
+  ],
   "renderStrategy": "replace-by-name"
 }
