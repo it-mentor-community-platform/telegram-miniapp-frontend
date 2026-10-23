@@ -20,7 +20,8 @@
   "pageComponentRepresentation": "instance",
   "pageStructuralCardShells": ["Homepage"],
   "pageStructuralShells": [
-    { "page": "ReviewSessionSaved", "library": "primevue", "component": "Message" }
+    { "page": "ReviewSessionSaved", "library": "primevue", "component": "Message" },
+    { "page": "ReviewComplete", "library": "primevue", "component": "Message" }
   ],
   "renderStrategy": "replace-by-name"
 }

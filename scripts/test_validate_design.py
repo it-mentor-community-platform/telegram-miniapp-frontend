@@ -3,6 +3,7 @@ import copy
 import importlib.util
 import sys
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 SCRIPT = Path(__file__).with_name('validate-design.py')
@@ -33,9 +34,93 @@ class CustomStateTests(unittest.TestCase):
         self.assertEqual(7, sum(len(d.value['variants']) for d in self.validator.custom_components.values()))
         self.assertEqual('', self.validate())
 
+    def test_accessible_color_treatment_is_registry_allowlisted(self):
+        node = copy.deepcopy(self.primary())
+        node['props']['label'] = 'Повторить'
+        node['design']['colorTreatment'] = 'accessible-blue'
+        self.validator.validate_node(node, SCRIPT, '$')
+        self.assertEqual([], self.validator.errors)
+        for invalid in ('unknown', '', None, {}, []):
+            self.validator.errors.clear()
+            node['design']['colorTreatment'] = invalid
+            self.validator.validate_node(node, SCRIPT, '$')
+            self.assertIn('unsupported representative color treatment', '\n'.join(self.validator.errors))
+
+    def test_color_treatment_not_allowed_on_unregistered_controls_or_text(self):
+        for node in (
+                dict(type='library-component', library='primevue', component='Card',
+                     design=dict(appearance='default', state='default', colorTreatment='accessible-blue')),
+                dict(type='text', name='Title', value='Title', design=dict(colorTreatment='accessible-blue'))):
+            self.validator.errors.clear()
+            self.validator.validate_node(node, SCRIPT, '$')
+            self.assertIn('colorTreatment', '\n'.join(self.validator.errors))
+
+    def test_registry_color_treatment_contract_is_exact(self):
+        for component, treatments in (('Button', ['unknown']), ('Tag', []),
+                                      ('Card', ['accessible-blue']), ('SelectButton', 'accessible-blue')):
+            validator = design.Validator()
+            document = copy.deepcopy(self.validator.libraries['primevue'])
+            document.value['components'][component]['penpotTemplate']['colorTreatments'] = treatments
+            with patch.object(validator, 'load', return_value=document):
+                validator.validate_libraries()
+            self.assertIn('colorTreatments', '\n'.join(validator.errors))
+
+    def test_hide_when_empty_accepts_only_boolean_on_text(self):
+        for value in (True, False):
+            self.validator.errors.clear()
+            self.validator.validate_node({'type': 'text', 'name': 'OptionalText',
+                                          'value': '', 'hideWhenEmpty': value}, SCRIPT, '$')
+            self.assertEqual([], self.validator.errors)
+        for value in (None, 'true', 1, {}, []):
+            self.validator.errors.clear()
+            self.validator.validate_node({'type': 'text', 'name': 'OptionalText',
+                                          'value': '', 'hideWhenEmpty': value}, SCRIPT, '$')
+            self.assertIn('must be boolean', '\n'.join(self.validator.errors))
+        for kind in ('column', 'library-component', 'custom-component'):
+            self.validator.errors.clear()
+            self.validator.validate_node({'type': kind, 'name': 'Container',
+                                          'children': [], 'hideWhenEmpty': True}, SCRIPT, '$')
+            self.assertIn('only allowed on text nodes', '\n'.join(self.validator.errors))
+
     def test_legacy_shared_composition_rejected(self):
         self.document.value['composition'] = {}
         self.assertIn('unsupported custom field', self.validate())
+
+    def test_native_empty_placeholder_requires_exact_opt_in(self):
+        for kind, flag, value, valid in (
+                ('text', True, ' ', True), ('text', False, ' ', False),
+                ('text', None, ' ', False), ('column', True, ' ', False),
+                ('text', True, '', False), ('text', True, '  ', False),
+                ('text', True, '\t', False), ('text', True, '\u00a0', False)):
+            with self.subTest(kind=kind, flag=flag, value=value):
+                self.validator.errors.clear()
+                self.validator.validate_node(dict(type=kind, name='Optional', value='',
+                    children=[], hideWhenEmpty=flag, penpotEmptyPlaceholder=value), SCRIPT, '$')
+                errors = '\n'.join(self.validator.errors)
+                self.assertEqual(not valid, 'penpotEmptyPlaceholder' in errors, errors)
+
+    def test_inactive_native_registry_contract_is_toolbar_only_and_exact(self):
+        document = copy.deepcopy(self.validator.libraries['primevue'])
+        approved = document.value['components']['Toolbar']['penpotAudit']['inactiveNativeBranches']
+        original = copy.deepcopy(approved)
+        cases = [[], original[:1], original + original[:1],
+                 [dict(original[0], slot='end'), original[1]],
+                 [dict(original[0], children=['Label']), original[1]],
+                 [dict(original[0], family='Wrong'), original[1]],
+                 [dict(original[0], extra=True), original[1]], 'hidden']
+        for branches in cases:
+            with self.subTest(branches=branches):
+                validator = design.Validator()
+                document.value['components']['Toolbar']['penpotAudit']['inactiveNativeBranches'] = branches
+                with patch.object(validator, 'load', return_value=document):
+                    validator.validate_libraries()
+                self.assertIn('inactiveNativeBranches', '\n'.join(validator.errors))
+        document.value['components']['Toolbar']['penpotAudit']['inactiveNativeBranches'] = original
+        document.value['components']['Card']['penpotAudit']['inactiveNativeBranches'] = original
+        validator = design.Validator()
+        with patch.object(validator, 'load', return_value=document):
+            validator.validate_libraries()
+        self.assertIn('inactiveNativeBranches', '\n'.join(validator.errors))
 
     def test_arbitrary_flags_rejected(self):
         self.document.value['variants']['active']['loading'] = False
@@ -175,6 +260,9 @@ class ScopedShellTests(unittest.TestCase):
 
     def test_saved_message_policy(self):
         self.assertEqual('', self.check([self.policy]))
+
+    def test_complete_message_policy(self):
+        self.assertEqual('', self.check([dict(self.policy, page='ReviewComplete')]))
 
     def test_empty_policy_list(self):
         self.assertEqual('', self.check([]))

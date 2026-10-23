@@ -1,24 +1,131 @@
 {
   "$schema": "../../schemas/page.schema.json",
-  "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
+  "feature": {
+    "key": "interval-repetition",
+    "label": "Interval Repetition"
+  },
   "page": "ReviewSessionSaved",
-  "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
-  "layout": { "type": "column", "gap": "spacing.lg", "align": "center" },
+  "frame": {
+    "width": 390,
+    "background": "color.background",
+    "padding": "spacing.md"
+  },
+  "layout": {
+    "type": "column",
+    "gap": "spacing.lg",
+    "align": "center"
+  },
   "children": [
-    { "type": "library-component", "library": "primevue", "component": "Toolbar", "design": { "appearance": "page-header", "state": "close" }, "slots": { "start": [{ "type": "library-component", "library": "primevue", "component": "Button", "props": { "icon": "pi pi-times", "iconPos": "left", "severity": "primary", "variant": "text" }, "action": { "type": "navigate", "target": "RepetitionDashboard" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } }], "center": [{ "type": "text", "name": "PageTitle", "value": "Повторение" }] } },
-    { "type": "section", "name": "SavedTransition", "children": [
-      { "type": "library-component", "library": "primevue", "component": "Message", "props": { "severity": "success", "closable": false }, "design": { "appearance": "success", "state": "loading" }, "slots": { "default": [
-        { "type": "column", "name": "SavedMessageContent", "gap": "spacing.sm", "children": [
-          { "type": "text", "name": "SavedTitle", "value": "Ответ сохранён" },
-          { "type": "text", "name": "SavedDescription", "value": "Загружаем следующий вопрос…" },
-          { "type": "library-component", "library": "primevue", "component": "ProgressBar", "props": { "mode": "indeterminate", "showValue": false }, "design": { "appearance": "default", "state": "indeterminate" } }
-        ] }
-      ] } }
-    ] }
+    {
+      "type": "library-component",
+      "library": "primevue",
+      "component": "Toolbar",
+      "design": {
+        "appearance": "page-header",
+        "state": "close"
+      },
+      "slots": {
+        "start": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "props": {
+              "aria-label": "Закрыть повторение",
+              "icon": "pi pi-times",
+              "iconPos": "left",
+              "severity": "primary",
+              "variant": "text"
+            },
+            "action": {
+              "type": "navigate",
+              "target": "RepetitionDashboard"
+            },
+            "design": {
+              "appearance": "primary",
+              "variant": "text",
+              "size": "normal",
+              "state": "default",
+              "colorTreatment": "accessible-blue"
+            }
+          }
+        ],
+        "center": [
+          {
+            "type": "text",
+            "name": "PageTitle",
+            "value": "Повторение"
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "name": "SavedTransition",
+      "children": [
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Message",
+          "props": {
+            "severity": "success",
+            "closable": false
+          },
+          "design": {
+            "appearance": "success",
+            "state": "loading"
+          },
+          "slots": {
+            "default": [
+              {
+                "type": "column",
+                "name": "SavedMessageContent",
+                "gap": "spacing.sm",
+                "children": [
+                  {
+                    "type": "text",
+                    "name": "SavedTitle",
+                    "value": "Ответ сохранён"
+                  },
+                  {
+                    "type": "text",
+                    "name": "SavedDescription",
+                    "value": "Загружаем следующий вопрос…"
+                  },
+                  {
+                    "type": "library-component",
+                    "library": "primevue",
+                    "component": "ProgressBar",
+                    "props": {
+                      "mode": "indeterminate",
+                      "showValue": false
+                    },
+                    "design": {
+                      "appearance": "default",
+                      "state": "indeterminate"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
   ],
-  "states": { "slowNextQuestion": "Keep success confirmation visible with progress indicator", "nextQuestion": "Replace with ReviewSession content" },
+  "states": {
+    "slowNextQuestion": "Keep success confirmation visible with progress indicator",
+    "nextQuestion": "Replace with ReviewSession content"
+  },
   "requirements": {
-    "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],
-    "approvedAssumptions": ["Saved feedback appears only after server confirmation", "The transition is brief but remains visible while a slow next question loads"]
+    "sources": [
+      "meta/business-analytics/functionality/interview-questions-interval-repetition.md",
+      "meta/system-analytics/functionality/interview-questions-interval-repetition.md"
+    ],
+    "approvedAssumptions": [
+      "Saved feedback appears only after server confirmation",
+      "The transition is brief but remains visible while a slow next question loads",
+      "Approved scoped accessible-blue treatment uses color.accessiblePrimary without changing the global primary token or unrelated artwork"
+    ]
   }
 }

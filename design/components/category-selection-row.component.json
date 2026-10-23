@@ -56,6 +56,8 @@
             {
               "type": "text",
               "name": "ProgressText",
+              "hideWhenEmpty": true,
+              "penpotEmptyPlaceholder": " ",
               "value": {
                 "bind": "progress"
               }
@@ -83,7 +85,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "MutationAction"
             },
@@ -106,7 +109,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }
@@ -149,6 +153,8 @@
             {
               "type": "text",
               "name": "ProgressText",
+              "hideWhenEmpty": true,
+              "penpotEmptyPlaceholder": " ",
               "value": {
                 "bind": "progress"
               }
@@ -176,7 +182,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "MutationAction"
             },
@@ -199,7 +206,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }
@@ -242,6 +250,8 @@
             {
               "type": "text",
               "name": "ProgressText",
+              "hideWhenEmpty": true,
+              "penpotEmptyPlaceholder": " ",
               "value": {
                 "bind": "progress"
               }
@@ -292,7 +302,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }
@@ -335,6 +346,8 @@
             {
               "type": "text",
               "name": "ProgressText",
+              "hideWhenEmpty": true,
+              "penpotEmptyPlaceholder": " ",
               "value": {
                 "bind": "progress"
               }
@@ -385,7 +398,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }

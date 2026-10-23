@@ -10,6 +10,50 @@ requirements, design documentation, tokens, PrimeVue registry, custom
 components, pages, Penpot config, and related live Penpot objects. Run
 `python3 scripts/validate-design.py`.
 
+## Mandatory live structural gate
+
+Read `design/CONFORMANCE.md` and `design/penpot.json`. JSON-only reviews remain
+supported: validate and review the specifications, but explicitly report live
+structural and visual verification as **not performed**. Never infer live
+conformance from JSON validation, counts, old snapshots, or a successful sync.
+
+Whenever claiming live structural verification:
+
+1. Authenticate read-only and discover the current configured file/page/object
+   IDs. Generate a fresh collector with
+   `python3 scripts/audit-penpot-drift.py --recursive --emit-transfer-js /tmp/review-collect.js`
+   and execute its exact body in the plugin context. Do not mutate artwork,
+   stamp identities, repair drift, or synchronize templates during review.
+2. Follow the network-free chunk handoff in `design/CONFORMANCE.md`: assemble
+   all ordered chunks from the same immutable capture, decode with
+   `--recursive --decode-transfer /tmp/review-transfer.json --snapshot-output /tmp/review.json`,
+   and keep snapshots/credentials untracked. Do not rely on localhost fetch,
+   summarized evidence, or stored snapshots from a previous task. Successful
+   decoding alone is not structural verification.
+3. Run the Python recursive comparator. For whole-file review use
+   `python3 scripts/audit-penpot-drift.py --recursive --snapshot /tmp/review.json`.
+   For selected scopes discover exact names with `--recursive --manifest`, then
+   use `--recursive --snapshot /tmp/review.json --inspect --scope <exact-scope>`
+   (repeat `--scope` as needed). Inspection still requires complete, fresh
+   full-file collection; it does not check outside-scope preservation or imply
+   whole-file conformance. Never manufacture a baseline or compare a snapshot
+   against itself to obtain a scoped review PASS. Do not use `--allow-family`.
+4. Report **PASS / FAIL / BLOCKED**, exact requested scopes and checked family/
+   source-linkage coverage, snapshot file ID and freshness/completeness, issues,
+   and that scoped inspection does not check preservation. Convert observed
+   error diagnostics into findings with exact paths/object IDs, evidence,
+   impact, and correction. **BLOCKED** means incomplete verification, not a
+   proven artwork defect; report any independent observed errors separately.
+   Unsupported evidence, missing transport, stale/incomplete collection, or
+   unavailable tools must never produce an unqualified all-clear. BLOCKED need
+   not halt independent requirements, JSON, accessibility, or visual checks.
+
+The legacy count audit and ad hoc agent inspection are diagnostic only, not
+substitutes for this gate. A structural PASS does not prove requirements,
+runtime accessibility, visual quality, or every library appearance/state.
+Keep those checks separate. This is an instruction-based workflow, not an
+automatic hook for manual Penpot edits.
+
 ## Checks
 
 - Every user-facing requirement maps to a page/action/state or justified
@@ -48,3 +92,6 @@ visual reference is supplied, inspect it and state which hierarchy and
 proportion cues were followed; do not score pixel-by-pixel similarity. If
 exports are unavailable, review live structure and bounds but explicitly mark
 visual verification as blocked.
+Try a full-frame export once, then one smaller section if it fails. If both
+fail, complete available structural/bounds checks and require manual visual
+review; do not claim visual verification.

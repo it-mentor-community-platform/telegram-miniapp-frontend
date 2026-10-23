@@ -11,6 +11,63 @@ components, and pages. Run `python3 scripts/validate-design.py` and stop on any
 error. Require explicit approval for material changes. Authenticate read-only
 and discover live IDs before writes.
 
+## Mandatory structural preflight and postflight
+
+Read `design/CONFORMANCE.md`. The recursive gate is required on every sync;
+the legacy count audit, offline tests, visual inspection, and successful write
+calls are not substitutes. All commands below run from the repository root;
+use absolute paths when invoking tools and a private temporary directory for
+artifacts. Never commit snapshots or credentials.
+
+1. Validate source, build the recursive manifest, and identify the approved
+   page/custom scopes and any library/custom template families to change.
+   Generate the collector with:
+   `python3 scripts/audit-penpot-drift.py --recursive --emit-transfer-js /tmp/penpot-collect-transfer.js`.
+   Read and execute the exact emitted function body through the Penpot tool.
+   This captures a full snapshot in plugin-local `storage.conformanceSnapshot`
+   and prepares `storage.conformanceTransfer`, without changing artwork.
+2. Transfer all chunks through bounded tool results. Read the returned header,
+   then retrieve chunks by index, at most two per call:
+   `return {start: 0, chunks: storage.conformanceTransfer.chunks.slice(0, 2)};`.
+   Assemble the exact header fields (`format`, `byteLength`, `checksum`,
+   `chunkCount`) and ordered `chunks` into a local JSON envelope. Do not
+   summarize/retype artwork, truncate chunks, use localhost networking, or
+   recollect between chunks. Decode with
+   `python3 scripts/audit-penpot-drift.py --recursive --decode-transfer /tmp/before-transfer.json --snapshot-output /tmp/before.json`.
+   A checksum/size failure is BLOCKED; decoding success is not conformance.
+3. Run full recursive preflight against `/tmp/before.json`; retain its complete
+   report. Existing FAIL can define a separately approved repair inventory.
+   Invalid/incomplete/stale collection, transfer failure, ambiguous target
+   identity, or unsupported checks affecting the target stop writes. Unrelated
+   known drift must be reported, not silently repaired or exempted. First-time
+   generation still requires a complete baseline of the configured file.
+4. Before writes, confirm expected scope and native API support. Capture actual
+   target/sibling bounds. Stamp each semantic shape with the exact manifest
+   `auditKey` and slot children/wrappers with `auditSlot`. Never stamp a claim
+   of correctness in place of collecting actual live facts.
+5. After synchronization (also after a partially failed write), run a fresh
+   collection and transfer to `/tmp/after.json`. Do not reuse the baseline as
+   the after snapshot. Do not edit JSON/contracts between the paired snapshots;
+   if approved sources change, recapture the baseline before further writes.
+6. Compare with `--recursive --snapshot /tmp/after.json --baseline /tmp/before.json`
+   and repeated `--scope <name>` for every approved page/custom State scope.
+   For explicitly approved template changes, add repeated
+   `--allow-family '<canonical family>'` and include **all** dependent page and
+   custom State scopes. Family permission is not a bypass: changed mains and
+   dependents remain checked. Never broaden scope merely to suppress failures.
+   Unsupported template representation/state checks remain BLOCKED.
+7. Run the full recursive audit separately to report remaining whole-file
+   drift. Only a target PASS plus outside-target preservation permits scoped
+   acceptance; it never implies a whole-file PASS. FAIL/BLOCKED postflight
+   means not accepted. No automatic repair loop; return concrete diagnostics
+   and obtain approval for material follow-up changes.
+
+Report structural status, exact checked scopes/families, snapshot file ID,
+freshness/completeness, preservation status, remaining full-file drift, and
+visual-review status separately. If tool transport prevents comparison, report
+BLOCKED and stop; never downgrade to count-only or agent-only verification.
+This skill is an agent workflow, not a hook for arbitrary manual Penpot edits.
+
 ## Targets
 
 - PrimeVue templates: configured library page and

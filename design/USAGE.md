@@ -1,5 +1,9 @@
 # UI design workflow
 
+Every synchronization requires the recursive preflight/postflight gate described
+in [CONFORMANCE.md](CONFORMANCE.md). Stamp manifest semantic identities during
+generation; never use template counts or a successful write as acceptance.
+
 ## Workflow
 
 ```text
@@ -98,7 +102,10 @@ Penpot-only container exceptions are declared in `penpot.json.pageStructuralShel
 as exact `{ "page", "library", "component" }` scopes. ReviewSessionSaved's
 PrimeVue Message is approved as a structural shell; preserve its nested
 SavedMessageContent column and native indeterminate ProgressBar without a value
-label. Keep the page JSON's library-component semantics. Do not broaden a policy
+label. ReviewComplete uses the same scoped Message shell approach, containing
+CompletionMessageContent with CompletionTitle and CompletionDescription. Replace
+the page-local generated Message subtree rather than detaching a native copy or
+altering its shared main. Keep the page JSON's library-component semantics. Do not broaden a policy
 or substitute a shell when synchronization fails without explicit approval.
 
 Store every page at `design/pages/<feature>/<screen>.page.json`. Its

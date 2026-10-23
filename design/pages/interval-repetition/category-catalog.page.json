@@ -1,37 +1,211 @@
 {
   "$schema": "../../schemas/page.schema.json",
-  "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
+  "feature": {
+    "key": "interval-repetition",
+    "label": "Interval Repetition"
+  },
   "page": "CategoryCatalog",
-  "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
-  "layout": { "type": "column", "gap": "spacing.md", "align": "stretch" },
+  "frame": {
+    "width": 390,
+    "background": "color.background",
+    "padding": "spacing.md"
+  },
+  "layout": {
+    "type": "column",
+    "gap": "spacing.md",
+    "align": "stretch"
+  },
   "children": [
     {
-      "type": "library-component", "library": "primevue", "component": "Toolbar",
-      "design": { "appearance": "page-header", "state": "back" },
+      "type": "library-component",
+      "library": "primevue",
+      "component": "Toolbar",
+      "design": {
+        "appearance": "page-header",
+        "state": "back"
+      },
       "slots": {
         "start": [
-          { "type": "library-component", "library": "primevue", "component": "Button", "props": { "icon": "pi pi-arrow-left", "iconPos": "left", "severity": "primary", "variant": "text" }, "action": { "type": "command", "name": "goBack" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } },
-          { "type": "text", "name": "PageTitle", "value": "Все темы" }
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "props": {
+              "aria-label": "Назад",
+              "icon": "pi pi-arrow-left",
+              "iconPos": "left",
+              "severity": "primary",
+              "variant": "text"
+            },
+            "action": {
+              "type": "command",
+              "name": "goBack"
+            },
+            "design": {
+              "appearance": "primary",
+              "variant": "text",
+              "size": "normal",
+              "state": "default",
+              "colorTreatment": "accessible-blue"
+            }
+          },
+          {
+            "type": "text",
+            "name": "PageTitle",
+            "value": "Все темы"
+          }
         ],
-        "end": [{ "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Поиск", "severity": "primary", "variant": "text" }, "action": { "type": "command", "name": "focusCategorySearch" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } }]
+        "end": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "props": {
+              "label": "Поиск",
+              "severity": "primary",
+              "variant": "text"
+            },
+            "action": {
+              "type": "command",
+              "name": "focusCategorySearch"
+            },
+            "design": {
+              "appearance": "primary",
+              "variant": "text",
+              "size": "normal",
+              "state": "default",
+              "colorTreatment": "accessible-blue"
+            }
+          }
+        ]
       }
     },
-    { "type": "library-component", "library": "primevue", "component": "IconField", "design": { "appearance": "default", "variant": "outlined", "size": "normal", "state": "default" }, "slots": { "default": [
-      { "type": "library-component", "library": "primevue", "component": "InputText", "props": { "placeholder": "Найти тему или специализацию", "variant": "outlined", "fluid": true }, "design": { "appearance": "search", "variant": "outlined", "size": "normal", "state": "default" } }
-    ] } },
-    { "type": "section", "name": "SpecializationList", "children": [
-      { "type": "column", "name": "JavaSpecialization", "gap": "spacing.sm", "children": [
-        { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Java", "severity": "info" }, "design": { "appearance": "specialization", "state": "default" } },
-        { "type": "custom-component", "component": "CategorySelectionRow", "variant": "selected", "props": { "title": "Core", "questionCount": "38 вопросов", "progress": "12 доступны", "action": "Удалить" } },
-        { "type": "custom-component", "component": "CategorySelectionRow", "variant": "available", "props": { "title": "JVM", "questionCount": "29 вопросов", "action": "Добавить" } },
-        { "type": "custom-component", "component": "CategorySelectionRow", "variant": "available", "props": { "title": "Concurrency", "questionCount": "24 вопроса", "action": "Добавить" } }
-      ] },
-      { "type": "column", "name": "BackendSpecialization", "gap": "spacing.sm", "children": [
-        { "type": "library-component", "library": "primevue", "component": "Tag", "props": { "value": "Backend", "severity": "info" }, "design": { "appearance": "specialization", "state": "default" } },
-        { "type": "custom-component", "component": "CategorySelectionRow", "variant": "selected", "props": { "title": "SQL", "questionCount": "22 вопроса", "progress": "На сегодня всё", "action": "Удалить" } }
-      ] }
-    ] },
-    { "type": "section", "name": "InlineStatusRegion", "children": [] }
+    {
+      "type": "library-component",
+      "library": "primevue",
+      "component": "IconField",
+      "design": {
+        "appearance": "default",
+        "variant": "outlined",
+        "size": "normal",
+        "state": "default"
+      },
+      "slots": {
+        "default": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "InputText",
+            "props": {
+              "placeholder": "Найти тему или специализацию",
+              "variant": "outlined",
+              "fluid": true
+            },
+            "design": {
+              "appearance": "search",
+              "variant": "outlined",
+              "size": "normal",
+              "state": "default"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "name": "SpecializationList",
+      "children": [
+        {
+          "type": "column",
+          "name": "JavaSpecialization",
+          "gap": "spacing.sm",
+          "children": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Tag",
+              "props": {
+                "value": "Java",
+                "severity": "info"
+              },
+              "design": {
+                "appearance": "specialization",
+                "state": "default",
+                "colorTreatment": "accessible-blue"
+              }
+            },
+            {
+              "type": "custom-component",
+              "component": "CategorySelectionRow",
+              "variant": "selected",
+              "props": {
+                "title": "Core",
+                "questionCount": "38 вопросов",
+                "progress": "12 доступны",
+                "action": "Удалить"
+              }
+            },
+            {
+              "type": "custom-component",
+              "component": "CategorySelectionRow",
+              "variant": "available",
+              "props": {
+                "title": "JVM",
+                "questionCount": "29 вопросов",
+                "action": "Добавить"
+              }
+            },
+            {
+              "type": "custom-component",
+              "component": "CategorySelectionRow",
+              "variant": "available",
+              "props": {
+                "title": "Concurrency",
+                "questionCount": "24 вопроса",
+                "action": "Добавить"
+              }
+            }
+          ]
+        },
+        {
+          "type": "column",
+          "name": "BackendSpecialization",
+          "gap": "spacing.sm",
+          "children": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Tag",
+              "props": {
+                "value": "Backend",
+                "severity": "info"
+              },
+              "design": {
+                "appearance": "specialization",
+                "state": "default",
+                "colorTreatment": "accessible-blue"
+              }
+            },
+            {
+              "type": "custom-component",
+              "component": "CategorySelectionRow",
+              "variant": "selected",
+              "props": {
+                "title": "SQL",
+                "questionCount": "22 вопроса",
+                "progress": "На сегодня всё",
+                "action": "Удалить"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "InlineStatusRegion",
+      "children": []
+    }
   ],
   "states": {
     "loading": "Category rows use CategorySelectionRow.disabled placeholders",
@@ -41,7 +215,14 @@
     "error": "A PrimeVue Message replaces the list when initial loading fails"
   },
   "requirements": {
-    "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],
-    "approvedAssumptions": ["Later category management applies add and remove immediately", "Search is a client-side filter over loaded categories"]
+    "sources": [
+      "meta/business-analytics/functionality/interview-questions-interval-repetition.md",
+      "meta/system-analytics/functionality/interview-questions-interval-repetition.md"
+    ],
+    "approvedAssumptions": [
+      "Later category management applies add and remove immediately",
+      "Search is a client-side filter over loaded categories",
+      "Approved scoped accessible-blue treatment uses color.accessiblePrimary without changing the global primary token or unrelated artwork"
+    ]
   }
 }

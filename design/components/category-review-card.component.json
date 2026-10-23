@@ -68,7 +68,8 @@
               },
               "design": {
                 "appearance": "specialization",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "SpecializationTag"
             },
@@ -81,6 +82,9 @@
                   "name": "DueMetric",
                   "value": {
                     "bind": "due"
+                  },
+                  "style": {
+                    "color": "color.accessiblePrimary"
                   }
                 },
                 {
@@ -122,7 +126,8 @@
                 "appearance": "primary",
                 "variant": "filled",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "PrimaryAction"
             },
@@ -145,7 +150,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }
@@ -192,7 +198,8 @@
               },
               "design": {
                 "appearance": "specialization",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "SpecializationTag"
             },
@@ -205,6 +212,9 @@
                   "name": "DueMetric",
                   "value": {
                     "bind": "due"
+                  },
+                  "style": {
+                    "color": "color.accessiblePrimary"
                   }
                 },
                 {
@@ -269,7 +279,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }
@@ -316,7 +327,8 @@
               },
               "design": {
                 "appearance": "specialization",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "SpecializationTag"
             },
@@ -329,6 +341,9 @@
                   "name": "DueMetric",
                   "value": {
                     "bind": "due"
+                  },
+                  "style": {
+                    "color": "color.accessiblePrimary"
                   }
                 },
                 {
@@ -393,7 +408,8 @@
                 "appearance": "primary",
                 "variant": "text",
                 "size": "normal",
-                "state": "default"
+                "state": "default",
+                "colorTreatment": "accessible-blue"
               },
               "name": "DetailsAction"
             }

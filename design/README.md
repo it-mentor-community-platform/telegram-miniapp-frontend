@@ -1,5 +1,9 @@
 # UI design source
 
+Recursive live acceptance, identity stamping and supported contract coverage
+are specified in [CONFORMANCE.md](CONFORMANCE.md). Count-only audits are not
+structural conformance gates.
+
 This directory contains the version-controlled source specifications for the
 Telegram Mini App UI. Business behavior remains defined under the sibling
 `meta/business-analytics/functionality/` workspace. Penpot is generated output,
@@ -86,6 +90,22 @@ when the runtime library expresses them by omitting a prop.
 
 ## Custom components
 
+### Scoped accessible color treatment
+
+`design.colorTreatment: "accessible-blue"` is optional and allowlisted only
+for Button, Tag, and SelectButton. It uses `color.accessiblePrimary` (#2563EB)
+without changing the global primary token or shared PrimeVue mains. Active
+filled primary controls and selected rating surfaces use this blue with white
+labels; text/outlined primary labels and specialization tags use this blue on
+their existing pale surfaces. Disabled states retain their existing treatment;
+loading controls retain their indicator and disabled distinction. Secondary
+severity remains secondary. Plain text uses `style.color` as before.
+
+This approved interval-repetition treatment changes colors only, not native
+families, layout, target sizes, actions, or runtime props. Runtime implementation
+must map it to scoped theme/CSS values and separately verify accessibility.
+Color calculations do not constitute rendered visual or runtime acceptance.
+
 Custom component files use:
 
 ```text
@@ -162,8 +182,11 @@ custom-component names use PascalCase.
 - `penpot.json.pageStructuralShells` records explicit page/library/component
   exceptions for slot-bearing containers. The approved ReviewSessionSaved
   Message uses a structural success-message board containing SavedMessageContent
-  and its native ProgressBar copy. JSON/runtime semantics remain PrimeVue
-  Message. This does not authorize other pages, detached child controls, or
+  and its native ProgressBar copy. ReviewComplete uses the same scoped approach
+  for CompletionMessageContent and its CompletionTitle/CompletionDescription texts.
+  JSON/runtime semantics remain PrimeVue Message. Replace only the page-local
+  generated Message subtree; do not detach copies or change the shared main.
+  This does not authorize other pages, detached child controls, or
   implicit fallback. Existing Card exceptions remain unchanged.
 - Library templates must be semantically recognizable and approximately follow
   approved tokens. Pixel-for-pixel PrimeVue reproduction is not required.

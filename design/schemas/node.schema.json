@@ -20,11 +20,19 @@
             "appearance": { "type": "string", "minLength": 1 },
             "variant": { "type": "string", "minLength": 1 },
             "size": { "type": "string", "minLength": 1 },
-            "state": { "type": "string", "minLength": 1 }
+            "state": { "type": "string", "minLength": 1 },
+            "colorTreatment": { "type": "string", "minLength": 1, "description": "Optional registry-allowlisted semantic color treatment; not a runtime prop." }
           },
           "additionalProperties": false
         }
-      }
+      },
+      "allOf": [{
+        "if": { "required": ["hideWhenEmpty"] },
+        "then": { "required": ["type"], "properties": { "type": { "const": "text" }, "hideWhenEmpty": { "type": "boolean" } } }
+      }, {
+        "if": { "required": ["penpotEmptyPlaceholder"] },
+        "then": { "required": ["type", "hideWhenEmpty"], "properties": { "type": { "const": "text" }, "hideWhenEmpty": { "const": true }, "penpotEmptyPlaceholder": { "const": " " } } }
+      }]
     },
     "text": {
       "allOf": [
@@ -35,7 +43,8 @@
           "properties": {
             "type": { "const": "text" },
             "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
-            "value": {}
+            "value": {},
+            "hideWhenEmpty": { "type": "boolean", "description": "Retain this text node but hide it when its fully bound value is exactly empty; nonempty text remains visible." }
           }
         }
       ]

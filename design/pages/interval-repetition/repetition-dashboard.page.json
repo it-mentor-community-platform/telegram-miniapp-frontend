@@ -1,33 +1,214 @@
 {
   "$schema": "../../schemas/page.schema.json",
-  "feature": { "key": "interval-repetition", "label": "Interval Repetition" },
+  "feature": {
+    "key": "interval-repetition",
+    "label": "Interval Repetition"
+  },
   "page": "RepetitionDashboard",
-  "frame": { "width": 390, "background": "color.background", "padding": "spacing.md" },
-  "layout": { "type": "column", "gap": "spacing.md", "align": "stretch" },
+  "frame": {
+    "width": 390,
+    "background": "color.background",
+    "padding": "spacing.md"
+  },
+  "layout": {
+    "type": "column",
+    "gap": "spacing.md",
+    "align": "stretch"
+  },
   "children": [
-    { "type": "library-component", "library": "primevue", "component": "Toolbar", "design": { "appearance": "page-header", "state": "root" }, "slots": { "center": [{ "type": "text", "name": "PageTitle", "value": "Вопросы на повторение" }], "end": [{ "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Управлять", "severity": "primary", "variant": "text" }, "action": { "type": "navigate", "target": "CategoryCatalog" }, "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" } }] } },
     {
-      "type": "section", "name": "SummarySection",
+      "type": "library-component",
+      "library": "primevue",
+      "component": "Toolbar",
+      "design": {
+        "appearance": "page-header",
+        "state": "root"
+      },
+      "slots": {
+        "center": [
+          {
+            "type": "text",
+            "name": "PageTitle",
+            "value": "Вопросы на повторение"
+          }
+        ],
+        "end": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "props": {
+              "label": "Управлять",
+              "severity": "primary",
+              "variant": "text"
+            },
+            "action": {
+              "type": "navigate",
+              "target": "CategoryCatalog"
+            },
+            "design": {
+              "appearance": "primary",
+              "variant": "text",
+              "size": "normal",
+              "state": "default",
+              "colorTreatment": "accessible-blue"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "name": "SummarySection",
       "children": [
-        { "type": "text", "name": "SummaryTitle", "value": "Сегодня", "style": { "fontSize": "font.size.lg", "fontWeight": "font.weight.bold", "color": "color.text" } },
-        { "type": "grid", "name": "SummaryMetrics", "columns": 3, "gap": "spacing.sm", "children": [
-          { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "CategoryCount", "value": "4\nтемы" }] } },
-          { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "DueCount", "value": "12\nк повторению" }] } },
-          { "type": "library-component", "library": "primevue", "component": "Card", "design": { "appearance": "metric", "state": "default" }, "slots": { "content": [{ "type": "text", "name": "NewCount", "value": "38\nновых" }] } }
-        ] }
+        {
+          "type": "text",
+          "name": "SummaryTitle",
+          "value": "Сегодня",
+          "style": {
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "grid",
+          "name": "SummaryMetrics",
+          "columns": 3,
+          "gap": "spacing.sm",
+          "children": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Card",
+              "design": {
+                "appearance": "metric",
+                "state": "default"
+              },
+              "slots": {
+                "content": [
+                  {
+                    "type": "text",
+                    "name": "CategoryCount",
+                    "value": "4\nтемы"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Card",
+              "design": {
+                "appearance": "metric",
+                "state": "default"
+              },
+              "slots": {
+                "content": [
+                  {
+                    "type": "text",
+                    "name": "DueCount",
+                    "value": "12\nк повторению"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Card",
+              "design": {
+                "appearance": "metric",
+                "state": "default"
+              },
+              "slots": {
+                "content": [
+                  {
+                    "type": "text",
+                    "name": "NewCount",
+                    "value": "38\nновых"
+                  }
+                ]
+              }
+            }
+          ]
+        }
       ]
     },
     {
-      "type": "section", "name": "CategoryList",
+      "type": "section",
+      "name": "CategoryList",
       "children": [
-        { "type": "custom-component", "component": "CategoryReviewCard", "variant": "active", "props": { "title": "Core", "specialization": "Java", "due": "6 к повторению", "new": "24 новых", "total": "38 всего", "primaryAction": "Повторить" } },
-        { "type": "custom-component", "component": "CategoryReviewCard", "variant": "active", "props": { "title": "Spring", "specialization": "Java", "due": "4 к повторению", "new": "8 новых", "total": "31 всего", "primaryAction": "Повторить" } },
-        { "type": "custom-component", "component": "CategoryReviewCard", "variant": "nothingDue", "props": { "title": "SQL", "specialization": "Backend", "due": "0 к повторению", "new": "0 новых", "total": "22 всего", "primaryAction": "Пока всё" } }
+        {
+          "type": "custom-component",
+          "component": "CategoryReviewCard",
+          "variant": "active",
+          "props": {
+            "title": "Core",
+            "specialization": "Java",
+            "due": "6 к повторению",
+            "new": "24 новых",
+            "total": "38 всего",
+            "primaryAction": "Повторить"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "CategoryReviewCard",
+          "variant": "active",
+          "props": {
+            "title": "Spring",
+            "specialization": "Java",
+            "due": "4 к повторению",
+            "new": "8 новых",
+            "total": "31 всего",
+            "primaryAction": "Повторить"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "CategoryReviewCard",
+          "variant": "nothingDue",
+          "props": {
+            "title": "SQL",
+            "specialization": "Backend",
+            "due": "0 к повторению",
+            "new": "0 новых",
+            "total": "22 всего",
+            "primaryAction": "Пока всё"
+          }
+        }
       ]
     },
-    { "type": "section", "name": "StickyActionBar", "children": [
-      { "type": "library-component", "library": "primevue", "component": "Button", "props": { "label": "Повторить всё", "icon": "pi pi-play", "iconPos": "left", "severity": "primary", "fluid": true }, "action": { "type": "navigate", "target": "ReviewSession" }, "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" } }
-    ] }
+    {
+      "type": "section",
+      "name": "StickyActionBar",
+      "children": [
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "props": {
+            "label": "Повторить всё",
+            "icon": "pi pi-play",
+            "iconPos": "left",
+            "severity": "primary",
+            "fluid": true
+          },
+          "action": {
+            "type": "navigate",
+            "target": "ReviewSession"
+          },
+          "design": {
+            "appearance": "primary",
+            "variant": "filled",
+            "size": "normal",
+            "state": "default",
+            "colorTreatment": "accessible-blue"
+          }
+        }
+      ]
+    }
   ],
   "states": {
     "loading": "Category cards use CategoryReviewCard.loading skeletons",
@@ -37,7 +218,15 @@
     "disabled": "Review all uses PrimeVue Button disabled state when no new or due questions are available"
   },
   "requirements": {
-    "sources": ["meta/business-analytics/functionality/interview-questions-interval-repetition.md", "meta/system-analytics/functionality/interview-questions-interval-repetition.md"],
-    "approvedAssumptions": ["UI copy is Russian", "Dedicated analytics is deferred", "Dashboard exposes selected-category and review-all entry points"]
+    "sources": [
+      "meta/business-analytics/functionality/interview-questions-interval-repetition.md",
+      "meta/system-analytics/functionality/interview-questions-interval-repetition.md"
+    ],
+    "approvedAssumptions": [
+      "UI copy is Russian",
+      "Dedicated analytics is deferred",
+      "Dashboard exposes selected-category and review-all entry points",
+      "Approved scoped accessible-blue treatment uses color.accessiblePrimary without changing the global primary token or unrelated artwork"
+    ]
   }
 }

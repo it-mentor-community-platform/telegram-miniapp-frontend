@@ -142,7 +142,35 @@ class Validator:
                         if not isinstance(spec, dict) or spec.get("type") not in {"string", "number", "boolean", "array", "object"}:
                             self.error(path, f"{loc}.props.{prop}", "must declare a supported type")
                 if not isinstance(definition.get("slots"), list): self.error(path, f"{loc}.slots", "must be an array")
+                audit = definition.get("penpotAudit")
+                if not isinstance(audit, dict) or set(audit) - {"adapter", "internals", "textProps", "observableStates", "icons", "inactiveNativeBranches"}:
+                    self.error(path, f"{loc}.penpotAudit", "must declare a supported audit contract")
+                else:
+                    branches = audit.get("inactiveNativeBranches", [])
+                    approved = [dict(sourceName=name, slot=slot, family="Library/PrimeVue/Button",
+                                     children=["Label", "TrailingIcon"])
+                                for name, slot in (("BackButton", "start"), ("EndButton", "end"))]
+                    if "inactiveNativeBranches" in audit and (
+                            library != "primevue" or component != "Toolbar" or branches != approved):
+                        self.error(path, f"{loc}.penpotAudit.inactiveNativeBranches", "must match the approved Toolbar native-branch contract")
+                    if audit.get("adapter") not in {"container", "text", "button", "progress", "options", "shape"}:
+                        self.error(path, f"{loc}.penpotAudit.adapter", "unsupported audit adapter")
+                    for key in ("internals", "observableStates"):
+                        items = audit.get(key)
+                        if not isinstance(items, list) or not all(isinstance(x, str) and x for x in items) or len(items) != len(set(items)):
+                            self.error(path, f"{loc}.penpotAudit.{key}", "must be unique non-empty strings")
+                    for key in ("textProps", "icons"):
+                        items = audit.get(key, {} if key == "icons" else None)
+                        if not isinstance(items, dict) or not all(isinstance(k, str) and isinstance(v, str) and v for k, v in items.items()):
+                            self.error(path, f"{loc}.penpotAudit.{key}", "must map strings to non-empty strings")
+                    if isinstance(audit.get("textProps"), dict) and isinstance(props, dict):
+                        for prop in set(audit["textProps"]) - set(props):
+                            self.error(path, f"{loc}.penpotAudit.textProps", f"unknown prop {prop!r}")
                 template = definition.get("penpotTemplate")
+                if isinstance(template, dict) and "colorTreatments" in template and (
+                        library != "primevue" or component not in {"Button", "Tag", "SelectButton"}
+                        or template["colorTreatments"] != ["accessible-blue"]):
+                    self.error(path, f"{loc}.penpotTemplate.colorTreatments", "must match the approved accessible-blue control contract")
                 if not isinstance(template, dict): self.error(path, f"{loc}.penpotTemplate", "must be an object")
                 else:
                     for key in ("appearances", "states"):
@@ -304,8 +332,16 @@ class Validator:
     def validate_node(self, node: Any, path: Path, location: str, owner: str | None = None, deps: set[str] | None = None) -> None:
         if not isinstance(node, dict): self.error(path, location, "node must be an object"); return
         kind = node.get("type")
+        if isinstance(node.get("design"), dict) and "colorTreatment" in node["design"] and kind != "library-component":
+            self.error(path, f"{location}.design.colorTreatment", "is only allowed on registered library controls")
         if kind == "component": self.error(path, f"{location}.type", "legacy type is ambiguous; use library-component or custom-component"); return
         if kind not in NODE_TYPES: self.error(path, f"{location}.type", f"unsupported node type {kind!r}"); return
+        if "hideWhenEmpty" in node:
+            if kind != "text": self.error(path, f"{location}.hideWhenEmpty", "is only allowed on text nodes")
+            if not isinstance(node["hideWhenEmpty"], bool): self.error(path, f"{location}.hideWhenEmpty", "must be boolean")
+        if "penpotEmptyPlaceholder" in node:
+            if kind != "text" or node.get("hideWhenEmpty") is not True or node["penpotEmptyPlaceholder"] != " ":
+                self.error(path, f"{location}.penpotEmptyPlaceholder", "requires text, hideWhenEmpty true, and exactly one ASCII space")
         if kind in STRUCTURAL or kind == "text":
             if not isinstance(node.get("name"), str) or not NAME.fullmatch(node["name"]): self.error(path, f"{location}.name", "must use PascalCase")
         if kind == "text": self.validate_value(node.get("value"), "string", path, f"{location}.value", owner)
@@ -340,6 +376,8 @@ class Validator:
                         allowed_values = template.get(f"{key}s", [])
                         if allowed_values and design.get(key) is None: self.error(path, f"{location}.design.{key}", f"is required for {library}.{component}")
                         elif design.get(key) not in (None, *allowed_values): self.error(path, f"{location}.design.{key}", f"unsupported representative {key}")
+                    if "colorTreatment" in design and design["colorTreatment"] not in template.get("colorTreatments", []):
+                        self.error(path, f"{location}.design.colorTreatment", "unsupported representative color treatment")
                     if component == "Button":
                         visual_variant = design.get("variant")
                         runtime_variant = props.get("variant")

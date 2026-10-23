@@ -49,6 +49,31 @@
           "uniqueItems": true,
           "items": { "type": "string", "minLength": 1 }
         },
+        "penpotAudit": {
+          "type": "object",
+          "required": ["adapter", "internals", "textProps", "observableStates"],
+          "properties": {
+            "adapter": { "enum": ["container", "text", "button", "progress", "options", "shape"] },
+            "internals": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+            "textProps": { "type": "object", "additionalProperties": { "type": "string" } },
+            "observableStates": { "type": "array", "uniqueItems": true, "items": { "type": "string" } },
+            "icons": { "type": "object", "additionalProperties": { "type": "string" } },
+            "inactiveNativeBranches": {
+              "type": "array", "minItems": 1, "uniqueItems": true,
+              "items": {
+                "type": "object", "required": ["sourceName", "slot", "family", "children"],
+                "properties": {
+                  "sourceName": { "enum": ["BackButton", "EndButton"] },
+                  "slot": { "enum": ["start", "end"] },
+                  "family": { "const": "Library/PrimeVue/Button" },
+                  "children": { "const": ["Label", "TrailingIcon"] }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
         "penpotTemplate": {
           "type": "object",
           "required": ["appearances", "states"],
@@ -70,6 +95,10 @@
               "minItems": 1,
               "uniqueItems": true,
               "items": { "type": "string", "minLength": 1 }
+            },
+            "colorTreatments": {
+              "type": "array", "minItems": 1, "uniqueItems": true,
+              "items": { "const": "accessible-blue" }
             },
             "sizes": {
               "type": "array",
