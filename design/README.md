@@ -98,8 +98,30 @@ Each specification must provide:
 - stable PascalCase `name`;
 - a non-empty `rationale`;
 - explicit props and variants;
-- a `composition` tree using registered library components, structural nodes,
-  text, or other non-cyclic custom components.
+- a complete `variants.<state>.composition` tree using registered library
+  components, structural nodes, text, or other non-cyclic custom components;
+- literal `variants.<state>.previewProps` for every required prop and every
+  optional prop bound in that state's composition.
+
+There is no top-level composition, state inheritance, override mechanism, or
+implicit state flag. Each state declares its nested control props and design
+states directly. Every node has a stable PascalCase name, unique within that
+state; reuse the same names across states for equivalent roles. Bindings refer
+only to declared custom props with matching types. Preview props are design
+examples, not runtime defaults. Page instances select the complete tree using
+their existing `variant` and supply their own props.
+
+Card slot children must remain inside their Card container, and structural
+rows/columns must remain containers. By explicit approval, custom families listed
+in `penpot.json` under `customComponents.structuralCardShells` render their
+root PrimeVue Card as a structural Penpot board, not a native Card copy. Their
+JSON/runtime semantics remain PrimeVue Card. Preserve named Content and Footer
+slot containers, native nested Button/Tag copies, and native custom State
+variants. This exception applies only to the root Card of the listed families;
+it does not permit detached controls, sibling overlays, or structural substitutes
+for other library nodes. Loading Buttons require a visible loading indicator, not opacity
+alone. Text-variant Buttons must not use a filled primary surface. Unsupported
+native composition must be reported as a blocker, not flattened or detached.
 
 ## Page organization
 
@@ -129,7 +151,13 @@ custom-component names use PascalCase.
 - Project custom components live on `Components` and use stable names
   `Component/<Name>`.
 - Both kinds are native reusable Penpot components.
-- Page nodes are native copy instances from the matching family.
+- Page nodes are native copy instances from the matching family, except PrimeVue
+  Cards on pages explicitly listed in `penpot.json.pageStructuralCardShells`.
+  These Cards use structural boards with named slot containers; JSON/runtime
+  semantics remain PrimeVue Card. The approved Homepage-only exception covers
+  its eight Cards, not other controls or pages. All nested Avatar, Tag, Timeline,
+  and Button controls remain native copies. Detached controls and sibling
+  overlays remain prohibited.
 - Custom components use nested library component instances where applicable.
 - Library templates must be semantically recognizable and approximately follow
   approved tokens. Pixel-for-pixel PrimeVue reproduction is not required.

@@ -69,6 +69,29 @@ composition or a registered library control is insufficient. Update in order:
 Custom compositions should retain nested PrimeVue instances in Penpot and must
 not redraw generic controls as rectangles/text.
 
+Each `variants.<state>` contains exactly `previewProps` and `composition`.
+Write a full tree for every state, including explicit Button `disabled`,
+`loading`, and `design.state` values. Do not add a shared top-level composition
+or infer behavior from free-form variant flags. Bind composition values using
+`{ "bind": "propName" }`; the declared custom prop type must match its target.
+Supply literal preview values for all required props and optional props used by
+that state's bindings. Missing optional values are not implicitly blanked.
+Preview examples never override page-instance inputs or act as runtime defaults.
+
+Use stable unique PascalCase names on all composition nodes. Equivalent roles
+should retain names across states. Preserve Card slot containment and named
+structural rows; overlaying sibling controls on an empty Card is not equivalent.
+Approved `customComponents.structuralCardShells` families use a structural board
+for their root Card in Penpot only, with Content/Footer containers inside it.
+The specification remains a PrimeVue Card; nested Buttons/Tags remain native
+copies and custom families remain native State variants. Do not extend this
+exception to other controls or families without approval.
+Render loading with an explicit visible indicator, disabled without loading,
+and text actions without filled surfaces. If native nesting is unsupported,
+stop synchronization and report the limitation. Schema/validator checks cover
+JSON contracts; live hierarchy and representative appearance require a separate
+Penpot audit.
+
 ## Pages
 
 Store every page at `design/pages/<feature>/<screen>.page.json`. Its

@@ -3,7 +3,7 @@
   "$id": "custom-component.schema.json",
   "title": "Project-owned custom component",
   "type": "object",
-  "required": ["kind", "name", "rationale", "props", "variants", "composition"],
+  "required": ["kind", "name", "rationale", "props", "variants"],
   "properties": {
     "$schema": { "type": "string" },
     "kind": { "const": "custom-component" },
@@ -24,9 +24,42 @@
     "variants": {
       "type": "object",
       "minProperties": 1,
-      "additionalProperties": { "type": "object" }
-    },
-    "composition": { "$ref": "node.schema.json" }
+      "propertyNames": { "pattern": "^[a-z][A-Za-z0-9]*$" },
+      "additionalProperties": {
+        "type": "object",
+        "required": ["previewProps", "composition"],
+        "properties": {
+          "previewProps": {
+            "type": "object",
+            "description": "Literal representative inputs, validated against the custom props. Never used as runtime defaults or overrides."
+          },
+          "composition": {
+            "$ref": "#/$defs/namedNode",
+            "description": "Complete state tree; no inheritance, implicit flags, or overrides. Bindings reference custom props only."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "namedNode": {
+      "allOf": [
+        { "$ref": "node.schema.json" },
+        {
+          "type": "object",
+          "required": ["name"],
+          "properties": {
+            "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$" },
+            "children": { "type": "array", "items": { "$ref": "#/$defs/namedNode" } },
+            "slots": {
+              "type": "object",
+              "additionalProperties": { "type": "array", "items": { "$ref": "#/$defs/namedNode" } }
+            }
+          }
+        }
+      ]
+    }
+  }
 }

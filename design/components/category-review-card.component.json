@@ -4,61 +4,403 @@
   "name": "CategoryReviewCard",
   "rationale": "Recurring domain card that combines a review category, scheduling metrics, and review actions.",
   "props": {
-    "title": { "type": "string", "required": true },
-    "specialization": { "type": "string", "required": true },
-    "due": { "type": "string", "required": true },
-    "new": { "type": "string", "required": true },
-    "total": { "type": "string", "required": true },
-    "primaryAction": { "type": "string", "required": true }
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "specialization": {
+      "type": "string",
+      "required": true
+    },
+    "due": {
+      "type": "string",
+      "required": true
+    },
+    "new": {
+      "type": "string",
+      "required": true
+    },
+    "total": {
+      "type": "string",
+      "required": true
+    },
+    "primaryAction": {
+      "type": "string",
+      "required": true
+    }
   },
   "variants": {
-    "active": { "primaryActionDisabled": false, "loading": false },
-    "nothingDue": { "primaryActionDisabled": true, "loading": false },
-    "loading": { "primaryActionDisabled": true, "loading": true }
-  },
-  "composition": {
-    "type": "library-component",
-    "library": "primevue",
-    "component": "Card",
-    "design": { "appearance": "default", "state": "default" },
-    "slots": {
-      "content": [
-        { "type": "text", "name": "Title", "value": { "bind": "title" } },
-        {
-          "type": "library-component",
-          "library": "primevue",
-          "component": "Tag",
-          "props": { "value": { "bind": "specialization" }, "severity": "info" },
-          "design": { "appearance": "specialization", "state": "default" }
+    "active": {
+      "previewProps": {
+        "title": "Spring",
+        "specialization": "Java",
+        "due": "4 к повторению",
+        "new": "8 новых",
+        "total": "31 всего",
+        "primaryAction": "Повторить"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
         },
-        {
-          "type": "row",
-          "name": "Metrics",
-          "children": [
-            { "type": "text", "name": "DueMetric", "value": { "bind": "due" } },
-            { "type": "text", "name": "NewMetric", "value": { "bind": "new" } },
-            { "type": "text", "name": "TotalMetric", "value": { "bind": "total" } }
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Tag",
+              "props": {
+                "value": {
+                  "bind": "specialization"
+                },
+                "severity": "info"
+              },
+              "design": {
+                "appearance": "specialization",
+                "state": "default"
+              },
+              "name": "SpecializationTag"
+            },
+            {
+              "type": "row",
+              "name": "Metrics",
+              "children": [
+                {
+                  "type": "text",
+                  "name": "DueMetric",
+                  "value": {
+                    "bind": "due"
+                  }
+                },
+                {
+                  "type": "text",
+                  "name": "NewMetric",
+                  "value": {
+                    "bind": "new"
+                  }
+                },
+                {
+                  "type": "text",
+                  "name": "TotalMetric",
+                  "value": {
+                    "bind": "total"
+                  }
+                }
+              ],
+              "gap": "spacing.md"
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "primaryAction"
+                },
+                "severity": "primary",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "startCategoryReview"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "filled",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "PrimaryAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
           ]
-        }
-      ],
-      "footer": [
-        {
-          "type": "library-component",
-          "library": "primevue",
-          "component": "Button",
-          "props": { "label": { "bind": "primaryAction" }, "severity": "primary" },
-          "action": { "type": "command", "name": "startCategoryReview" },
-          "design": { "appearance": "primary", "variant": "filled", "size": "normal", "state": "default" }
         },
-        {
-          "type": "library-component",
-          "library": "primevue",
-          "component": "Button",
-          "props": { "label": "Подробнее", "severity": "primary", "variant": "text" },
-          "action": { "type": "command", "name": "openCategoryDetails" },
-          "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" }
-        }
-      ]
+        "name": "RootCard"
+      }
+    },
+    "nothingDue": {
+      "previewProps": {
+        "title": "SQL",
+        "specialization": "Java",
+        "due": "0 к повторению",
+        "new": "0 новых",
+        "total": "22 всего",
+        "primaryAction": "Пока всё"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
+        },
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Tag",
+              "props": {
+                "value": {
+                  "bind": "specialization"
+                },
+                "severity": "info"
+              },
+              "design": {
+                "appearance": "specialization",
+                "state": "default"
+              },
+              "name": "SpecializationTag"
+            },
+            {
+              "type": "row",
+              "name": "Metrics",
+              "children": [
+                {
+                  "type": "text",
+                  "name": "DueMetric",
+                  "value": {
+                    "bind": "due"
+                  }
+                },
+                {
+                  "type": "text",
+                  "name": "NewMetric",
+                  "value": {
+                    "bind": "new"
+                  }
+                },
+                {
+                  "type": "text",
+                  "name": "TotalMetric",
+                  "value": {
+                    "bind": "total"
+                  }
+                }
+              ],
+              "gap": "spacing.md"
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "primaryAction"
+                },
+                "severity": "primary",
+                "disabled": true,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "startCategoryReview"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "filled",
+                "size": "normal",
+                "state": "disabled"
+              },
+              "name": "PrimaryAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
+          ]
+        },
+        "name": "RootCard"
+      }
+    },
+    "loading": {
+      "previewProps": {
+        "title": "Spring",
+        "specialization": "Java",
+        "due": "4 к повторению",
+        "new": "8 новых",
+        "total": "31 всего",
+        "primaryAction": "Повторить"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
+        },
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Tag",
+              "props": {
+                "value": {
+                  "bind": "specialization"
+                },
+                "severity": "info"
+              },
+              "design": {
+                "appearance": "specialization",
+                "state": "default"
+              },
+              "name": "SpecializationTag"
+            },
+            {
+              "type": "row",
+              "name": "Metrics",
+              "children": [
+                {
+                  "type": "text",
+                  "name": "DueMetric",
+                  "value": {
+                    "bind": "due"
+                  }
+                },
+                {
+                  "type": "text",
+                  "name": "NewMetric",
+                  "value": {
+                    "bind": "new"
+                  }
+                },
+                {
+                  "type": "text",
+                  "name": "TotalMetric",
+                  "value": {
+                    "bind": "total"
+                  }
+                }
+              ],
+              "gap": "spacing.md"
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "primaryAction"
+                },
+                "severity": "primary",
+                "disabled": true,
+                "loading": true
+              },
+              "action": {
+                "type": "command",
+                "name": "startCategoryReview"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "filled",
+                "size": "normal",
+                "state": "loading"
+              },
+              "name": "PrimaryAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
+          ]
+        },
+        "name": "RootCard"
+      }
     }
   }
 }

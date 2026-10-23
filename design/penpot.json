@@ -12,10 +12,12 @@
     "pageName": "Components",
     "componentPrefix": "Component/",
     "representation": "native",
-    "variantProperty": "State"
+    "variantProperty": "State",
+    "structuralCardShells": ["CategoryReviewCard", "CategorySelectionRow"]
   },
   "featurePagePrefix": "Pages / ",
   "pageFramePrefix": "Page/",
   "pageComponentRepresentation": "instance",
+  "pageStructuralCardShells": ["Homepage"],
   "renderStrategy": "replace-by-name"
 }

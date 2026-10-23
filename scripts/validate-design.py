@@ -172,20 +172,81 @@ class Validator:
             if not isinstance(props, dict): self.error(path, "$.props", "must be an object")
             variants = value.get("variants")
             if not isinstance(variants, dict) or not variants: self.error(path, "$.variants", "must be non-empty")
-            composition = value.get("composition")
-            if not isinstance(composition, dict): self.error(path, "$.composition", "must be a node")
-            else:
-                deps: set[str] = set()
-                self.validate_node(composition, path, "$.composition", name, deps)
-                self.custom_dependencies[name] = deps
             self.token_refs(value, path)
+        # Register all families before validating any state's dependencies.
+        for name, doc in self.custom_components.items():
+            self.validate_custom_states(doc, name)
         self.validate_cycles()
+
+    def validate_custom_states(self, doc: Document, name: str) -> None:
+        value, path = doc.value, doc.path
+        allowed = {"$schema", "kind", "name", "rationale", "props", "variants"}
+        for key in set(value) - allowed:
+            self.error(path, f"$.{key}", "unsupported custom field; use complete per-state compositions")
+        declared = value.get("props", {})
+        if not isinstance(declared, dict): return
+        for prop, spec in declared.items():
+            if not isinstance(spec, dict) or spec.get("type") not in {"string", "number", "boolean", "array", "object"}:
+                self.error(path, f"$.props.{prop}", "must declare a supported type")
+                return
+        variants = value.get("variants")
+        if not isinstance(variants, dict): return
+        deps: set[str] = set()
+        for state, variant in variants.items():
+            loc = f"$.variants.{state}"
+            if not re.fullmatch(r"[a-z][A-Za-z0-9]*", state): self.error(path, loc, "state must use lowerCamelCase")
+            if not isinstance(variant, dict) or set(variant) != {"previewProps", "composition"}:
+                self.error(path, loc, "must contain exactly previewProps and composition"); continue
+            preview, tree = variant["previewProps"], variant["composition"]
+            if not isinstance(preview, dict): self.error(path, f"{loc}.previewProps", "must be an object"); continue
+            for prop, item in preview.items():
+                if prop not in declared: self.error(path, f"{loc}.previewProps.{prop}", "unknown preview prop")
+                else: self.validate_value(item, declared[prop]["type"], path, f"{loc}.previewProps.{prop}", None)
+            for prop, spec in declared.items():
+                if spec.get("required") and prop not in preview: self.error(path, f"{loc}.previewProps", f"missing required prop {prop!r}")
+            self.validate_node(tree, path, f"{loc}.composition", name, deps)
+            seen: set[str] = set()
+            def inspect(node: Any, location: str) -> None:
+                if not isinstance(node, dict): return
+                node_name = node.get("name")
+                if not isinstance(node_name, str) or not NAME.fullmatch(node_name): self.error(path, f"{location}.name", "every state node requires a PascalCase name")
+                elif node_name in seen: self.error(path, f"{location}.name", f"duplicate node name {node_name!r}")
+                else: seen.add(node_name)
+                def bindings(item: Any) -> None:
+                    if isinstance(item, dict):
+                        if set(item) == {"bind"}:
+                            bound = item["bind"]
+                            if isinstance(bound, str) and bound in declared and bound not in preview: self.error(path, f"{loc}.previewProps", f"missing bound preview prop {bound!r}")
+                        else:
+                            for child in item.values(): bindings(child)
+                    elif isinstance(item, list):
+                        for child in item: bindings(child)
+                bindings(node.get("props", {})); bindings(node.get("value"))
+                if node.get("type") == "library-component":
+                    definition = self.library_components.get((node.get("library"), node.get("component")), {})
+                    node_props = node.get("props", {})
+                    if isinstance(node_props, dict):
+                        for prop, item in node_props.items():
+                            if isinstance(item, dict) and set(item) == {"bind"} and isinstance(item["bind"], str) and item["bind"] in preview:
+                                spec = definition.get("props", {}).get(prop, {})
+                                sample = preview[item["bind"]]
+                                if spec.get("enum") and sample not in spec["enum"]: self.error(path, f"{location}.props.{prop}", f"bound preview must be one of {spec['enum']}")
+                children = node.get("children", [])
+                if isinstance(children, list):
+                    for i, child in enumerate(children): inspect(child, f"{location}.children[{i}]")
+                slots = node.get("slots", {})
+                if isinstance(slots, dict):
+                    for slot, children in slots.items():
+                        if isinstance(children, list):
+                            for i, child in enumerate(children): inspect(child, f"{location}.slots.{slot}[{i}]")
+            inspect(tree, f"{loc}.composition")
+        self.custom_dependencies[name] = deps
 
     def validate_cycles(self) -> None:
         visiting: set[str] = set(); visited: set[str] = set()
         def visit(name: str, trail: list[str]) -> None:
             if name in visiting:
-                self.error(self.custom_components[name].path, "$.composition", f"cycle: {' -> '.join(trail + [name])}"); return
+                self.error(self.custom_components[name].path, "$.variants", f"cycle: {' -> '.join(trail + [name])}"); return
             if name in visited: return
             visiting.add(name)
             for dep in self.custom_dependencies.get(name, set()):
@@ -235,6 +296,7 @@ class Validator:
             binding = value.get("bind")
             if not owner: self.error(path, location, "bindings are only allowed in custom composition")
             elif not isinstance(binding, str) or binding not in self.custom_components[owner].value.get("props", {}): self.error(path, location, f"unknown binding {binding!r}")
+            elif self.custom_components[owner].value["props"][binding].get("type") != expected: self.error(path, location, f"binding {binding!r} must have type {expected}")
             return
         checks = {"string": lambda x: isinstance(x, str), "number": lambda x: isinstance(x, (int, float)) and not isinstance(x, bool), "boolean": lambda x: isinstance(x, bool), "array": lambda x: isinstance(x, list), "object": lambda x: isinstance(x, dict)}
         if expected in checks and not checks[expected](value): self.error(path, location, f"must be {expected}")
@@ -246,6 +308,7 @@ class Validator:
         if kind not in NODE_TYPES: self.error(path, f"{location}.type", f"unsupported node type {kind!r}"); return
         if kind in STRUCTURAL or kind == "text":
             if not isinstance(node.get("name"), str) or not NAME.fullmatch(node["name"]): self.error(path, f"{location}.name", "must use PascalCase")
+        if kind == "text": self.validate_value(node.get("value"), "string", path, f"{location}.value", owner)
         if kind == "library-component":
             self.library_refs += 1
             library, component = node.get("library"), node.get("component")
@@ -290,6 +353,10 @@ class Validator:
                     state = design.get("state")
                     if state == "disabled" and props.get("disabled") is not True: self.error(path, f"{location}.props.disabled", "must be true for disabled design state")
                     if state == "loading" and component == "Button" and props.get("loading") is not True: self.error(path, f"{location}.props.loading", "must be true for loading design state")
+                    if component == "Button":
+                        if props.get("loading") is True and state != "loading": self.error(path, f"{location}.design.state", "must be loading when loading is true")
+                        elif props.get("disabled") is True and props.get("loading") is not True and state != "disabled": self.error(path, f"{location}.design.state", "must be disabled when disabled is true without loading")
+                        if owner and (not isinstance(props.get("disabled"), bool) or not isinstance(props.get("loading"), bool)): self.error(path, f"{location}.props", "custom state Buttons require literal disabled and loading booleans")
                 else: self.error(path, f"{location}.design", "must be an object")
         elif kind == "custom-component":
             self.custom_refs += 1
@@ -344,11 +411,34 @@ class Validator:
         library, custom = value.get("libraryComponents"), value.get("customComponents")
         if not isinstance(library, dict) or library.get("representation") != "native" or library.get("fidelity") != "representative": self.error(doc.path, "$.libraryComponents", "must be native with representative fidelity")
         if not isinstance(custom, dict) or custom.get("representation") != "native" or custom.get("variantProperty") != "State": self.error(doc.path, "$.customComponents", "must be native with State variants")
+        if isinstance(custom, dict): self.validate_structural_card_shells(custom.get("structuralCardShells", []), doc.path)
         if isinstance(library, dict) and isinstance(custom, dict):
             if library.get("pageName") == custom.get("pageName"): self.error(doc.path, "$", "library and custom pages must differ")
             if library.get("componentPrefix") == custom.get("componentPrefix"): self.error(doc.path, "$", "library and custom prefixes must differ")
+        self.validate_page_structural_card_shells(value.get("pageStructuralCardShells", []), doc.path)
         if value.get("pageComponentRepresentation") != "instance": self.error(doc.path, "$.pageComponentRepresentation", "must be 'instance'")
         if value.get("renderStrategy") != "replace-by-name": self.error(doc.path, "$.renderStrategy", "must be 'replace-by-name'")
+
+    def validate_page_structural_card_shells(self, names: Any, path: Path) -> None:
+        location = "$.pageStructuralCardShells"
+        if not isinstance(names, list) or not all(isinstance(name, str) for name in names):
+            self.error(path, location, "must be an array of page names"); return
+        if len(names) != len(set(names)): self.error(path, location, "must contain unique page names")
+        for name in names:
+            if name not in self.pages: self.error(path, location, f"unknown page {name!r}")
+
+    def validate_structural_card_shells(self, names: Any, path: Path) -> None:
+        location = "$.customComponents.structuralCardShells"
+        if not isinstance(names, list) or not all(isinstance(name, str) for name in names):
+            self.error(path, location, "must be an array of custom family names"); return
+        if len(names) != len(set(names)): self.error(path, location, "must contain unique family names")
+        for name in names:
+            doc = self.custom_components.get(name)
+            if not doc: self.error(path, location, f"unknown custom family {name!r}"); continue
+            for state, variant in doc.value.get("variants", {}).items():
+                tree = variant.get("composition", {}) if isinstance(variant, dict) else {}
+                if tree.get("type") != "library-component" or tree.get("library") != "primevue" or tree.get("component") != "Card":
+                    self.error(path, location, f"{name}.{state} must have a PrimeVue Card root")
 
     def unrecognized_json(self) -> None:
         recognized = {TOKENS, PENPOT, *SCHEMA_FILES}

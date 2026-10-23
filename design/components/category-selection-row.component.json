@@ -4,46 +4,395 @@
   "name": "CategorySelectionRow",
   "rationale": "Recurring domain row that combines category selection, progress, mutation state, and navigation to details.",
   "props": {
-    "title": { "type": "string", "required": true },
-    "questionCount": { "type": "string", "required": true },
-    "progress": { "type": "string", "required": false },
-    "action": { "type": "string", "required": true }
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "questionCount": {
+      "type": "string",
+      "required": true
+    },
+    "progress": {
+      "type": "string",
+      "required": false
+    },
+    "action": {
+      "type": "string",
+      "required": true
+    }
   },
   "variants": {
-    "available": { "selected": false, "disabled": false, "loading": false },
-    "selected": { "selected": true, "disabled": false, "loading": false },
-    "saving": { "selected": false, "disabled": true, "loading": true },
-    "disabled": { "selected": false, "disabled": true, "loading": false }
-  },
-  "composition": {
-    "type": "library-component",
-    "library": "primevue",
-    "component": "Card",
-    "design": { "appearance": "default", "state": "default" },
-    "slots": {
-      "content": [
-        { "type": "text", "name": "Title", "value": { "bind": "title" } },
-        { "type": "text", "name": "QuestionCount", "value": { "bind": "questionCount" } },
-        { "type": "text", "name": "ProgressText", "value": { "bind": "progress" } }
-      ],
-      "footer": [
-        {
-          "type": "library-component",
-          "library": "primevue",
-          "component": "Button",
-          "props": { "label": { "bind": "action" }, "severity": "primary", "variant": "text" },
-          "action": { "type": "command", "name": "toggleCategorySelection" },
-          "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" }
+    "available": {
+      "previewProps": {
+        "title": "Core",
+        "questionCount": "38 вопросов",
+        "progress": "12 доступны",
+        "action": "Добавить"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
         },
-        {
-          "type": "library-component",
-          "library": "primevue",
-          "component": "Button",
-          "props": { "label": "Подробнее", "severity": "primary", "variant": "text" },
-          "action": { "type": "command", "name": "openCategoryDetails" },
-          "design": { "appearance": "primary", "variant": "text", "size": "normal", "state": "default" }
-        }
-      ]
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "text",
+              "name": "QuestionCount",
+              "value": {
+                "bind": "questionCount"
+              }
+            },
+            {
+              "type": "text",
+              "name": "ProgressText",
+              "value": {
+                "bind": "progress"
+              }
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "action"
+                },
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "toggleCategorySelection"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "MutationAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
+          ]
+        },
+        "name": "RootCard"
+      }
+    },
+    "selected": {
+      "previewProps": {
+        "title": "Core",
+        "questionCount": "38 вопросов",
+        "progress": "12 доступны",
+        "action": "Удалить"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
+        },
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "text",
+              "name": "QuestionCount",
+              "value": {
+                "bind": "questionCount"
+              }
+            },
+            {
+              "type": "text",
+              "name": "ProgressText",
+              "value": {
+                "bind": "progress"
+              }
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "action"
+                },
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "toggleCategorySelection"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "MutationAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
+          ]
+        },
+        "name": "RootCard"
+      }
+    },
+    "saving": {
+      "previewProps": {
+        "title": "Core",
+        "questionCount": "38 вопросов",
+        "progress": "12 доступны",
+        "action": "Добавить"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
+        },
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "text",
+              "name": "QuestionCount",
+              "value": {
+                "bind": "questionCount"
+              }
+            },
+            {
+              "type": "text",
+              "name": "ProgressText",
+              "value": {
+                "bind": "progress"
+              }
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "action"
+                },
+                "severity": "primary",
+                "variant": "text",
+                "disabled": true,
+                "loading": true
+              },
+              "action": {
+                "type": "command",
+                "name": "toggleCategorySelection"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "loading"
+              },
+              "name": "MutationAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
+          ]
+        },
+        "name": "RootCard"
+      }
+    },
+    "disabled": {
+      "previewProps": {
+        "title": "Core",
+        "questionCount": "38 вопросов",
+        "progress": "12 доступны",
+        "action": "Добавить"
+      },
+      "composition": {
+        "type": "library-component",
+        "library": "primevue",
+        "component": "Card",
+        "design": {
+          "appearance": "default",
+          "state": "default"
+        },
+        "slots": {
+          "content": [
+            {
+              "type": "text",
+              "name": "Title",
+              "value": {
+                "bind": "title"
+              }
+            },
+            {
+              "type": "text",
+              "name": "QuestionCount",
+              "value": {
+                "bind": "questionCount"
+              }
+            },
+            {
+              "type": "text",
+              "name": "ProgressText",
+              "value": {
+                "bind": "progress"
+              }
+            }
+          ],
+          "footer": [
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": {
+                  "bind": "action"
+                },
+                "severity": "primary",
+                "variant": "text",
+                "disabled": true,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "toggleCategorySelection"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "disabled"
+              },
+              "name": "MutationAction"
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "Button",
+              "props": {
+                "label": "Подробнее",
+                "severity": "primary",
+                "variant": "text",
+                "disabled": false,
+                "loading": false
+              },
+              "action": {
+                "type": "command",
+                "name": "openCategoryDetails"
+              },
+              "design": {
+                "appearance": "primary",
+                "variant": "text",
+                "size": "normal",
+                "state": "default"
+              },
+              "name": "DetailsAction"
+            }
+          ]
+        },
+        "name": "RootCard"
+      }
     }
   }
 }
