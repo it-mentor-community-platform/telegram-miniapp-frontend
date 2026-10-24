@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 940px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<header style="display: flex; align-items: center; gap: 12px">
+<div style="width: 48px; height: 48px; border-radius: 50%; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; flex-shrink: 0">СЖ</div>
+<div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0">
+<div style="font-size: 18px; font-weight: 600; line-height: 22px">Привет, Сергей</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{roles}}" as="r" hint-placeholder-count="1">
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{r.bg}}; color: {{r.fg}}">{{r.label}}</span>
+</sc-for>
+</div>
+</div>
+<button type="button" aria-label="Настройки" style="width: 44px; height: 44px; border-radius: 50%; border: none; background: transparent; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>
+</button>
+</header>
+
+<a href="Repetition.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 44px; height: 44px; border-radius: 10px; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 20px">Вопросы к собеседованиям</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Интервальное повторение</span>
+</span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.warnSoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.warnText}}">12</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.warnText}}">к повторению</span>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.chip}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px">5</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">тем</span>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.chip}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px">108</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">выучено</span>
+</span>
+</div>
+</a>
+
+<a href="Projects.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 44px; height: 44px; border-radius: 10px; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14"></path><path d="M15 6v14"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0">
+<span style="font-size: 16px; font-weight: 600; line-height: 20px">Мои проекты</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Прогресс по роадмапу</span>
+</span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; line-height: 18px">
+<span style="font-weight: 600">Java Backend</span>
+<span style="color: {{t.muted}}">3 из 6</span>
+</div>
+<div style="height: 8px; border-radius: 4px; background: {{t.track}}; overflow: hidden"><div style="width: 50%; height: 8px; border-radius: 4px; background: {{t.bar}}"></div></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; line-height: 18px">
+<span style="font-weight: 600">Python Backend</span>
+<span style="color: {{t.muted}}">1 из 6</span>
+</div>
+<div style="height: 8px; border-radius: 4px; background: {{t.track}}; overflow: hidden"><div style="width: 16.7%; height: 8px; border-radius: 4px; background: {{t.bar}}"></div></div>
+</div>
+</div>
+</a>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Разделы</h2>
+<nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Профиль</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Достижения, проекты и ревью</span></span>
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{t.primarySoft}}; color: {{t.primaryText}}">4 ачивки</span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="m8 10 3 3 5-5"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Ревью</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Ревью на ваши проекты</span></span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Кабинет ментора</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Цены на ревью и услуги</span></span>
+<sc-if value="{{inactiveMentor}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{t.chip}}; color: {{t.muted}}">Неактивен</span>
+</sc-if>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9.5" r="2.5"></circle><path d="M17 14.5a5 5 0 0 1 4.5 5"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Участники</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Поиск по имени, GitHub, Telegram</span></span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 6-6"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Рынок труда</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Вакансии и зарплаты на hh.ru</span></span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+
+<sc-if value="{{isAdmin}}" hint-placeholder-val="{{ false }}">
+<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Администрирование</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Роли пользователей</span></span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+</sc-if>
+
+</nav>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"role":{"editor":"enum","options":["Студент","Студент + ментор","Админ"],"default":"Студент"},"$preview":{"width":390,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const role = this.props.role ?? 'Студент';
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
+      chip: '#27272a', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      track: '#3f3f46', bar: '#34d399',
+      warnSoft: 'rgba(249, 115, 22, 0.16)', warnText: '#fdba74',
+      infoSoft: 'rgba(96, 165, 250, 0.16)', infoText: '#93c5fd',
+      violetSoft: 'rgba(167, 139, 250, 0.16)', violetText: '#c4b5fd'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
+      chip: '#f1f5f9', primarySoft: '#ecfdf5', primaryText: '#047857',
+      track: '#e2e8f0', bar: '#10b981',
+      warnSoft: '#fff7ed', warnText: '#c2410c',
+      infoSoft: '#eff6ff', infoText: '#1d4ed8',
+      violetSoft: '#f5f3ff', violetText: '#6d28d9'
+    };
+    const isMentor = role !== 'Студент';
+    const isAdmin = role === 'Админ';
+    const roles = [{ label: 'Студент', bg: t.primarySoft, fg: t.primaryText }];
+    if (isMentor) roles.push({ label: 'Ментор', bg: t.infoSoft, fg: t.infoText });
+    if (isAdmin) roles.push({ label: 'Админ', bg: t.violetSoft, fg: t.violetText });
+    return { t, roles, isAdmin, inactiveMentor: !isMentor };
+  }
+}
+</script>
+</body>
+</html>

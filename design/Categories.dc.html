@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Все темы</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+input::placeholder{color:#94a3b8}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 1240px; box-sizing: border-box; padding: 20px 16px 104px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<header style="display: flex; flex-direction: column; gap: 4px">
+<nav aria-label="Навигация" style="margin: -12px 0 -4px -12px">
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; align-items: center; min-width: 0">
+<li style="display: flex; flex-shrink: 0"><a href="Main.dc.html" aria-label="Главная" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: {{t.muted}}; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg></a></li>
+<li aria-hidden="true" style="display: flex; flex-shrink: 0; color: {{t.chev}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></li>
+<li style="display: flex; min-width: 0"><a href="Repetition.dc.html" style="display: block; height: 44px; line-height: 44px; padding: 0 8px; font-size: 13px; font-weight: 500; color: {{t.muted}}; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">Повторение</a></li>
+</ol>
+</nav>
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Все темы</h1>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: {{t.muted}}">Добавьте темы, вопросы из которых хотите повторять</p>
+</header>
+
+<label style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.muted}}">
+<span class="sr-only">Поиск по темам</span>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input type="search" placeholder="Поиск по темам" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; font: inherit; font-size: 15px; color: {{t.text}}">
+</label>
+
+<div role="group" aria-label="Специализация" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 10px; background: {{t.chip}}">
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+<button type="button" onClick="{{f.pick}}" aria-pressed="{{f.pressed}}" style="height: 36px; border: none; border-radius: 7px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; background: {{f.bg}}; color: {{f.fg}}; box-shadow: {{f.sh}}">{{f.label}}</button>
+</sc-for>
+</div>
+
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em"><span>{{g.title}}</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">{{g.meta}}</span></h2>
+<div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{g.items}}" as="it" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; min-height: 64px; box-sizing: border-box; border-top: 1px solid {{it.sep}}">
+<a href="Topic.dc.html" style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; text-decoration: none">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">{{it.name}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">{{it.meta}}</span>
+</a>
+<button type="button" onClick="{{it.toggle}}" aria-pressed="{{it.pressed}}" style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; background: {{it.bg}}; color: {{it.fg}}; border: 1px solid {{it.bd}}">
+<sc-if value="{{it.selected}}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+<span>На повторении</span>
+</sc-if>
+<sc-if value="{{it.notSelected}}" hint-placeholder-val="{{ true }}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+<span>Добавить</span>
+</sc-if>
+</button>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+
+<sc-if value="{{onboarding}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 20px; background: {{t.bg}}; border-top: 1px solid {{t.border}}">
+<a href="Repetition.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 16px; font-weight: 600; text-decoration: none">Продолжить · выбрано {{selectedCount}}</a>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"onboarding":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'all', sel: { j2: true, j1: true, j3: true, j4: true, j7: true } };
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const onboarding = this.props.onboarding ?? false;
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
+      chip: '#27272a', seg: '#3f3f46', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      btnBg: '#34d399', btnText: '#022c22'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
+      chip: '#f1f5f9', seg: '#ffffff', primarySoft: '#ecfdf5', primaryText: '#047857',
+      btnBg: '#047857', btnText: '#ffffff'
+    };
+    const { filter, sel } = this.state;
+    const data = [
+      { key: 'java', title: 'Java Backend', items: [
+        { id: 'j1', name: 'Core', count: 38, pct: 68 },
+        { id: 'j2', name: 'Коллекции', count: 42, pct: 52 },
+        { id: 'j3', name: 'ООП', count: 31, pct: 71 },
+        { id: 'j4', name: 'Многопоточность', count: 36, pct: 47 },
+        { id: 'j5', name: 'JVM', count: 27, pct: 0 },
+        { id: 'j6', name: 'Spring', count: 29, pct: 0 },
+        { id: 'j7', name: 'Брокеры сообщений', count: 24, pct: 88 },
+        { id: 'j8', name: 'Базы данных и SQL', count: 33, pct: 0 }
+      ] },
+      { key: 'python', title: 'Python Backend', items: [
+        { id: 'p1', name: 'Основы языка', count: 30, pct: 0 },
+        { id: 'p2', name: 'Коллекции', count: 25, pct: 0 },
+        { id: 'p3', name: 'ООП', count: 22, pct: 0 },
+        { id: 'p4', name: 'Асинхронность', count: 18, pct: 0 }
+      ] },
+      { key: 'go', title: 'Go Backend', items: [
+        { id: 'g1', name: 'Основы языка', count: 26, pct: 0 },
+        { id: 'g2', name: 'Горутины и каналы', count: 20, pct: 0 }
+      ] }
+    ];
+    const plural = (n) => {
+      const m10 = n % 10, m100 = n % 100;
+      if (m10 === 1 && m100 !== 11) return 'вопрос';
+      if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'вопроса';
+      return 'вопросов';
+    };
+    const groups = data.filter((g) => filter === 'all' || filter === g.key).map((g) => {
+      const items = g.items.map((it, i) => {
+        const selected = !!sel[it.id];
+        return {
+          ...it,
+          selected,
+          notSelected: !selected,
+          pressed: selected ? 'true' : 'false',
+          meta: it.count + ' ' + plural(it.count) + (it.pct > 0 ? ' · выучено ' + it.pct + '%' : ''),
+          sep: i === 0 ? 'transparent' : t.border,
+          bg: selected ? t.primarySoft : t.card,
+          fg: selected ? t.primaryText : t.text2,
+          bd: selected ? 'transparent' : t.inputBorder,
+          toggle: () => this.setState({ sel: { ...this.state.sel, [it.id]: !this.state.sel[it.id] } })
+        };
+      });
+      const n = items.filter((x) => x.selected).length;
+      return { title: g.title, items, meta: n > 0 ? 'на повторении ' + n + ' из ' + items.length : items.length + ' тем' };
+    });
+    const filters = [['all', 'Все'], ['java', 'Java'], ['python', 'Python'], ['go', 'Go']].map(([key, label]) => ({
+      label,
+      pressed: filter === key ? 'true' : 'false',
+      bg: filter === key ? t.seg : 'transparent',
+      fg: filter === key ? t.text : t.muted,
+      sh: filter === key ? '0 1px 2px rgba(15, 23, 42, 0.08)' : 'none',
+      pick: () => this.setState({ filter: key })
+    }));
+    const selectedCount = Object.values(sel).filter(Boolean).length;
+    return { t, groups, filters, onboarding, selectedCount };
+  }
+}
+</script>
+</body>
+</html>

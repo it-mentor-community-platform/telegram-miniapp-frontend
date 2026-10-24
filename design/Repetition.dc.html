@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Повторение — мои темы</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 1040px; box-sizing: border-box; padding: 20px 16px 104px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<nav aria-label="Навигация" style="margin: -12px 0 -16px -12px">
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; align-items: center; min-width: 0">
+<li style="display: flex; flex-shrink: 0"><a href="Main.dc.html" aria-label="Главная" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: {{t.muted}}; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg></a></li>
+</ol>
+</nav>
+<header style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Повторение</h1>
+<a href="Categories.dc.html" style="display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.border}}; background: {{t.card}}; color: {{t.primaryText}}; font-size: 14px; font-weight: 600; text-decoration: none">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+Все темы
+</a>
+</header>
+
+<section style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 16px">
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.warnSoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.warnText}}">12</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.warnText}}">к повторению</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.infoSoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.infoText}}">8</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.infoText}}">новых</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.primarySoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.primaryText}}">108</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.primaryText}}">выучено</span>
+</div>
+</div>
+<a href="Stats.dc.html" style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 16px; border-top: 1px solid {{t.border}}; text-decoration: none; font-size: 14px; font-weight: 500; color: {{t.text2}}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 6-6"></path></svg>
+<span style="flex: 1">Статистика и активность</span>
+<span style="font-size: 13px; color: {{t.muted}}">серия 12 дней</span>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Мои темы · 5</h2>
+<sc-for list="{{topics}}" as="c" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<a href="Topic.dc.html" style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; text-decoration: none">
+<span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="font-size: 16px; font-weight: 600; line-height: 22px">{{c.name}}</span>
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{t.chip}}; color: {{t.text2}}">{{c.spec}}</span>
+</span>
+<sc-if value="{{c.hasDue}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}"><span style="font-weight: 600; color: {{t.warnText}}">{{c.due}}</span> к повторению · <span style="font-weight: 600; color: {{t.infoText}}">{{c.fresh}}</span> новых · {{c.total}} всего</span>
+</sc-if>
+<sc-if value="{{c.allDone}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Всё повторено · следующее {{c.next}}</span>
+</sc-if>
+</a>
+<sc-if value="{{c.hasDue}}" hint-placeholder-val="{{ true }}">
+<a href="Review.dc.html" aria-label="Повторить тему {{c.name}}" style="width: 44px; height: 44px; border-radius: 50%; background: {{t.btnBg}}; color: {{t.btnText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-decoration: none">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path></svg>
+</a>
+</sc-if>
+<sc-if value="{{c.allDone}}" hint-placeholder-val="{{ false }}">
+<span style="width: 44px; height: 44px; border-radius: 50%; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg role="img" aria-label="Всё повторено" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+</span>
+</sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; font-size: 12px; line-height: 16px; color: {{t.muted}}">
+<span>Выучено {{c.learned}} из {{c.total}}</span>
+<span style="font-weight: 600; color: {{t.text2}}">{{c.pct}}%</span>
+</div>
+<div style="height: 6px; border-radius: 3px; background: {{t.track}}; overflow: hidden"><div style="width: {{c.pct}}%; height: 6px; border-radius: 3px; background: {{t.bar}}"></div></div>
+</div>
+</div>
+</sc-for>
+</section>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 20px; background: {{t.bg}}; border-top: 1px solid {{t.border}}">
+<a href="Review.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 52px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 16px; font-weight: 600; text-decoration: none">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path></svg>
+Повторить всё · 20 вопросов
+</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
+      chip: '#27272a', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      track: '#3f3f46', bar: '#34d399', btnBg: '#34d399', btnText: '#022c22',
+      warnSoft: 'rgba(249, 115, 22, 0.16)', warnText: '#fdba74',
+      infoSoft: 'rgba(96, 165, 250, 0.16)', infoText: '#93c5fd'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
+      chip: '#f1f5f9', primarySoft: '#ecfdf5', primaryText: '#047857',
+      track: '#e2e8f0', bar: '#10b981', btnBg: '#047857', btnText: '#ffffff',
+      warnSoft: '#fff7ed', warnText: '#c2410c',
+      infoSoft: '#eff6ff', infoText: '#1d4ed8'
+    };
+    const raw = [
+      { name: 'Коллекции', spec: 'Java', due: 6, fresh: 4, total: 42, learned: 22 },
+      { name: 'Core', spec: 'Java', due: 3, fresh: 0, total: 38, learned: 26 },
+      { name: 'ООП', spec: 'Java', due: 2, fresh: 4, total: 31, learned: 22 },
+      { name: 'Многопоточность', spec: 'Java', due: 1, fresh: 0, total: 36, learned: 17 },
+      { name: 'Брокеры сообщений', spec: 'Java', due: 0, fresh: 0, total: 24, learned: 21, next: 'завтра' }
+    ];
+    const topics = raw.map((c) => ({
+      ...c,
+      hasDue: c.due + c.fresh > 0,
+      allDone: c.due + c.fresh === 0,
+      pct: Math.round((c.learned / c.total) * 100)
+    }));
+    return { t, topics };
+  }
+}
+</script>
+</body>
+</html>

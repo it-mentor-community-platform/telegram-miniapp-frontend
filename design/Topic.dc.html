@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Тема — Коллекции</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 1100px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<header style="display: flex; flex-direction: column; gap: 8px">
+<nav aria-label="Навигация" style="margin: -12px 0 -8px -12px">
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; align-items: center; min-width: 0">
+<li style="display: flex; flex-shrink: 0"><a href="Main.dc.html" aria-label="Главная" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: {{t.muted}}; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg></a></li>
+<li aria-hidden="true" style="display: flex; flex-shrink: 0; color: {{t.chev}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></li>
+<li style="display: flex; flex-shrink: 0"><a href="Repetition.dc.html" style="display: block; height: 44px; line-height: 44px; padding: 0 8px; font-size: 13px; font-weight: 500; color: {{t.muted}}; text-decoration: none; white-space: nowrap">Повторение</a></li>
+<li aria-hidden="true" style="display: flex; flex-shrink: 0; color: {{t.chev}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg></li>
+<li style="display: flex; min-width: 0"><a href="Categories.dc.html" style="display: block; height: 44px; line-height: 44px; padding: 0 8px; font-size: 13px; font-weight: 500; color: {{t.muted}}; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">Все темы</a></li>
+</ol>
+</nav>
+<span style="align-self: flex-start; font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{t.chip}}; color: {{t.text2}}">Java Backend</span>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700; line-height: 30px">Коллекции</h1>
+<div style="display: flex; align-items: center; gap: 12px; font-size: 14px; line-height: 20px; color: {{t.muted}}">
+<span>42 вопроса</span>
+<a href="https://zhukovsd.github.io/java-backend-interview-prep/" style="display: inline-flex; align-items: center; gap: 4px; color: {{t.primaryText}}; font-weight: 500; text-decoration: none">
+Открыть в методичке
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>
+</a>
+</div>
+</header>
+
+<sc-if value="{{added}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.warnSoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.warnText}}">6</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.warnText}}">к повторению</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.infoSoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.infoText}}">4</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.infoText}}">новых</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.primarySoft}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.primaryText}}">22</span>
+<span style="font-size: 12px; line-height: 16px; color: {{t.primaryText}}">выучено</span>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<a href="Review.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 15px; font-weight: 600; text-decoration: none">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"></path></svg>
+Повторить тему · 10 вопросов
+</a>
+<button type="button" onClick="{{toggleAdded}}" style="height: 44px; border: none; border-radius: 10px; background: transparent; color: {{t.muted}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Убрать с повторения</button>
+</div>
+</sc-if>
+
+<sc-if value="{{notAdded}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: {{t.text2}}">Просмотрите вопросы и ответы, а затем добавьте тему — вопросы будут попадать в очередь повторения по расписанию.</p>
+<button type="button" onClick="{{toggleAdded}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: none; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+Добавить на повторение
+</button>
+</div>
+</sc-if>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Вопросы</h2>
+<div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{questions}}" as="q" hint-placeholder-count="8">
+<div style="border-top: 1px solid {{q.sep}}">
+<button type="button" onClick="{{q.toggle}}" aria-expanded="{{q.exp}}" style="width: 100%; display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; min-height: 56px; box-sizing: border-box; background: transparent; border: none; text-align: left; font: inherit; color: {{t.text}}; cursor: pointer">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; background: {{q.dot}}"></span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; font-weight: 500; line-height: 21px">{{q.q}}</span>
+<span style="font-size: 12px; font-weight: 500; line-height: 16px; color: {{q.fg}}">{{q.status}}</span>
+</span>
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 2px; flex-shrink: 0; transform: {{q.rot}}"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{q.open}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 0 16px 16px 36px; font-size: 14px; line-height: 21px; color: {{t.text2}}">{{q.a}}</div>
+</sc-if>
+</div>
+</sc-for>
+<button type="button" style="height: 48px; border: none; border-top: 1px solid {{t.border}}; background: transparent; color: {{t.primaryText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Показать ещё 34 вопроса</button>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"added":{"editor":"boolean","default":true},"$preview":{"width":390,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: 1, added: null };
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
+      chip: '#27272a', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      btnBg: '#34d399', btnText: '#022c22',
+      warnSoft: 'rgba(249, 115, 22, 0.16)', warnText: '#fdba74',
+      infoSoft: 'rgba(96, 165, 250, 0.16)', infoText: '#93c5fd',
+      dotLearned: '#34d399', dotDue: '#fb923c', dotProgress: '#a1a1aa', dotNew: '#60a5fa'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
+      chip: '#f1f5f9', primarySoft: '#ecfdf5', primaryText: '#047857',
+      btnBg: '#047857', btnText: '#ffffff',
+      warnSoft: '#fff7ed', warnText: '#c2410c',
+      infoSoft: '#eff6ff', infoText: '#1d4ed8',
+      dotLearned: '#10b981', dotDue: '#f97316', dotProgress: '#94a3b8', dotNew: '#3b82f6'
+    };
+    const added = this.state.added ?? (this.props.added ?? true);
+    const kinds = {
+      learned: { dot: t.dotLearned, fg: t.primaryText },
+      due: { dot: t.dotDue, fg: t.warnText },
+      progress: { dot: t.dotProgress, fg: t.muted },
+      fresh: { dot: t.dotNew, fg: t.infoText }
+    };
+    const raw = [
+      { k: 'learned', s: 'Выучен', q: 'Чем ArrayList отличается от LinkedList?', a: 'ArrayList хранит элементы в динамическом массиве: доступ по индексу за O(1), но вставка в середину требует сдвига элементов. LinkedList — двусвязный список: вставка и удаление по известному узлу за O(1), доступ по индексу за O(n), больше расход памяти на узлы.' },
+      { k: 'due', s: 'К повторению сегодня', q: 'Как устроен HashMap?', a: 'Внутри — массив бакетов. Индекс бакета вычисляется из hashCode ключа. При коллизиях элементы бакета хранятся в связном списке, а начиная с Java 8 при 8+ элементах (и ёмкости от 64) — в красно-чёрном дереве. При превышении load factor (0.75) массив увеличивается вдвое, и элементы перераспределяются.' },
+      { k: 'due', s: 'К повторению сегодня', q: 'Какая сложность у операций HashMap?', a: 'get и put — в среднем O(1). В худшем случае для бакета-дерева — O(log n), до Java 8 — O(n).' },
+      { k: 'progress', s: 'Повтор через 3 дня', q: 'Зачем нужен ConcurrentHashMap?', a: 'Это потокобезопасная мапа без блокировки всей таблицы: чтение идёт без блокировок, запись блокирует только отдельный бакет (CAS и synchronized начиная с Java 8).' },
+      { k: 'learned', s: 'Выучен', q: 'Чем HashSet отличается от LinkedHashSet?', a: 'LinkedHashSet дополнительно поддерживает двусвязный список и сохраняет порядок вставки элементов.' },
+      { k: 'fresh', s: 'Новый', q: 'Что такое fail-fast итератор?', a: 'Итератор, который бросает ConcurrentModificationException, если коллекцию структурно изменили во время обхода не через сам итератор.' },
+      { k: 'progress', s: 'Повтор через 6 дней', q: 'Какой контракт у equals и hashCode?', a: 'Объекты, равные по equals, обязаны иметь одинаковый hashCode. Если контракт нарушен, HashMap и HashSet работают некорректно.' },
+      { k: 'fresh', s: 'Новый', q: 'Чем Comparable отличается от Comparator?', a: 'Comparable задаёт естественный порядок внутри самого класса (compareTo). Comparator — внешнее правило сравнения, их у класса может быть несколько.' }
+    ];
+    const open = this.state.open;
+    const questions = raw.map((x, i) => ({
+      q: x.q,
+      a: x.a,
+      status: added ? x.s : 'Ответ доступен',
+      dot: added ? kinds[x.k].dot : t.dotProgress,
+      fg: added ? kinds[x.k].fg : t.muted,
+      sep: i === 0 ? 'transparent' : t.border,
+      open: open === i,
+      exp: open === i ? 'true' : 'false',
+      rot: open === i ? 'rotate(180deg)' : 'none',
+      toggle: () => this.setState({ open: this.state.open === i ? -1 : i })
+    }));
+    return {
+      t, questions, added, notAdded: !added,
+      toggleAdded: () => this.setState({ added: !added })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мои проекты</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 960px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<nav aria-label="Навигация" style="margin: -12px 0 -10px -12px">
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; align-items: center; min-width: 0">
+<li style="display: flex; flex-shrink: 0"><a href="Main.dc.html" aria-label="Главная" style="display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; color: {{t.muted}}; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg></a></li>
+</ol>
+</nav>
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Мои проекты</h1>
+
+<sc-if value="{{hasTracks}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<sc-if value="{{complete}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 10px; background: {{t.primarySoft}}">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: {{t.btnBg}}; color: {{t.btnText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 700; line-height: 20px; color: {{t.primaryText}}">Роадмап Java Backend пройден</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.text2}}">Все 6 проектов сданы. Новые реализации можно добавлять и дальше — например, на другом языке.</span>
+</span>
+</div>
+</sc-if>
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="1">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">{{tr.name}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}"><span style="font-weight: 600; color: {{t.text}}">{{tr.done}}</span> из 6 проектов</span>
+</div>
+<div role="img" aria-label="{{tr.aria}}" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{tr.steps}}" as="s" hint-placeholder-count="6">
+<span style="height: 8px; border-radius: 4px; background: {{s.c}}"></span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<p style="margin: 0; padding-top: 12px; border-top: 1px solid {{t.border}}; font-size: 12px; line-height: 17px; color: {{t.muted}}">{{trackNote}}</p>
+</section>
+</sc-if>
+
+<sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}">
+<section style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">Здесь появится ваш прогресс</span>
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: {{t.muted}}">Выберите любой проект и сдайте ссылку на публичный GitHub-репозиторий. Прогресс считается отдельно для Java, Python и Go роадмапов.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{onlyOther}}" hint-placeholder-val="{{ false }}">
+<section style="display: flex; gap: 12px; align-items: flex-start; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">Прогресс по роадмапам пока не считается</span>
+<span style="font-size: 14px; line-height: 20px; color: {{t.muted}}">Ваши проекты сданы на C# и Rust. В прогресс роадмапов засчитываются реализации на Java, Python и Go.</span>
+</span>
+</section>
+</sc-if>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Проекты роадмапа</h2>
+<nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{projects}}" as="p" hint-placeholder-count="6">
+<a href="{{p.href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 72px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{p.sep}}">
+<span style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; font-weight: 700; background: {{p.numBg}}; color: {{p.numFg}}">{{p.n}}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">{{p.name}}</span>
+<sc-if value="{{p.done}}" hint-placeholder-val="{{ true }}">
+<span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; line-height: 16px; color: {{t.primaryText}}">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Сдан</span>
+<sc-for list="{{p.langs}}" as="l" hint-placeholder-count="1">
+<span aria-label="{{l.aria}}" style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 0 6px; border-radius: 6px; background: {{l.bg}}; color: {{l.fg}}; border: 1px {{l.bs}} {{l.bc}}">{{l.name}}</span>
+</sc-for>
+</span>
+</sc-if>
+<sc-if value="{{p.notDone}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; font-weight: 500; line-height: 16px; color: {{t.muted}}">Не сдан</span>
+</sc-if>
+</span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+</sc-for>
+</nav>
+<sc-if value="{{hasUntracked}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 0 4px; display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.muted}}">
+<span style="font-size: 11px; font-weight: 600; line-height: 14px; padding: 0 5px; border-radius: 5px; border: 1px dashed {{t.dash}}; color: {{t.muted}}">C#</span>
+— язык вне роадмапов, в прогрессе не учитывается
+</p>
+</sc-if>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Пусто","Java 3/6","Несколько языков","Java 6/6","Только другие языки"],"default":"Пусто"},"$preview":{"width":390,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const scenario = this.props.scenario ?? 'Пусто';
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a', dash: '#71717a',
+      chip: '#27272a', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      track: '#3f3f46', bar: '#34d399', btnBg: '#34d399', btnText: '#022c22'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8', dash: '#94a3b8',
+      chip: '#f1f5f9', primarySoft: '#ecfdf5', primaryText: '#047857',
+      track: '#e2e8f0', bar: '#10b981', btnBg: '#047857', btnText: '#ffffff'
+    };
+    const data = {
+      'Пусто': [[], [], [], [], [], []],
+      'Java 3/6': [['Java'], [], ['Java'], ['Java'], [], []],
+      'Несколько языков': [['Java', 'Python', 'Go'], ['Java', 'C#'], ['Java', 'Python'], [], [], []],
+      'Java 6/6': [['Java'], ['Java'], ['Java'], ['Java'], ['Java'], ['Java']],
+      'Только другие языки': [['C#'], [], ['Rust'], [], [], []]
+    };
+    const langsBy = data[scenario] || data['Пусто'];
+    const tracked = ['Java', 'Python', 'Go'];
+    const names = ['Виселица', 'Симуляция', 'Обмен валют', 'Теннисное табло', 'Облачное хранилище', 'Планировщик задач'];
+    const deployable = [false, false, true, true, true, true];
+    const projects = names.map((name, i) => {
+      const langs = langsBy[i];
+      const done = langs.length > 0;
+      let href;
+      if (i === 2) href = done ? 'ProjectType-List.dc.html' : 'ProjectType-Empty.dc.html';
+      else if (done) href = 'ProjectType-List.dc.html';
+      else href = deployable[i] ? 'ProjectType-Empty.dc.html' : 'ProjectType.dc.html';
+      return {
+        n: i + 1, name, done, notDone: !done, href,
+        langs: langs.map((l) => {
+          const ok = tracked.includes(l);
+          return {
+            name: l,
+            aria: ok ? l : l + ' — не учитывается в прогрессе',
+            bg: ok ? t.chip : 'transparent',
+            fg: ok ? t.text2 : t.muted,
+            bs: ok ? 'solid' : 'dashed',
+            bc: ok ? t.chip : t.dash
+          };
+        }),
+        numBg: done ? t.btnBg : t.chip,
+        numFg: done ? t.btnText : t.muted,
+        sep: i === 0 ? 'transparent' : t.border
+      };
+    });
+    const tracks = tracked.map((lang) => {
+      const flags = langsBy.map((ls) => ls.includes(lang));
+      const done = flags.filter(Boolean).length;
+      return {
+        name: lang + ' Backend', done,
+        aria: lang + ' Backend: сдано ' + done + ' из 6 проектов',
+        steps: flags.map((f) => ({ c: f ? t.bar : t.track }))
+      };
+    }).filter((tr) => tr.done > 0);
+    const any = langsBy.some((ls) => ls.length > 0);
+    const hasUntracked = langsBy.some((ls) => ls.some((l) => !tracked.includes(l)));
+    return {
+      t, projects, tracks,
+      hasTracks: tracks.length > 0,
+      isEmpty: !any,
+      onlyOther: any && tracks.length === 0,
+      complete: tracks.some((tr) => tr.done === 6),
+      hasUntracked: hasUntracked && tracks.length > 0,
+      trackNote: 'В прогрессе учитываются реализации на Java, Python и Go. Несколько реализаций одного проекта на одном языке — один шаг.'
+    };
+  }
+}
+</script>
+</body>
+</html>
