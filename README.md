@@ -90,9 +90,3 @@ the application:
 
 The starter page does not transmit init data. A backend must validate Telegram init data before it
 is trusted for authentication or authorization.
-
-## UI design workflow
-
-Version-controlled UI specifications, Penpot configuration, and workflow instructions are stored
-in [`design/`](design/). See [`design/USAGE.md`](design/USAGE.md) before implementing material UI
-changes from product requirements.
