@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/custom-component.schema.json",
+  "kind": "custom-component",
+  "name": "RoadmapProjectCard",
+  "rationale": "Recurring roadmap project-type summary across My Projects snapshots: title, submission status, submitted languages and an open-project action. Completion is based on submitted implementations, not reviews. The nested Button delegates to the owning instance action; route identity never comes from display text.",
+  "props": {
+    "title": { "type": "string", "required": true },
+    "languagesText": { "type": "string", "required": false }
+  },
+  "variants": {
+    "submitted": {
+      "previewProps": { "title": "Виселица", "languagesText": "Языки: Java" },
+      "composition": {
+        "type": "library-component", "library": "primevue", "component": "Card", "name": "RootCard",
+        "design": { "appearance": "default", "state": "default" },
+        "slots": {
+          "content": [
+            { "type": "text", "name": "Title", "value": { "bind": "title" }, "style": { "fontFamily": "font.family.base", "fontSize": "font.size.lg", "fontWeight": "font.weight.bold", "color": "color.text" } },
+            { "type": "library-component", "library": "primevue", "component": "Tag", "name": "Status", "design": { "appearance": "default", "state": "default" }, "props": { "value": "Сдан", "severity": "success" } },
+            { "type": "text", "name": "Languages", "value": { "bind": "languagesText" }, "hideWhenEmpty": true, "penpotEmptyPlaceholder": " ", "style": { "fontFamily": "font.family.base", "fontSize": "font.size.md", "fontWeight": "font.weight.regular", "color": "color.text" } }
+          ],
+          "footer": [
+            { "type": "library-component", "library": "primevue", "component": "Button", "name": "OpenProject", "design": { "appearance": "primary", "state": "default", "variant": "filled", "size": "normal", "colorTreatment": "accessible-blue" }, "props": { "label": "Открыть проект", "severity": "primary", "fluid": true, "disabled": false, "loading": false }, "action": { "type": "owner-action" } }
+          ]
+        }
+      }
+    },
+    "notSubmitted": {
+      "previewProps": { "title": "Симуляция" },
+      "composition": {
+        "type": "library-component", "library": "primevue", "component": "Card", "name": "RootCard",
+        "design": { "appearance": "default", "state": "default" },
+        "slots": {
+          "content": [
+            { "type": "text", "name": "Title", "value": { "bind": "title" }, "style": { "fontFamily": "font.family.base", "fontSize": "font.size.lg", "fontWeight": "font.weight.bold", "color": "color.text" } },
+            { "type": "library-component", "library": "primevue", "component": "Tag", "name": "Status", "design": { "appearance": "default", "state": "default" }, "props": { "value": "Не сдан", "severity": "secondary" } }
+          ],
+          "footer": [
+            { "type": "library-component", "library": "primevue", "component": "Button", "name": "OpenProject", "design": { "appearance": "primary", "state": "default", "variant": "filled", "size": "normal", "colorTreatment": "accessible-blue" }, "props": { "label": "Открыть проект", "severity": "primary", "fluid": true, "disabled": false, "loading": false }, "action": { "type": "owner-action" } }
+          ]
+        }
+      }
+    }
+  }
+}

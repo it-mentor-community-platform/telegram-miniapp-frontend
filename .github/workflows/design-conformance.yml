@@ -1,9 +1,9 @@
 name: Design conformance offline tests
 on:
   push:
-    paths: ['design/**', 'scripts/**', '.cline/skills/design-review/**', '.cline/skills/penpot-design/**', '.github/workflows/design-conformance.yml']
+    paths: ['design/**', 'scripts/**', '.cline/skills/design-review/**', '.cline/skills/penpot-design/**', '.cline/skills/functionality-to-design/**', '.clinerules/design-workflow.md', '.github/workflows/design-conformance.yml']
   pull_request:
-    paths: ['design/**', 'scripts/**', '.cline/skills/design-review/**', '.cline/skills/penpot-design/**', '.github/workflows/design-conformance.yml']
+    paths: ['design/**', 'scripts/**', '.cline/skills/design-review/**', '.cline/skills/penpot-design/**', '.cline/skills/functionality-to-design/**', '.clinerules/design-workflow.md', '.github/workflows/design-conformance.yml']
 jobs:
   offline:
     runs-on: ubuntu-latest

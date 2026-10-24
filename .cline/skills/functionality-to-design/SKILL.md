@@ -26,6 +26,19 @@ wrapper. Present pages/navigation, information hierarchy, actions,
 permissions, states, responsive behavior, tokens, component source, custom
 rationales, assumptions, and unresolved questions. Wait for explicit approval.
 
+For slot-bearing compositions, assess native rendering feasibility before
+promising synchronization. Compare the required tree with live source mains
+when available; method existence does not establish operation support. Never
+plan to append/insert children into a component copy or its inherited containers,
+or reparent inherited descendants out of a copy. New mains need their complete
+supported composition assembled before registration and copying; nested copies
+remain structurally immutable. If live evidence is unavailable, report feasibility
+as unverified, not supported. An incompatible tree requires explicit approval
+for a template change, justified domain component, or structural-shell exception;
+API restrictions alone do not justify a generic custom wrapper. Follow the native
+composition capability gate in `penpot-design` and `design/CONFORMANCE.md` before
+any artwork writes. No detached controls or sibling-overlay fallback is implied.
+
 Design Penpot mockups as reference-quality implementation guides rather than
 pixel-perfect browser specifications. Make hierarchy, grouping, reading order,
 responsive/mobile composition, and relative proportions clear while avoiding

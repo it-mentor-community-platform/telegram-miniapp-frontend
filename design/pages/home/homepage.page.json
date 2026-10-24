@@ -252,8 +252,13 @@
       ]
     }
   ],
+  "states": {
+    "openOwnProjects": "Require STUDENT, including multi-role users. openOwnProjects opens the MyProjects logical route; choose the representative layout from actual student data, not a fixed preview.",
+    "openProjectSubmission": "Require STUDENT, including multi-role users. openProjectSubmission opens MyProjects in submission-choice context with Выберите проект для сдачи; project selection opens ProjectType with first/additional form visibility. No separate submission route."
+  },
   "requirements": {
     "sources": [
+      "meta/business-analytics/functionality/student-roadmap-completion.md",
       "meta/business-analytics/functionality/user-profiles.md",
       "meta/business-analytics/functionality/projects-bookkeeping.md",
       "meta/system-analytics/functionality/projects-bookkeeping.md",
@@ -261,6 +266,7 @@
       "meta/system-analytics/functionality/interview-questions-interval-repetition.md"
     ],
     "approvedAssumptions": [
+      "The homepage submission shortcut opens My Projects in submission-choice context with the prompt Выберите проект для сдачи.",
       "Profile identity, role, project count, achievement states, activity entries, dates, and community totals are representative personalized mock data",
       "The homepage offers mentor discovery as a product navigation entry even though the current mentor requirements do not yet define the discovery flow",
       "The homepage includes a representative recent-activity feed and community-wide promotional statistics",

@@ -412,7 +412,19 @@ class Validator:
                 for prop, spec in declared.items():
                     if spec.get("required") and prop not in props: self.error(path, f"{location}.props", f"missing required prop {prop!r}")
                 if deps is not None and isinstance(component, str): deps.add(component)
-        if "action" in node: self.validate_action(node["action"], path, f"{location}.action")
+        if "action" in node:
+            if isinstance(node["action"], dict) and node["action"].get("type") == "owner-action":
+                if not owner or kind != "library-component" or node.get("component") != "Button" or set(node["action"]) != {"type"}:
+                    self.error(path, f"{location}.action", "owner-action requires a nested custom composition Button and no other fields")
+            else:
+                self.validate_action(node["action"], path, f"{location}.action")
+        if kind == "custom-component" and doc is not None and variant in doc.value.get("variants", {}):
+            def delegates(item):
+                if isinstance(item, dict):
+                    return item.get("action") == {"type": "owner-action"} or any(delegates(v) for v in item.values())
+                return isinstance(item, list) and any(delegates(v) for v in item)
+            if delegates(doc.value["variants"][variant]["composition"]) and "action" not in node:
+                self.error(path, f"{location}.action", "custom instance with owner-action Button requires a concrete action")
         children = node.get("children")
         if children is not None:
             if not isinstance(children, list): self.error(path, f"{location}.children", "must be an array")

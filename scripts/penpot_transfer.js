@@ -2,7 +2,7 @@
 // Append to the collector through --emit-transfer-js. Only plugin-local storage
 // is changed; no document artwork or metadata is mutated.
 const snapshot = storage.conformanceSnapshot;
-if (!snapshot) throw Error('Collect a snapshot before preparing transfer');
+if (!snapshot || snapshot.complete !== true || snapshot.collectionErrors.length) throw Error('Complete error-free snapshot required before preparing transfer');
 // Tabular packing preserves every fact while avoiding repeated UUIDs/keys in
 // tool output. Arrays and numbers remain typed; strings use explicit tags.
 const strings = [], stringIds = new Map();

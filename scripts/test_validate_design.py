@@ -31,7 +31,7 @@ class CustomStateTests(unittest.TestCase):
         return self.document.value['variants'][state]['composition']['slots']['footer'][0]
 
     def test_all_seven_states_validate(self):
-        self.assertEqual(7, sum(len(d.value['variants']) for d in self.validator.custom_components.values()))
+        self.assertEqual(9, sum(len(d.value['variants']) for d in self.validator.custom_components.values()))
         self.assertEqual('', self.validate())
 
     def test_accessible_color_treatment_is_registry_allowlisted(self):

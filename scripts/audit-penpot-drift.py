@@ -344,10 +344,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--scope", action="append", help="target scope (repeatable); requires --baseline unless --inspect")
     parser.add_argument("--inspect", action="store_true", help="read-only scoped review; forbids baseline/family permissions; no preservation check")
     parser.add_argument("--baseline", type=Path, help="fresh before snapshot for protected-scope comparison")
+    parser.add_argument("--partial-recovery", type=Path, help="explicit approved file/scope/root/node inventory for unregistered baseline recovery")
     parser.add_argument("--emit-transfer-js", type=Path, help="emit collector plus network-free chunk preparation")
+    parser.add_argument("--emit-resumable-js", type=Path, help="emit bounded read-only collector; resume via storage.conformanceCollectStep()")
     parser.add_argument("--decode-transfer", type=Path, help="decode a chunk envelope into --snapshot-output")
     parser.add_argument("--snapshot-output", type=Path, help="output path for decoded snapshot")
     parser.add_argument("--allow-family", action="append", help="explicitly permitted template family; requires dependent --scope entries")
+    parser.add_argument("--new-library-only", help="add one absent unused library family; requires full baseline and preserves all existing artwork")
     return parser.parse_args()
 
 
@@ -355,6 +358,11 @@ def main() -> int:
     args = parse_args()
     if args.recursive:
         try:
+            if args.partial_recovery and (not args.snapshot or not args.baseline or not args.scope or not args.allow_family
+                                         or args.inspect or args.new_library_only or args.decode_transfer):
+                raise ValueError('--partial-recovery requires snapshot, baseline, scopes and family permission; forbids inspection, new-library-only and decoding')
+            if args.new_library_only and (not args.snapshot or not args.baseline or args.scope or args.inspect or args.allow_family or args.decode_transfer):
+                raise ValueError("--new-library-only requires --snapshot and --baseline; forbids scopes, inspection, family permissions and decoding")
             if args.inspect and (not args.scope or args.baseline or args.allow_family or not args.snapshot or args.decode_transfer):
                 raise ValueError("--inspect requires --scope and --snapshot; forbids --baseline, --allow-family and --decode-transfer")
             if args.decode_transfer:
@@ -373,20 +381,27 @@ def main() -> int:
                 else: Path(args.emit_penpot_js).write_text(javascript, encoding="utf-8")
             if args.emit_transfer_js:
                 args.emit_transfer_js.write_text(conformance.emit_collector(expected, transfer=True), encoding="utf-8")
+            if args.emit_resumable_js:
+                args.emit_resumable_js.write_text(conformance.emit_collector(expected, resumable=True), encoding="utf-8")
             if args.snapshot:
-                result = conformance.compare(expected, load_snapshot(args.snapshot), args.scope,
+                if args.new_library_only:
+                    result = conformance.compare_new_library(expected, load_snapshot(args.snapshot),
+                                                            load_snapshot(args.baseline), args.new_library_only)
+                else:
+                    result = conformance.compare(expected, load_snapshot(args.snapshot), args.scope,
                                              load_snapshot(args.baseline) if args.baseline else None,
-                                             allow_families=args.allow_family, inspect=args.inspect)
+                                             allow_families=args.allow_family, inspect=args.inspect,
+                                             partial_recovery=json.loads(args.partial_recovery.read_text()) if args.partial_recovery else None)
                 print(json.dumps(result, ensure_ascii=False, indent=2))
                 return {"PASS": 0, "FAIL": 1, "BLOCKED": 2}[result["status"]]
-            if not args.manifest and not args.emit_penpot_js and not args.emit_transfer_js:
+            if not args.manifest and not args.emit_penpot_js and not args.emit_transfer_js and not args.emit_resumable_js:
                 print("BLOCKED: provide --snapshot; building expectations alone is not conformance")
                 return 2
             return 0
         except (ValueError, KeyError, TypeError, OSError) as error:
             print(f"BLOCKED: {error}", file=sys.stderr)
             return 2
-    if args.inspect or args.scope or args.baseline or args.allow_family or args.emit_transfer_js or args.decode_transfer or args.snapshot_output:
+    if args.emit_resumable_js or args.partial_recovery or args.new_library_only or args.inspect or args.scope or args.baseline or args.allow_family or args.emit_transfer_js or args.decode_transfer or args.snapshot_output:
         print("structural gate options require --recursive", file=sys.stderr)
         return 2
     manifest = build_manifest()

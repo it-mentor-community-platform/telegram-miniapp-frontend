@@ -90,6 +90,36 @@ when the runtime library expresses them by omitting a prop.
 
 ## Custom components
 
+### RoadmapProjectCard
+
+`RoadmapProjectCard` has native `State=submitted` / `State=notSubmitted`
+variants. Its root Card uses the explicitly configured custom structural shell;
+the reusable outer identity is RoadmapProjectCard, not PrimeVue Card. Status Tag
+and OpenProject Button remain native PrimeVue copies. Both complete trees must
+be assembled before registration, then combined using the documented native
+`combineAsVariants` operation. No shared library main changes are authorized.
+
+Inputs are required `title` and optional `languagesText` (full displayed text).
+Submitted shows the success status and language text; notSubmitted has a secondary
+status and no language node. Empty optional language text is hidden, never populated
+from preview data. All project types remain actionable; reviews do not gate status.
+Requirement source: sibling `meta/business-analytics/functionality/student-roadmap-completion.md`.
+
+The nested Button uses `action: {"type": "owner-action"}`. This sentinel is allowed
+only on Buttons inside custom compositions, has no other fields, and delegates
+to the owning custom instance's required concrete action. The manifest forwards
+that exact action; display labels and previewProps never select commands or route
+identity. Standalone custom mains retain the sentinel as an unbound event contract,
+not a working prototype destination. Runtime event wiring and browser accessibility
+are not verified by Penpot. The five My Projects JSON previews now use this
+family for all 30 project summaries, retaining each concrete command and its
+project-type route mapping. Submitted page instances supply a nonempty complete
+distinct-language list; notSubmitted instances omit it. Navigation retains the
+explicit Open Project button, not a new whole-card interaction. Page ordering,
+track progress, access and submission-choice messaging remain page concerns.
+Page Penpot synchronization is pending a complete fresh structural preflight;
+JSON migration alone does not mean live page artwork was generated.
+
 ### Scoped accessible color treatment
 
 `design.colorTreatment: "accessible-blue"` is optional and allowlisted only

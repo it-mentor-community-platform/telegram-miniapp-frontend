@@ -1,0 +1,857 @@
+{
+  "$schema": "../../schemas/page.schema.json",
+  "feature": {
+    "key": "student-roadmap",
+    "label": "Student Roadmap"
+  },
+  "page": "ProjectTypeAddImplementation",
+  "frame": {
+    "width": 390,
+    "background": "color.background",
+    "padding": "spacing.md"
+  },
+  "layout": {
+    "type": "column",
+    "gap": "spacing.md",
+    "align": "stretch"
+  },
+  "children": [
+    {
+      "type": "library-component",
+      "library": "primevue",
+      "component": "Toolbar",
+      "name": "Header",
+      "design": {
+        "appearance": "page-header",
+        "state": "back"
+      },
+      "slots": {
+        "start": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "name": "Back",
+            "design": {
+              "appearance": "primary",
+              "state": "default",
+              "variant": "text",
+              "size": "normal",
+              "colorTreatment": "accessible-blue"
+            },
+            "props": {
+              "label": "Назад",
+              "severity": "primary",
+              "fluid": true,
+              "variant": "text"
+            },
+            "action": {
+              "type": "command",
+              "name": "goBack"
+            }
+          },
+          {
+            "type": "text",
+            "name": "PageTitle",
+            "value": "Обмен валют",
+            "style": {
+              "fontFamily": "font.family.base",
+              "fontSize": "font.size.lg",
+              "fontWeight": "font.weight.bold",
+              "color": "color.text"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "name": "Specifications",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "SpecificationsTitle",
+          "value": "Техническое задание",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "SpecificationJava",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "ТЗ · Java",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "external-link",
+            "url": "roadmap:CurrencyExchange:Java"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "SpecificationPython",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "ТЗ · Python",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "external-link",
+            "url": "roadmap:CurrencyExchange:Python"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "SpecificationGo",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "ТЗ · Go",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "external-link",
+            "url": "roadmap:CurrencyExchange:Go"
+          }
+        },
+        {
+          "type": "text",
+          "name": "SpecificationsHelp",
+          "value": "Можно сдавать на любом языке. Для других языков отдельного ТЗ нет.",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "SubmissionForm",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "FormTitle",
+          "value": "Новая реализация",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "text",
+          "name": "LanguageLabel",
+          "value": "Язык реализации",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Select",
+          "name": "LanguageField",
+          "design": {
+            "appearance": "default",
+            "state": "default"
+          },
+          "props": {
+            "aria-label": "Язык реализации",
+            "options": [
+              "Java",
+              "Python",
+              "Go",
+              "C#",
+              "Rust",
+              "Другой язык"
+            ],
+            "modelValue": "Другой язык",
+            "placeholder": "Выберите язык",
+            "fluid": true,
+            "invalid": false
+          },
+          "action": {
+            "type": "command",
+            "name": "selectImplementationLanguage"
+          }
+        },
+        {
+          "type": "section",
+          "name": "OtherLanguageFieldGroup",
+          "layout": {
+            "type": "column",
+            "gap": "spacing.sm"
+          },
+          "children": [
+            {
+              "type": "text",
+              "name": "OtherLanguageFieldLabel",
+              "value": "Название другого языка",
+              "style": {
+                "fontFamily": "font.family.base",
+                "fontSize": "font.size.md",
+                "fontWeight": "font.weight.regular",
+                "color": "color.text"
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "InputText",
+              "name": "OtherLanguageField",
+              "design": {
+                "appearance": "default",
+                "state": "default",
+                "variant": "outlined",
+                "size": "normal"
+              },
+              "props": {
+                "aria-label": "Название другого языка",
+                "modelValue": "Rust",
+                "placeholder": "Название языка",
+                "fluid": true,
+                "invalid": false,
+                "variant": "outlined"
+              }
+            }
+          ]
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Message",
+          "name": "OtherLanguageHelp",
+          "design": {
+            "appearance": "info",
+            "state": "default"
+          },
+          "props": {
+            "severity": "info",
+            "closable": false
+          },
+          "slots": {
+            "default": [
+              {
+                "type": "text",
+                "name": "OtherLanguageHelpText",
+                "value": "Реализация сохранится, но не увеличит прогресс треков Java, Python и Go.",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "section",
+          "name": "RepositoryFieldGroup",
+          "layout": {
+            "type": "column",
+            "gap": "spacing.sm"
+          },
+          "children": [
+            {
+              "type": "text",
+              "name": "RepositoryFieldLabel",
+              "value": "GitHub-репозиторий",
+              "style": {
+                "fontFamily": "font.family.base",
+                "fontSize": "font.size.md",
+                "fontWeight": "font.weight.regular",
+                "color": "color.text"
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "InputText",
+              "name": "RepositoryField",
+              "design": {
+                "appearance": "default",
+                "state": "default",
+                "variant": "outlined",
+                "size": "normal"
+              },
+              "props": {
+                "aria-label": "GitHub-репозиторий",
+                "modelValue": "",
+                "placeholder": "https://github.com/username/repository",
+                "fluid": true,
+                "invalid": false,
+                "variant": "outlined"
+              }
+            },
+            {
+              "type": "text",
+              "name": "RepositoryFieldHelp",
+              "value": "Публичный репозиторий. Одна ссылка может быть добавлена в систему только один раз.",
+              "style": {
+                "fontFamily": "font.family.base",
+                "fontSize": "font.size.md",
+                "fontWeight": "font.weight.regular",
+                "color": "color.text"
+              }
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "name": "DeploymentFieldGroup",
+          "layout": {
+            "type": "column",
+            "gap": "spacing.sm"
+          },
+          "children": [
+            {
+              "type": "text",
+              "name": "DeploymentFieldLabel",
+              "value": "Ссылка на деплой (необязательно)",
+              "style": {
+                "fontFamily": "font.family.base",
+                "fontSize": "font.size.md",
+                "fontWeight": "font.weight.regular",
+                "color": "color.text"
+              }
+            },
+            {
+              "type": "library-component",
+              "library": "primevue",
+              "component": "InputText",
+              "name": "DeploymentField",
+              "design": {
+                "appearance": "default",
+                "state": "default",
+                "variant": "outlined",
+                "size": "normal"
+              },
+              "props": {
+                "aria-label": "Ссылка на деплой (необязательно)",
+                "modelValue": "",
+                "placeholder": "https://example.com",
+                "fluid": true,
+                "invalid": false,
+                "variant": "outlined"
+              }
+            },
+            {
+              "type": "text",
+              "name": "DeploymentFieldHelp",
+              "value": "Ссылку можно добавить, изменить или удалить позже. Доступность ресурса не гарантируется.",
+              "style": {
+                "fontFamily": "font.family.base",
+                "fontSize": "font.size.md",
+                "fontWeight": "font.weight.regular",
+                "color": "color.text"
+              }
+            }
+          ]
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "SubmitImplementation",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "filled",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "Сдать реализацию",
+            "severity": "primary",
+            "fluid": true
+          },
+          "action": {
+            "type": "submit",
+            "name": "submitImplementation"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "CollapseForm",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "Свернуть форму",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "command",
+            "name": "collapseSubmissionForm"
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "ImplementationList",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "ImplementationListTitle",
+          "value": "Ваши реализации",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Card",
+          "name": "Implementation1Card",
+          "design": {
+            "appearance": "default",
+            "state": "default"
+          },
+          "slots": {
+            "content": [
+              {
+                "type": "text",
+                "name": "Implementation1Language",
+                "value": "Java",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.lg",
+                  "fontWeight": "font.weight.bold",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "text",
+                "name": "Implementation1Date",
+                "value": "Сдано 18.10.2026",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Implementation1Repository",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "https://github.com/example-student/currency-java",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://github.com/example-student/currency-java"
+                }
+              },
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Implementation1Deployment",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "https://currency-java.example.com",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://currency-java.example.com"
+                }
+              }
+            ],
+            "footer": [
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "OpenImplementation1",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "filled",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "Подробнее",
+                  "severity": "primary",
+                  "fluid": true
+                },
+                "action": {
+                  "type": "command",
+                  "name": "openImplementation1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Card",
+          "name": "Implementation2Card",
+          "design": {
+            "appearance": "default",
+            "state": "default"
+          },
+          "slots": {
+            "content": [
+              {
+                "type": "text",
+                "name": "Implementation2Language",
+                "value": "Java",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.lg",
+                  "fontWeight": "font.weight.bold",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "text",
+                "name": "Implementation2Date",
+                "value": "Сдано 20.10.2026",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Implementation2Repository",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "https://github.com/example-student/currency-java-v2",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://github.com/example-student/currency-java-v2"
+                }
+              }
+            ],
+            "footer": [
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "OpenImplementation2",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "filled",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "Подробнее",
+                  "severity": "primary",
+                  "fluid": true
+                },
+                "action": {
+                  "type": "command",
+                  "name": "openImplementation2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Card",
+          "name": "Implementation3Card",
+          "design": {
+            "appearance": "default",
+            "state": "default"
+          },
+          "slots": {
+            "content": [
+              {
+                "type": "text",
+                "name": "Implementation3Language",
+                "value": "Python",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.lg",
+                  "fontWeight": "font.weight.bold",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "text",
+                "name": "Implementation3Date",
+                "value": "Сдано 22.10.2026",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Implementation3Repository",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "https://github.com/example-student/currency-python",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://github.com/example-student/currency-python"
+                }
+              },
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Implementation3Deployment",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "https://currency-python.example.com",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://currency-python.example.com"
+                }
+              }
+            ],
+            "footer": [
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "OpenImplementation3",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "filled",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "Подробнее",
+                  "severity": "primary",
+                  "fluid": true
+                },
+                "action": {
+                  "type": "command",
+                  "name": "openImplementation3"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "states": {
+    "access": "Require STUDENT among all user roles, including multi-role users. Without STUDENT show an access-denied Message and a home action; do not expose private student data. Backend must enforce ownership independently.",
+    "loading": "Replace pending data with PrimeVue Skeletons, preserve the header/back action and announce loading; do not flash an empty result.",
+    "loadError": "Show a PrimeVue error Message and a retry Button invoking retryRoadmapLoad in the current route context. Do not substitute zero progress or no reviews for a failed request.",
+    "notFound": "For a missing or inaccessible project/implementation show an unavailable Message and the appropriate parent navigation; do not expose another student’s data.",
+    "responsive": "Keep a single readable column, wrap all language tags and long URLs inside the available width, preserve slot containment and natural document scrolling; no horizontal overflow or fixed-height content clipping.",
+    "accessibility": "Use semantic headings, list/form structure and logical keyboard order at runtime. Fields have visible labels and explicit accessible names; associate helper/error text via aria-describedby, reflect invalid state with aria-invalid, announce saving/results, and focus the first invalid field on failure. Restore focus on cancel. These are runtime contracts, not browser accessibility verification.",
+    "sourceParity": "Mini App, Telegram bot and import implementations count equally. Canonical GitHub uniqueness is global across all students and all three sources.",
+    "progressRule": "For each of Java, Python and Go count distinct project types with at least one submitted implementation in that language, out of six. Repeats count once. Other languages do not contribute. Show only nonzero tracks. Reviews do not gate completion. No explicit track selection or ordered-project locks.",
+    "navigation": "Three logical routes: My Projects → selected project type → selected implementation. Preserve selected type/implementation identity in route context, never infer it from a displayed label or preview target. Back from an implementation opens its own type; back from a type opens My Projects; My Projects returns home.",
+    "formVisibility": "No prior implementations: form is initially open. With prior implementations: form is initially collapsed behind the prominent Добавить реализацию Button invoking expandSubmissionForm; keep the existing implementations visible when expanded. collapseSubmissionForm closes the additional form without deleting any implementation.",
+    "languageDictionary": "Load options from the language dictionary, including Другой язык. selectImplementationLanguage updates the draft and conditionally reveals OtherLanguageField. A required trimmed name for Другой язык must resolve through the server language contract; do not invent a language identifier client-side. Switching away hides the other-language draft without submitting it.",
+    "validation": "Require a dictionary language (or a nonblank other-language name) and GitHub URL. Canonicalize and validate a public accessible GitHub repository before save. Reject invalid format, private/unavailable repositories and globally duplicate canonical URLs; never invent exact canonicalization rules on the client. Eligible deployment URL is optional; validate URL syntax but do not promise availability.",
+    "invalidUrl": "Mark RepositoryField invalid and show a nearby Message: Укажите ссылку на GitHub-репозиторий. Retain all draft values and focus the field.",
+    "repositoryUnavailable": "Mark RepositoryField invalid and show: Репозиторий недоступен. Проверьте ссылку и публичный доступ. Keep the draft; do not record a submitted implementation.",
+    "duplicateRepository": "Mark RepositoryField invalid and show: Этот GitHub-репозиторий уже добавлен. Укажите другой. Uniqueness spans Mini App, bot and import, regardless of student; do not reveal another owner’s identity.",
+    "saving": "submitImplementation keeps all values visible, shows a loading disabled submit Button while validation/save is pending, and prevents duplicate submission. Do not create optimistic progress or list entries.",
+    "saveFailure": "On validation or network failure stay on the project-type route with all draft fields retained, show the appropriate inline/error Message, restore submission and allow retry. Keep previous implementations and confirmed progress unchanged.",
+    "saveSuccess": "Only after confirmed create success refresh implementations and progress, open the newly created implementation route using its returned identity, and announce Реализация добавлена in a success Message. Preview page names are not route identifiers.",
+    "deploymentEligibility": "Show an optional DeploymentField only for CurrencyExchange, TennisScoreboard, CloudStorage and TaskScheduler. Never send deployment data for Hangman or Simulation.",
+    "logicalScreen": "ProjectType",
+    "projectType": "CurrencyExchange",
+    "representativeData": {
+      "implementations": [
+        {
+          "id": "currency-java-1",
+          "language": "Java",
+          "date": "18.10.2026",
+          "repository": "https://github.com/example-student/currency-java",
+          "deployment": "https://currency-java.example.com",
+          "source": "mini-app"
+        },
+        {
+          "id": "currency-java-2",
+          "language": "Java",
+          "date": "20.10.2026",
+          "repository": "https://github.com/example-student/currency-java-v2",
+          "deployment": null,
+          "source": "telegram-bot"
+        },
+        {
+          "id": "currency-python-1",
+          "language": "Python",
+          "date": "22.10.2026",
+          "repository": "https://github.com/example-student/currency-python",
+          "deployment": "https://currency-python.example.com",
+          "source": "import"
+        }
+      ]
+    },
+    "preview": {
+      "formExpanded": true,
+      "otherLanguage": true,
+      "repositoryDuplicate": false
+    },
+    "openImplementations": {
+      "openImplementation1": {
+        "implementationId": "currency-java-1",
+        "projectType": "CurrencyExchange",
+        "logicalScreen": "Implementation"
+      },
+      "openImplementation2": {
+        "implementationId": "currency-java-2",
+        "projectType": "CurrencyExchange",
+        "logicalScreen": "Implementation"
+      },
+      "openImplementation3": {
+        "implementationId": "currency-python-1",
+        "projectType": "CurrencyExchange",
+        "logicalScreen": "Implementation"
+      }
+    },
+    "back": "goBack opens My Projects and restores its list context."
+  },
+  "requirements": {
+    "sources": [
+      "meta/business-analytics/functionality/student-roadmap-completion.md",
+      "meta/business-analytics/functionality/projects-bookkeeping.md",
+      "meta/system-analytics/functionality/projects-bookkeeping.md",
+      "meta/business-analytics/functionality/reviews-bookkeeping.md"
+    ],
+    "approvedAssumptions": [
+      "The 16 approved previews represent three logical routes, not 16 runtime routes; each preview is an independent student snapshot using fictional data and example.com destinations.",
+      "Mobile composition uses a 390px frame, vertical scrolling, wrapping language lists and links, and existing tokens; it is a representative implementation guide, not a pixel-perfect browser contract.",
+      "Repository and deployment editing is inline, without a modal or a fourth route. Cancel discards the draft only.",
+      "After successful submission open the created implementation with a success Message; do not add a standalone success route.",
+      "The homepage submission shortcut opens My Projects in submission-choice context with the prompt Выберите проект для сдачи.",
+      "Language options shown in previews are a representative subset of the server dictionary, not its exhaustive definition. Другой язык reveals a required language-name field.",
+      "External specification destinations are application-configured per project type and track. Example repository, deployment and review links are fictional preview data, not live resources.",
+      "Page-local library compositions are used in this iteration; a reusable project-type custom family requires separate approval."
+    ]
+  }
+}

@@ -49,6 +49,79 @@ The new mode performs no live mutations and never repairs drift.
 
 ## Runbook
 
+### Explicit partial recovery and current migration status
+
+`--partial-recovery /private/path/inventory.json` is an explicit approval input,
+not name/audit-stamp inference. It requires snapshot, baseline, selected custom
+scopes and family permission. Its exact shape is
+`{"fileId":"...","targets":[{"scope":"custom:Family:state","rootId":"...","nodeIds":["..."]}]}`.
+Each inventory must enumerate the entire unregistered baseline subtree, including
+its root. The same root must become the requested verified native State main;
+every inventoried descendant must remain inside it. Replacement roots, missing
+descendants, overlapping/incomplete inventories and absorption of unrelated
+baseline objects are rejected. Existing non-inventoried artwork, pages and
+non-permitted records remain protected. Semantic/native validation still applies.
+Do not use this option in inspection mode or rewrite historical baselines.
+
+The user approved retaining the five partial shapes in generated file
+`6123a605-f677-80e2-8007-66eb7a88b390`, submitted scope only:
+
+- Root: `3d7a5858-c52a-8093-8008-d6a806e6283b`.
+- Content: `3d7a5858-c52a-8093-8008-d6a806edcc0f`.
+- Title: `3d7a5858-c52a-8093-8008-d6a806f59360`.
+- Status Tag: `3d7a5858-c52a-8093-8008-d6a806ffd7f9`.
+- Value: `3d7a5858-c52a-8093-8008-d6a806ffd7fa`.
+
+On 2026-10-24 the user manually accepted both current component mockups.
+The five My Projects JSON previews were migrated; live page synchronization
+has not been performed. A fresh full-file collector exceeded its existing
+15-second collection bound after 241 shapes and was incomplete. No artwork
+writes followed. The saved historical `manifest.json` contains only two scope
+definitions, not a complete fingerprinted manifest, so historical gate replay
+is also BLOCKED; neither input was rewritten to manufacture a PASS. Unit tests
+exercise the recovery permission independently of that historical evidence.
+
+### Approved RoadmapProjectCard first-time addition
+
+Original component-only scope: `custom:RoadmapProjectCard:submitted` and
+`custom:RoadmapProjectCard:notSubmitted`, with explicit family permission
+`Component/RoadmapProjectCard`. The subsequent approved migration covers the
+five My Projects previews (30 summaries), preserving commands, progress and
+unrelated artwork. No other roadmap screens are included in that migration.
+The approved shell is only the custom root Card; nested Tag/Button
+must be native copies. Build both complete trees in plain boards, register both
+mains, then use documented `ShapeBase.combineAsVariants` (requires native mains).
+Do not use `transformInVariant`/`addVariant` to duplicate and then restructure copies.
+
+The collector records actual `isVariantContainer()` and native variant-record
+membership. Preservation permits one newly added root container on Components
+only when the family has no baseline records, its direct children are exactly
+the two approved native State mains, their records and native member set agree,
+and the container has no component/copy identity. Names/stamps alone cannot
+authorize the container. Existing containers, extra children, wrong membership,
+unrelated artwork/record changes and page identity changes remain protected.
+This narrowly approved first-time allowance is not a general variant repair mode.
+
+Owner-action delegation is a JSON/runtime contract. The manifest resolves each
+nested Button to its owner's concrete action when instantiated; standalone custom
+main scopes retain the unbound sentinel. Penpot does not prove runtime wiring.
+
+### Incremental new-library-only synchronization
+
+For an explicitly approved addition of one registered library family that has
+no baseline record, main, copies or live dependents, use
+`--recursive --new-library-only 'Library/PrimeVue/Select' --snapshot AFTER --baseline BEFORE`.
+This mode does not synchronize or exempt any page scope, including not-yet-generated
+pages. Both snapshots must be fresh, complete, fingerprint-matched and from the
+same file. Every pre-existing shape, record and page identity is protected exactly;
+only one entirely new native main subtree/record may be added on the configured
+library page. No page copies or nested dependents may be added. Stamp the main
+with the manifest family's `templateKey` and internals with `templateKey/name`.
+Registry internals, native main evidence, containment, visibility and Select's
+placeholder/chevron affordance are checked. Run and retain full recursive reports
+separately: deferred pages remain full-file drift, not a whole-file PASS.
+Existing-family edits still require the ordinary dependent-scope workflow.
+
 From the repository root:
 
 ```sh
@@ -100,6 +173,68 @@ Require preflight before synchronization and postflight before acceptance.
 Existing failures are a repair inventory, not permission to weaken contracts.
 A target PASS is not whole-file conformance. CI runs offline tests; fresh live
 evidence must be obtained separately.
+
+## Native composition capability gate
+
+### Bounded read-only capture alternative
+
+If the single-call collector exceeds its time bound, emit with
+`--recursive --emit-resumable-js /private/path/collect.js`. Execute that exact
+body once, then call `return storage.conformanceCollectStep();` until done or
+failed. Each call collects at most 50 entities / about three seconds, with
+20,000-shape and ten-minute total bounds. It traverses all pages and native
+variant records twice and requires identical complete fact sets before
+publishing `storage.conformanceSnapshot`. A changed file, missing evidence,
+cycle, exception or different passes invalidates capture; restart, never merge
+partial captures. Avoid document edits throughout both passes. This checks
+stable observed facts, not an atomic editor transaction.
+
+Only after completion execute the exact `scripts/penpot_transfer.js` body;
+it rejects incomplete/error captures. Then use the same ordered chunk handoff,
+integrity decoder and Python preflight/postflight comparator as above. Never
+weaken scope, completeness, freshness or preservation to recover a timeout.
+
+Complete this read-only operation checklist before any artwork writes, in
+addition to the full snapshot/preflight gate. A source-valid JSON composition
+does not prove that the live component tree can represent it.
+
+1. Compare required manifest nodes/slots with the actual source main tree.
+   Record main/record IDs, existing semantic roles, nested copy ancestry, every
+   planned operation and destination, context-specific API evidence, authorized
+   scopes, and unresolved capabilities. Method existence is not permission:
+   `appendChild` being exposed on Board does not authorize it on a copy.
+2. Never call `appendChild` or `insertChild` on a component copy or inherited
+   container inside it. Never reparent inherited descendants out of a copy.
+   Inspect the destination's full ancestry, not just its component-head flag.
+   Other structural mutations (removal, reordering, grouping, swapping) require
+   documented and verified support for that exact context; unknown operations
+   are BLOCKED, not candidates for trial writes on generated artwork.
+3. For a compatible copy, override only existing content/visibility and supported
+   visual properties. Missing children cannot be represented by label overrides.
+   For an approved new main, assemble the complete supported composition before
+   registration, then create native variants and copies. A nested library copy
+   remains structurally immutable inside an unregistered outer board as well.
+   If the source tree is incompatible, stop before writes and seek explicit
+   approval for a template change, justified domain component or structural-shell
+   exception. Never detach, redraw or use sibling overlays as an implicit fallback.
+4. Validate destinations before creating instances: `instance()` can create a
+   root object that remains orphaned if later insertion fails. Confirm page/file
+   identity and scope permissions too. Missing pages require supported creation
+   permission; never create a page before the baseline to evade preservation.
+   Page-only synchronization reuses shared mains unchanged.
+5. Use small dependency-ordered batches; record created IDs immediately and
+   re-read parentage and native references after each batch. Read actual bounds
+   after layout settles; setting coordinates is not geometry verification.
+6. On partial failure, stop writes and collect a fresh complete snapshot, even
+   when the write tool returned an error. Inventory partial objects by ID and
+   report gate failures. Do not automatically delete or roll back without an
+   authorized, supported cleanup plan. Any cleanup write needs another fresh
+   after snapshot and preservation comparison; it cannot reuse pre-cleanup facts.
+
+These are mandatory agent instructions, not an API interceptor. Documentation
+regression tests check that safeguards remain stated; they do not establish live
+operation support, prevent arbitrary/manual edits, or replace recursive evidence.
+This gate grants no new component family, structural exception or scope permission.
 
 ## Read-only design review
 

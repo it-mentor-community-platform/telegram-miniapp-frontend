@@ -13,7 +13,7 @@
     "componentPrefix": "Component/",
     "representation": "native",
     "variantProperty": "State",
-    "structuralCardShells": ["CategoryReviewCard", "CategorySelectionRow"]
+    "structuralCardShells": ["CategoryReviewCard", "CategorySelectionRow", "RoadmapProjectCard"]
   },
   "featurePagePrefix": "Pages / ",
   "pageFramePrefix": "Page/",

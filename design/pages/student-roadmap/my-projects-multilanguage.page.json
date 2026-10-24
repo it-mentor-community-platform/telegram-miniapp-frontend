@@ -1,0 +1,387 @@
+{
+  "$schema": "../../schemas/page.schema.json",
+  "feature": {
+    "key": "student-roadmap",
+    "label": "Student Roadmap"
+  },
+  "page": "MyProjectsMultilanguage",
+  "frame": {
+    "width": 390,
+    "background": "color.background",
+    "padding": "spacing.md"
+  },
+  "layout": {
+    "type": "column",
+    "gap": "spacing.md",
+    "align": "stretch"
+  },
+  "children": [
+    {
+      "type": "library-component",
+      "library": "primevue",
+      "component": "Toolbar",
+      "name": "Header",
+      "design": {
+        "appearance": "page-header",
+        "state": "back"
+      },
+      "slots": {
+        "start": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "name": "Back",
+            "design": {
+              "appearance": "primary",
+              "state": "default",
+              "variant": "text",
+              "size": "normal",
+              "colorTreatment": "accessible-blue"
+            },
+            "props": {
+              "label": "Назад",
+              "severity": "primary",
+              "fluid": true,
+              "variant": "text"
+            },
+            "action": {
+              "type": "command",
+              "name": "goBack"
+            }
+          },
+          {
+            "type": "text",
+            "name": "PageTitle",
+            "value": "Мои проекты",
+            "style": {
+              "fontFamily": "font.family.base",
+              "fontSize": "font.size.lg",
+              "fontWeight": "font.weight.bold",
+              "color": "color.text"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "name": "JavaProgress",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "JavaProgressLabel",
+          "value": "Java Backend · 3/6",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "ProgressBar",
+          "name": "JavaProgressBar",
+          "design": {
+            "appearance": "default",
+            "state": "determinate"
+          },
+          "props": {
+            "value": 50.0,
+            "showValue": false
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "PythonProgress",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "PythonProgressLabel",
+          "value": "Python Backend · 2/6",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "ProgressBar",
+          "name": "PythonProgressBar",
+          "design": {
+            "appearance": "default",
+            "state": "determinate"
+          },
+          "props": {
+            "value": 33.33,
+            "showValue": false
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "GoProgress",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "GoProgressLabel",
+          "value": "Go Backend · 1/6",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "ProgressBar",
+          "name": "GoProgressBar",
+          "design": {
+            "appearance": "default",
+            "state": "determinate"
+          },
+          "props": {
+            "value": 16.67,
+            "showValue": false
+          }
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "ProjectsTitle",
+      "value": "Проекты роадмапа",
+      "style": {
+        "fontFamily": "font.family.base",
+        "fontSize": "font.size.lg",
+        "fontWeight": "font.weight.bold",
+        "color": "color.text"
+      }
+    },
+    {
+      "type": "section",
+      "name": "ProjectList",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "custom-component",
+          "component": "RoadmapProjectCard",
+          "name": "HangmanCard",
+          "variant": "submitted",
+          "props": {
+            "title": "Виселица",
+            "languagesText": "Языки: Java, Python"
+          },
+          "action": {
+            "type": "command",
+            "name": "openHangman"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "RoadmapProjectCard",
+          "name": "SimulationCard",
+          "variant": "submitted",
+          "props": {
+            "title": "Симуляция",
+            "languagesText": "Языки: Python"
+          },
+          "action": {
+            "type": "command",
+            "name": "openSimulation"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "RoadmapProjectCard",
+          "name": "CurrencyExchangeCard",
+          "variant": "submitted",
+          "props": {
+            "title": "Обмен валют",
+            "languagesText": "Языки: C#, Java"
+          },
+          "action": {
+            "type": "command",
+            "name": "openCurrencyExchange"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "RoadmapProjectCard",
+          "name": "TennisScoreboardCard",
+          "variant": "submitted",
+          "props": {
+            "title": "Теннисное табло",
+            "languagesText": "Языки: Java"
+          },
+          "action": {
+            "type": "command",
+            "name": "openTennisScoreboard"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "RoadmapProjectCard",
+          "name": "CloudStorageCard",
+          "variant": "notSubmitted",
+          "props": {
+            "title": "Облачное хранилище"
+          },
+          "action": {
+            "type": "command",
+            "name": "openCloudStorage"
+          }
+        },
+        {
+          "type": "custom-component",
+          "component": "RoadmapProjectCard",
+          "name": "TaskSchedulerCard",
+          "variant": "submitted",
+          "props": {
+            "title": "Планировщик задач",
+            "languagesText": "Языки: Go"
+          },
+          "action": {
+            "type": "command",
+            "name": "openTaskScheduler"
+          }
+        }
+      ]
+    }
+  ],
+  "states": {
+    "access": "Require STUDENT among all user roles, including multi-role users. Without STUDENT show an access-denied Message and a home action; do not expose private student data. Backend must enforce ownership independently.",
+    "loading": "Replace pending data with PrimeVue Skeletons, preserve the header/back action and announce loading; do not flash an empty result.",
+    "loadError": "Show a PrimeVue error Message and a retry Button invoking retryRoadmapLoad in the current route context. Do not substitute zero progress or no reviews for a failed request.",
+    "notFound": "For a missing or inaccessible project/implementation show an unavailable Message and the appropriate parent navigation; do not expose another student’s data.",
+    "responsive": "Keep a single readable column, wrap all language tags and long URLs inside the available width, preserve slot containment and natural document scrolling; no horizontal overflow or fixed-height content clipping.",
+    "accessibility": "Use semantic headings, list/form structure and logical keyboard order at runtime. Fields have visible labels and explicit accessible names; associate helper/error text via aria-describedby, reflect invalid state with aria-invalid, announce saving/results, and focus the first invalid field on failure. Restore focus on cancel. These are runtime contracts, not browser accessibility verification.",
+    "sourceParity": "Mini App, Telegram bot and import implementations count equally. Canonical GitHub uniqueness is global across all students and all three sources.",
+    "progressRule": "For each of Java, Python and Go count distinct project types with at least one submitted implementation in that language, out of six. Repeats count once. Other languages do not contribute. Show only nonzero tracks. Reviews do not gate completion. No explicit track selection or ordered-project locks.",
+    "navigation": "Three logical routes: My Projects → selected project type → selected implementation. Preserve selected type/implementation identity in route context, never infer it from a displayed label or preview target. Back from an implementation opens its own type; back from a type opens My Projects; My Projects returns home.",
+    "logicalScreen": "MyProjects",
+    "representativeData": {
+      "implementations": [
+        {
+          "id": "h1",
+          "projectType": "Hangman",
+          "language": "Java",
+          "source": "mini-app"
+        },
+        {
+          "id": "c1",
+          "projectType": "CurrencyExchange",
+          "language": "Java",
+          "source": "mini-app"
+        },
+        {
+          "id": "c2",
+          "projectType": "CurrencyExchange",
+          "language": "Java",
+          "source": "telegram-bot"
+        },
+        {
+          "id": "t1",
+          "projectType": "TennisScoreboard",
+          "language": "Java",
+          "source": "import"
+        },
+        {
+          "id": "h2",
+          "projectType": "Hangman",
+          "language": "Python",
+          "source": "mini-app"
+        },
+        {
+          "id": "s1",
+          "projectType": "Simulation",
+          "language": "Python",
+          "source": "mini-app"
+        },
+        {
+          "id": "p1",
+          "projectType": "TaskScheduler",
+          "language": "Go",
+          "source": "mini-app"
+        },
+        {
+          "id": "c3",
+          "projectType": "CurrencyExchange",
+          "language": "C#",
+          "source": "mini-app"
+        }
+      ]
+    },
+    "openProjectType": {
+      "openHangman": {
+        "projectType": "Hangman",
+        "logicalScreen": "ProjectType"
+      },
+      "openSimulation": {
+        "projectType": "Simulation",
+        "logicalScreen": "ProjectType"
+      },
+      "openCurrencyExchange": {
+        "projectType": "CurrencyExchange",
+        "logicalScreen": "ProjectType"
+      },
+      "openTennisScoreboard": {
+        "projectType": "TennisScoreboard",
+        "logicalScreen": "ProjectType"
+      },
+      "openCloudStorage": {
+        "projectType": "CloudStorage",
+        "logicalScreen": "ProjectType"
+      },
+      "openTaskScheduler": {
+        "projectType": "TaskScheduler",
+        "logicalScreen": "ProjectType"
+      }
+    },
+    "submissionChoice": "When entered through openProjectSubmission show Выберите проект для сдачи above ProjectList; selecting any row opens that type with normal first/additional form visibility. openOwnProjects enters without this prompt. Runtime data select the matching preview layout, not a hardcoded student.",
+    "preview": "Progress and completion reflect representativeData. All six rows remain actionable, including completed and skipped types."
+  },
+  "requirements": {
+    "sources": [
+      "meta/business-analytics/functionality/student-roadmap-completion.md",
+      "meta/business-analytics/functionality/projects-bookkeeping.md",
+      "meta/system-analytics/functionality/projects-bookkeeping.md",
+      "meta/business-analytics/functionality/reviews-bookkeeping.md"
+    ],
+    "approvedAssumptions": [
+      "The 16 approved previews represent three logical routes, not 16 runtime routes; each preview is an independent student snapshot using fictional data and example.com destinations.",
+      "Mobile composition uses a 390px frame, vertical scrolling, wrapping language lists and links, and existing tokens; it is a representative implementation guide, not a pixel-perfect browser contract.",
+      "Repository and deployment editing is inline, without a modal or a fourth route. Cancel discards the draft only.",
+      "After successful submission open the created implementation with a success Message; do not add a standalone success route.",
+      "The homepage submission shortcut opens My Projects in submission-choice context with the prompt Выберите проект для сдачи.",
+      "Language options shown in previews are a representative subset of the server dictionary, not its exhaustive definition. Другой язык reveals a required language-name field.",
+      "External specification destinations are application-configured per project type and track. Example repository, deployment and review links are fictional preview data, not live resources.",
+      "Project-type summaries use approved RoadmapProjectCard submitted/notSubmitted States. Submitted summaries supply all distinct submitted languages, including non-track languages. Navigation uses the explicit Open Project button and preserves the concrete project-type command."
+    ]
+  }
+}

@@ -41,7 +41,8 @@ artifacts. Never commit snapshots or credentials.
    identity, or unsupported checks affecting the target stop writes. Unrelated
    known drift must be reported, not silently repaired or exempted. First-time
    generation still requires a complete baseline of the configured file.
-4. Before writes, confirm expected scope and native API support. Capture actual
+4. Before writes, complete the native composition capability gate below and
+   `design/CONFORMANCE.md`'s operation checklist. Capture actual
    target/sibling bounds. Stamp each semantic shape with the exact manifest
    `auditKey` and slot children/wrappers with `auditSlot`. Never stamp a claim
    of correctness in place of collecting actual live facts.
@@ -79,17 +80,52 @@ This skill is an agent workflow, not a hook for arbitrary manual Penpot edits.
 
 ## Synchronization order
 
-1. Locate/create only the configured generated file and exact target pages.
-2. Synchronize tokens as concrete values where supported.
-3. Synchronize every used/changed PrimeVue registry component as a native
-   reusable component. Use registry appearances/states as representative
-   templates. Semantic recognizability is required; pixel parity is not.
-4. Synchronize custom components as native components/`State` variant sets.
-   Preserve nested library component copies from their composition trees.
+1. Discover the configured file/pages read-only. Missing pages require explicit
+   creation permission supported by preservation tooling; never create a page
+   before the baseline to evade preservation.
+2. Resolve tokens to concrete values; write shared assets only when explicitly
+   approved. Reuse existing library/custom mains unchanged in page-only scope.
+3. For approved template changes only, synchronize native PrimeVue mains, then
+   custom mains/`State` variant sets. Include all affected dependent scopes.
+4. For a new main, assemble its complete supported composition before registering
+   it as a native component, then create variants/copies. A nested library copy
+   remains structurally immutable even inside an unregistered outer board.
 5. Synchronize page frames. Render every `library-component` and
    `custom-component` as a native copy instance from the correct family.
 6. Re-read and verify names, variants, source families, nested instances,
    containment, and duplicates.
+
+## Native composition capability gate (before any artwork writes)
+
+- Compare the required JSON/manifest tree with each live source main's actual
+  descendants. Record source main/record IDs, nested copy ancestry, required
+  existing roles, planned operations and destinations, supporting API evidence,
+  and authorized scopes. Method existence is not permission to use it on a copy.
+- Never call `appendChild` or `insertChild` on a component copy or an inherited
+  container inside one. Never reparent inherited descendants out of their copy.
+  Treat other structural mutations (removal, reordering, grouping, swapping)
+  as unsupported unless their exact context is documented and verified; do not
+  probe them by trial writes on generated artwork. Inspect copy ancestry, not
+  just `isComponentHead()` on the immediate destination.
+- Existing copies may override existing text, visibility and supported visual
+  properties; a missing semantic child cannot be supplied by a label override.
+  Approve compatible mains before creating copies. If the tree is incompatible,
+  stop before writes and request an approved template change, justified domain
+  component or explicit structural-shell exception. Do not detach, redraw, or
+  use sibling overlays as an implicit fallback.
+- Validate the destination before creating an instance, not after `instance()`:
+  a failed insertion can leave an orphan at the page root. If required native
+  operations or their verification are unavailable, report BLOCKED.
+- Use small dependency-ordered write batches, record new IDs immediately, and
+  re-read native links/parentage after each batch. Re-read geometry after layout
+  settles; requested coordinates are not observed bounds.
+- On a partial failure, stop writes and capture a fresh complete snapshot before
+  further decisions. Inventory partial objects by ID. Do not automatically
+  delete or roll back without an authorized, supported cleanup plan; cleanup
+  writes also require fresh post-write evidence and preservation comparison.
+
+These are mandatory agent instructions, not an API interceptor. Documentation
+regression tests do not prove live capability or prevent arbitrary/manual edits.
 
 Penpot output is a reference-quality layout and implementation guide, not a
 pixel-perfect browser specification. Preserve hierarchy, readable content,

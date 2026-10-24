@@ -38,7 +38,9 @@ try {
         refId: n.componentRefShape()?.id ?? null,
         variant: c?.variantProps ?? {},
         auditKey: n.getPluginData('auditKey') || null,
-        slot: n.getPluginData('auditSlot') || null
+        slot: n.getPluginData('auditSlot') || null,
+        variantContainer: n.isVariantContainer(),
+        variantMembers: n.isVariantContainer() ? (n.variants?.variantComponents() ?? []).map(c => c.id).sort() : []
       });
       for (const child of [...(n.children ?? [])].reverse()) pending.push([child, n.id]);
     }

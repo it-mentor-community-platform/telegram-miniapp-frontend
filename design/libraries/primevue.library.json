@@ -96,6 +96,21 @@
       "slots": [],
       "penpotTemplate": { "appearances": ["default"], "states": ["loading"] }
     },
+    "Select": {
+      "import": "primevue/select",
+      "penpotAudit": { "adapter": "text", "internals": ["Value", "Placeholder", "DropdownIcon"], "textProps": { "modelValue": "Value", "placeholder": "Placeholder" }, "observableStates": ["default"] },
+      "props": {
+        "aria-label": { "type": "string" },
+        "options": { "type": "array", "required": true },
+        "modelValue": { "type": "string" },
+        "placeholder": { "type": "string" },
+        "fluid": { "type": "boolean" },
+        "disabled": { "type": "boolean" },
+        "invalid": { "type": "boolean" }
+      },
+      "slots": [],
+      "penpotTemplate": { "appearances": ["default"], "states": ["default", "focused", "expanded", "disabled", "invalid"] }
+    },
     "SelectButton": {
       "import": "primevue/selectbutton",
       "penpotAudit": { "adapter": "options", "internals": [], "textProps": {}, "observableStates": ["default"] },

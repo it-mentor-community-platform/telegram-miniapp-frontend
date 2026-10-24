@@ -1,0 +1,444 @@
+{
+  "$schema": "../../schemas/page.schema.json",
+  "feature": {
+    "key": "student-roadmap",
+    "label": "Student Roadmap"
+  },
+  "page": "ImplementationNoDeployment",
+  "frame": {
+    "width": 390,
+    "background": "color.background",
+    "padding": "spacing.md"
+  },
+  "layout": {
+    "type": "column",
+    "gap": "spacing.md",
+    "align": "stretch"
+  },
+  "children": [
+    {
+      "type": "library-component",
+      "library": "primevue",
+      "component": "Toolbar",
+      "name": "Header",
+      "design": {
+        "appearance": "page-header",
+        "state": "back"
+      },
+      "slots": {
+        "start": [
+          {
+            "type": "library-component",
+            "library": "primevue",
+            "component": "Button",
+            "name": "Back",
+            "design": {
+              "appearance": "primary",
+              "state": "default",
+              "variant": "text",
+              "size": "normal",
+              "colorTreatment": "accessible-blue"
+            },
+            "props": {
+              "label": "Назад",
+              "severity": "primary",
+              "fluid": true,
+              "variant": "text"
+            },
+            "action": {
+              "type": "command",
+              "name": "goBack"
+            }
+          },
+          {
+            "type": "text",
+            "name": "PageTitle",
+            "value": "Реализация проекта",
+            "style": {
+              "fontFamily": "font.family.base",
+              "fontSize": "font.size.lg",
+              "fontWeight": "font.weight.bold",
+              "color": "color.text"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "section",
+      "name": "ImplementationIdentity",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "ProjectTypeLabel",
+          "value": "Проект: Обмен валют",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "text",
+          "name": "LanguageLabel",
+          "value": "Язык: Java",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "text",
+          "name": "SubmissionDate",
+          "value": "Дата сдачи: 18.10.2026",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "RepositorySection",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "RepositoryTitle",
+          "value": "GitHub-репозиторий",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "RepositoryLink",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "https://github.com/example-student/currency-java",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "external-link",
+            "url": "https://github.com/example-student/currency-java"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "EditRepository",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "Изменить GitHub-ссылку",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "command",
+            "name": "editRepository"
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "DeploymentSection",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "DeploymentTitle",
+          "value": "Деплой",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "text",
+          "name": "NoDeployment",
+          "value": "Ссылка на деплой не добавлена.",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Button",
+          "name": "EditDeployment",
+          "design": {
+            "appearance": "primary",
+            "state": "default",
+            "variant": "text",
+            "size": "normal",
+            "colorTreatment": "accessible-blue"
+          },
+          "props": {
+            "label": "Добавить деплой",
+            "severity": "primary",
+            "fluid": true,
+            "variant": "text"
+          },
+          "action": {
+            "type": "command",
+            "name": "addDeployment"
+          }
+        },
+        {
+          "type": "text",
+          "name": "DeploymentHelp",
+          "value": "Доступность ресурса не гарантируется.",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.md",
+            "fontWeight": "font.weight.regular",
+            "color": "color.text"
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "name": "Reviews",
+      "layout": {
+        "type": "column",
+        "gap": "spacing.sm"
+      },
+      "children": [
+        {
+          "type": "text",
+          "name": "ReviewsTitle",
+          "value": "Ревью",
+          "style": {
+            "fontFamily": "font.family.base",
+            "fontSize": "font.size.lg",
+            "fontWeight": "font.weight.bold",
+            "color": "color.text"
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Card",
+          "name": "Review1Card",
+          "design": {
+            "appearance": "default",
+            "state": "default"
+          },
+          "slots": {
+            "content": [
+              {
+                "type": "text",
+                "name": "Review1Author",
+                "value": "Алексей Иванов",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "text",
+                "name": "Review1Date",
+                "value": "19.10.2026",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              }
+            ],
+            "footer": [
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Review1Link",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "Открыть ревью",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://example.com/reviews/currency-java/1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "library-component",
+          "library": "primevue",
+          "component": "Card",
+          "name": "Review2Card",
+          "design": {
+            "appearance": "default",
+            "state": "default"
+          },
+          "slots": {
+            "content": [
+              {
+                "type": "text",
+                "name": "Review2Author",
+                "value": "Мария Смирнова",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              },
+              {
+                "type": "text",
+                "name": "Review2Date",
+                "value": "21.10.2026",
+                "style": {
+                  "fontFamily": "font.family.base",
+                  "fontSize": "font.size.md",
+                  "fontWeight": "font.weight.regular",
+                  "color": "color.text"
+                }
+              }
+            ],
+            "footer": [
+              {
+                "type": "library-component",
+                "library": "primevue",
+                "component": "Button",
+                "name": "Review2Link",
+                "design": {
+                  "appearance": "primary",
+                  "state": "default",
+                  "variant": "text",
+                  "size": "normal",
+                  "colorTreatment": "accessible-blue"
+                },
+                "props": {
+                  "label": "Открыть ревью",
+                  "severity": "primary",
+                  "fluid": true,
+                  "variant": "text"
+                },
+                "action": {
+                  "type": "external-link",
+                  "url": "https://example.com/reviews/currency-java/2"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "states": {
+    "access": "Require STUDENT among all user roles, including multi-role users. Without STUDENT show an access-denied Message and a home action; do not expose private student data. Backend must enforce ownership independently.",
+    "loading": "Replace pending data with PrimeVue Skeletons, preserve the header/back action and announce loading; do not flash an empty result.",
+    "loadError": "Show a PrimeVue error Message and a retry Button invoking retryRoadmapLoad in the current route context. Do not substitute zero progress or no reviews for a failed request.",
+    "notFound": "For a missing or inaccessible project/implementation show an unavailable Message and the appropriate parent navigation; do not expose another student’s data.",
+    "responsive": "Keep a single readable column, wrap all language tags and long URLs inside the available width, preserve slot containment and natural document scrolling; no horizontal overflow or fixed-height content clipping.",
+    "accessibility": "Use semantic headings, list/form structure and logical keyboard order at runtime. Fields have visible labels and explicit accessible names; associate helper/error text via aria-describedby, reflect invalid state with aria-invalid, announce saving/results, and focus the first invalid field on failure. Restore focus on cancel. These are runtime contracts, not browser accessibility verification.",
+    "sourceParity": "Mini App, Telegram bot and import implementations count equally. Canonical GitHub uniqueness is global across all students and all three sources.",
+    "progressRule": "For each of Java, Python and Go count distinct project types with at least one submitted implementation in that language, out of six. Repeats count once. Other languages do not contribute. Show only nonzero tracks. Reviews do not gate completion. No explicit track selection or ordered-project locks.",
+    "navigation": "Three logical routes: My Projects → selected project type → selected implementation. Preserve selected type/implementation identity in route context, never infer it from a displayed label or preview target. Back from an implementation opens its own type; back from a type opens My Projects; My Projects returns home.",
+    "immutable": "Project type, implementation language and original submission date are read-only. No action deletes an implementation or changes its type/language/date.",
+    "editRepository": "editRepository opens an inline GitHub draft initialized from the confirmed canonical URL. saveRepository validates accessibility/public visibility and global canonical uniqueness before persisting. cancelRepositoryEdit discards only the draft and restores focus to the edit Button.",
+    "repositorySaving": "saveRepository shows loading/disabled on its Button and prevents duplicate saves. The currently confirmed RepositoryLink remains available while validation is pending.",
+    "repositorySaveFailure": "Stay in inline editing with the rejected draft and error Message. The old confirmed GitHub URL remains unchanged and usable. Preserve implementation identity, submission date, reviews and progress on validation or network failure; allow correction/retry.",
+    "repositorySaveSuccess": "Only after successful validation and persistence replace the confirmed URL, close editing and announce success. Preserve implementation identity, type, language, date, reviews and progress.",
+    "editDeployment": "For eligible types addDeployment/editDeployment opens the inline draft. saveDeployment adds or replaces an optional syntactically valid URL; removeDeployment removes only the deployment URL after confirmed success. No reachability guarantee. cancelDeploymentEdit leaves the confirmed value unchanged.",
+    "deploymentSaving": "saveDeployment/removeDeployment displays a loading disabled action and prevents duplicate mutation. Do not change the confirmed URL until success.",
+    "deploymentSaveFailure": "Keep the confirmed deployment URL (or absence), draft, reviews and progress unchanged; show an error Message and allow retry in place.",
+    "deploymentSaveSuccess": "After confirmed add/change/remove update only the deployment link, close editing, announce success and preserve all reviews and progress.",
+    "reviewList": "Show every linked review with author as plain text, date and external review link. Do not link author profiles, add review-writing actions, or imply that a review is required for completion.",
+    "noReviews": "Show Пока нет ревью and explain that the implementation already counts as submitted. This is distinct from loading/error.",
+    "deploymentEligibility": "Show an optional DeploymentField only for CurrencyExchange, TennisScoreboard, CloudStorage and TaskScheduler. Never send deployment data for Hangman or Simulation.",
+    "logicalScreen": "Implementation",
+    "projectType": "CurrencyExchange",
+    "representativeData": {
+      "implementationId": "currency-java-1",
+      "language": "Java",
+      "submissionDate": "2026-10-18",
+      "confirmedRepository": "https://github.com/example-student/currency-java",
+      "confirmedDeployment": null
+    },
+    "preview": {
+      "repositoryEditing": false,
+      "deploymentEditing": false,
+      "repositoryError": false,
+      "hasReviews": true
+    },
+    "back": "goBack opens the selected implementation’s project type, not the last unrelated visited type."
+  },
+  "requirements": {
+    "sources": [
+      "meta/business-analytics/functionality/student-roadmap-completion.md",
+      "meta/business-analytics/functionality/projects-bookkeeping.md",
+      "meta/system-analytics/functionality/projects-bookkeeping.md",
+      "meta/business-analytics/functionality/reviews-bookkeeping.md"
+    ],
+    "approvedAssumptions": [
+      "The 16 approved previews represent three logical routes, not 16 runtime routes; each preview is an independent student snapshot using fictional data and example.com destinations.",
+      "Mobile composition uses a 390px frame, vertical scrolling, wrapping language lists and links, and existing tokens; it is a representative implementation guide, not a pixel-perfect browser contract.",
+      "Repository and deployment editing is inline, without a modal or a fourth route. Cancel discards the draft only.",
+      "After successful submission open the created implementation with a success Message; do not add a standalone success route.",
+      "The homepage submission shortcut opens My Projects in submission-choice context with the prompt Выберите проект для сдачи.",
+      "Language options shown in previews are a representative subset of the server dictionary, not its exhaustive definition. Другой язык reveals a required language-name field.",
+      "External specification destinations are application-configured per project type and track. Example repository, deployment and review links are fictional preview data, not live resources.",
+      "Page-local library compositions are used in this iteration; a reusable project-type custom family requires separate approval."
+    ]
+  }
+}

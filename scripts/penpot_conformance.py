@@ -51,7 +51,7 @@ def build_manifest(root=ROOT):
     for path in paths:
         digest.update(str(path.relative_to(root)).encode())
         digest.update(b"\0" + path.read_bytes() + b"\0")
-    for name in ("penpot_conformance.py", "penpot_collect.js", "penpot_transfer.js", "penpot_snapshot.py", "audit-penpot-drift.py", "validate-design.py"):
+    for name in ("penpot_conformance.py", "penpot_collect.js", "penpot_collect_resumable.js", "penpot_transfer.js", "penpot_snapshot.py", "audit-penpot-drift.py", "validate-design.py"):
         path = root / "scripts" / name
         digest.update(name.encode() + b"\0" + path.read_bytes() + b"\0")
     load = lambda p: json.loads(p.read_text())
@@ -68,7 +68,11 @@ def build_manifest(root=ROOT):
     for (lib, name), definition in libraries.items():
         family = normalize_family(config["libraryComponents"]["componentPrefix"] + name)
         contract = definition.get("penpotAudit")
-        manifest["families"][family] = {"contract": contract, "kind": "library"}
+        manifest["families"][family] = {
+            "contract": contract, "kind": "library",
+            "page": config["libraryComponents"]["pageName"],
+            "templateKey": f"Library|{family}",
+        }
         if not contract:
             manifest["blocked"].append(f"No audit contract for {lib}.{name}")
     for name in custom:
@@ -82,7 +86,7 @@ def build_manifest(root=ROOT):
         result = {"key": key, "source": f"{source}#{pointer}", "name": node.get("name"),
                   "kind": kind, "parent": parent, "slot": slot, "children": [],
                   "props": node.get("props", {}), "design": node.get("design", {}),
-                  "representation": "structural"}
+                  "representation": "structural", "action": node.get("action")}
         if kind == "text":
             result["text"] = node["value"]
             if node.get("hideWhenEmpty") is True and node["value"] == "":
@@ -103,6 +107,7 @@ def build_manifest(root=ROOT):
                            if not spec.get("required") and spec["type"] == "string"}
             bound_props.update(node.get("props", {}))
             composition = bind(state["composition"], bound_props)
+            composition = bind_owner_action(composition, node.get("action"), allow_unbound=scope.startswith("custom:"))
             expanded = resolve(composition, str(path.relative_to(root)),
                                f"/variants/{variant}/composition", scope, parent, slot,
                                stack=(*stack, name), owner=name)
@@ -163,6 +168,28 @@ def build_manifest(root=ROOT):
     return manifest
 
 
+def bind_owner_action(tree, action, allow_unbound=False):
+    """Forward behavior, never derive commands from display props or preview labels."""
+    if isinstance(tree, list):
+        return [bind_owner_action(n, action, allow_unbound) for n in tree]
+    if not isinstance(tree, dict):
+        return tree
+    result = dict(tree)
+    if result.get("action") == {"type": "owner-action"}:
+        if action is None and not allow_unbound:
+            raise ValueError("owner-action requires a concrete owning custom instance action")
+        if action is not None:
+            result["action"] = dict(action)
+    # A nested custom component owns its own composition, resolved separately.
+    for key in ("children", "slots"):
+        if key in result:
+            result[key] = bind_owner_action(result[key], action, allow_unbound)
+    # Slot maps are not nodes.
+    if "type" not in tree:
+        return {k: bind_owner_action(v, action, allow_unbound) for k, v in tree.items()}
+    return result
+
+
 def flatten(nodes):
     output = []
     pending = list(reversed(nodes))
@@ -173,8 +200,10 @@ def flatten(nodes):
     return output
 
 
-def emit_collector(manifest, transfer=False):
-    source = Path(__file__).with_name("penpot_collect.js").read_text()
+def emit_collector(manifest, transfer=False, resumable=False):
+    if transfer and resumable:
+        raise ValueError('prepare transfer only after resumable collection completes')
+    source = Path(__file__).with_name("penpot_collect_resumable.js" if resumable else "penpot_collect.js").read_text()
     if transfer:
         source = "storage.conformanceSnapshot = (() => {\n" + source + "\n})();\n"
         source += Path(__file__).with_name("penpot_transfer.js").read_text()
@@ -182,7 +211,122 @@ def emit_collector(manifest, transfer=False):
                                                "fileName": manifest["fileName"]}) + ";\n" + source
 
 
-def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_families=None, inspect=False):
+def compare_new_library(manifest, snapshot, baseline, family, max_age=3600):
+    """Add one unused native library main; never authorize edits to page scopes.
+
+    Full-file drift remains in a separate report. Missing future pages cannot
+    exempt any actual artwork: all existing shapes/records/pages are protected.
+    Existing families and live dependents require the ordinary scoped workflow.
+    """
+    family = normalize_family(family)
+    issues = []
+    def issue(code, message, blocked=False):
+        issues.append(dict(code=code, location=family, message=message,
+                           severity='blocked' if blocked else 'error'))
+    def result():
+        return dict(status='BLOCKED' if any(i['severity'] == 'blocked' for i in issues)
+                    else 'FAIL' if issues else 'PASS', mode='new-library-only',
+                    allowedFamilies=[family], requestedScopes=[],
+                    preservationChecked=preserved, issues=issues)
+    preserved = False
+    if baseline is None:
+        issue('BASELINE_REQUIRED', 'a fresh full-file baseline is required', True)
+        return result()
+    # Reuse the complete collector validation, without hiding full drift.
+    full = compare(manifest, snapshot, max_age=max_age)
+    before = compare(manifest, baseline, max_age=max_age)
+    if (any(i['code'] in ('INVALID_SNAPSHOT', 'UNSUPPORTED_CONTRACT')
+            for report in (full, before) for i in report['issues'])
+            or baseline.get('fileId') != snapshot.get('fileId')):
+        issue('INVALID_BASELINE', 'both snapshots must be complete, fresh, same-file and source-matched', True)
+        return result()
+    definition = manifest['families'].get(family, {})
+    contract = definition.get('contract', {})
+    if definition.get('kind') != 'library' or not definition.get('page') or not definition.get('templateKey'):
+        issue('UNKNOWN_LIBRARY', 'only a registered configured library family is eligible', True)
+        return result()
+    if any(r['family'] == family for r in baseline['records']) or any(n['family'] == family for n in baseline['nodes']):
+        issue('EXISTING_LIBRARY', 'this mode only adds an absent, unused family; use dependent scoped verification for edits', True)
+        return result()
+    records = [r for r in snapshot['records'] if r['family'] == family]
+    if len(records) != 1:
+        issue('TEMPLATE_COUNT', 'exactly one native main record is required')
+        return result()
+    record = records[0]
+    ids = {n['id']: n for n in snapshot['nodes']}
+    main = ids.get(record['mainId'])
+    page_ids = {p['id'] for p in snapshot['pages'] if p['name'] == definition['page']}
+    if (len(page_ids) != 1 or not main or not main['head'] or main['copy']
+            or main['family'] != family or main['componentId'] != record['id']
+            or main['refId'] is not None or main['parent'] is not None
+            or main['variant'] or record['variant'] or main['pageId'] not in page_ids
+            or normalize_family(main['name']) != family):
+        issue('INVALID_TEMPLATE', 'main must be a top-level native main on the configured library page with matching record/family')
+        return result()
+    children = {}
+    for n in snapshot['nodes']:
+        children.setdefault(n['parent'], []).append(n)
+    subtree = []
+    pending = [main]
+    while pending:
+        n = pending.pop()
+        subtree.append(n)
+        pending.extend(children.get(n['id'], []))
+    new_ids = {n['id'] for n in subtree}
+    if any(n['id'] not in new_ids and (n['family'] == family or n['componentId'] == record['id']
+                                      or n['refId'] in new_ids) for n in snapshot['nodes']):
+        issue('LIVE_DEPENDENCY', 'new library-only mode forbids page copies or other live dependents', True)
+    old_nodes = {n['id']: n for n in baseline['nodes']}
+    outside = {n['id']: n for n in snapshot['nodes'] if n['id'] not in new_ids}
+    old_records = {r['id']: r for r in baseline['records']}
+    outside_records = {r['id']: r for r in snapshot['records'] if r['id'] != record['id']}
+    if (old_nodes != outside or set(old_nodes) & new_ids or record['id'] in old_records
+            or old_records != outside_records
+            or {p['id']: p for p in baseline['pages']} != {p['id']: p for p in snapshot['pages']}):
+        issue('PROTECTED_CHANGE', 'every pre-existing shape, component record and page must remain unchanged')
+    else:
+        preserved = True
+    if main['auditKey'] != definition['templateKey']:
+        issue('WRONG_IDENTITY', 'native main must have the manifest template identity')
+    names = [n['name'] for n in subtree[1:]]
+    expected = contract.get('internals', [])
+    if len(names) != len(set(names)) or set(names) != set(expected):
+        issue('TEMPLATE_INTERNALS', 'the complete subtree must match the registry internals exactly')
+    px, py, pw, ph = main['bounds']
+    if main['hidden'] or main['opacity'] <= 0 or pw <= 0 or ph <= 0:
+        issue('HIDDEN_CONTENT', 'main must be visible and nonempty')
+    for n in subtree[1:]:
+        x, y, w, h = n['bounds']
+        if (n['parent'] != main['id'] or n['head'] or n['copy'] or n['componentId'] is not None
+                or n['refId'] is not None or n['family'] is not None):
+            issue('TEMPLATE_INTERNALS', 'internals must be direct non-head native shapes, not detached copies or nested records')
+        if n['auditKey'] != definition['templateKey'] + '/' + n['name']:
+            issue('WRONG_IDENTITY', 'internal identity must match its manifest-derived name')
+        if w <= 0 or h <= 0 or x < px-2 or y < py-2 or x+w > px+pw+2 or y+h > py+ph+2:
+            issue('OUTSIDE_PARENT', 'all internals must have nonempty bounds contained by the main')
+        if n['type'] == 'text' and not n['hidden'] and n['opacity'] > 0 and not (n['text'] or '').strip():
+            issue('EMPTY_TEXT', 'visible text must be nonempty')
+    for name in contract.get('textProps', {}).values():
+        if not any(n['name'] == name and n['type'] == 'text' for n in subtree[1:]):
+            issue('CONTROL_TEXT', 'each text prop requires an actual native text shape')
+    if family == 'Library/PrimeVue/Select':
+        placeholder = next((n for n in subtree[1:] if n['name'] == 'Placeholder'), {})
+        icon = next((n for n in subtree[1:] if n['name'] == 'DropdownIcon'), {})
+        if (placeholder.get('hidden', True) or not placeholder.get('text')
+                or placeholder.get('opacity', 0) <= 0
+                or icon.get('hidden', True) or icon.get('text') not in ('⌄', '▾', '˅')
+                or icon.get('opacity', 0) <= 0):
+            issue('SELECT_AFFORDANCE', 'default Select needs a visible placeholder and dropdown chevron')
+    # Reject duplicate identities, unknown assets and record defects even if
+    # they are not page-scoped; known deferred page drift is reported separately.
+    critical = {'DUPLICATE_IDENTITY', 'UNKNOWN_FAMILY', 'ORPHAN_RECORD', 'LEGACY_ORPHAN_CHANGED'}
+    for finding in full['issues']:
+        if finding['code'] in critical:
+            issues.append(finding)
+    return result()
+
+
+def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_families=None, inspect=False, partial_recovery=None):
     issues = []
     accepted_orphans = []
     preservation_checked = False
@@ -197,6 +341,9 @@ def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_
                 "requestedScopes": scopes or list(manifest["scopes"]),
                 "allowedFamilies": sorted(allow_families or []),
                 "acceptedOrphans": accepted_orphans, "issues": issues}
+    if partial_recovery is not None and (inspect or not scopes or baseline is None):
+        issue("INVALID_PARTIAL_RECOVERY", "scope", "recovery requires explicit synchronization scopes and a baseline", True)
+        return report()
     if inspect and (not scopes or baseline is not None or allow_families):
         issue("INVALID_INSPECTION_SCOPE", "scope",
               "inspection requires explicit scopes and forbids baseline/family change permissions", True)
@@ -621,6 +768,93 @@ def compare(manifest, snapshot, scopes=None, baseline=None, max_age=3600, allow_
                 # are permitted; moving protected artwork into a target fails.
                 old_template = template_ids(baseline)
                 new_template = template_ids(snapshot)
+                # Explicit approval inventory only; names and audit stamps never
+                # grant mutation permission to an unregistered baseline subtree.
+                if partial_recovery is not None:
+                    baseline_ids_map = {n['id']: n for n in baseline['nodes']}
+                    try:
+                        if set(partial_recovery) != {'fileId', 'targets'} or partial_recovery['fileId'] != snapshot['fileId']:
+                            raise ValueError('inventory must identify this exact file')
+                        targets = partial_recovery['targets']
+                        if not isinstance(targets, list) or not targets:
+                            raise ValueError('nonempty target inventory required')
+                        inventoried = set()
+                        for target in targets:
+                            if set(target) != {'scope', 'rootId', 'nodeIds'}:
+                                raise ValueError('target requires scope, rootId and nodeIds only')
+                            scope_name, root_id = target['scope'], target['rootId']
+                            spec = manifest['scopes'].get(scope_name, {})
+                            root = baseline_ids_map.get(root_id)
+                            node_ids = target['nodeIds']
+                            if (scope_name not in selected or spec.get('mode') != 'custom'
+                                    or spec.get('family') not in allowed or root is None
+                                    or root['head'] or root['copy'] or root['componentId'] is not None
+                                    or root['family'] is not None or root['parent'] is not None
+                                    or any(r['mainId'] == root_id or r['family'] == spec['family'] for r in baseline['records'])
+                                    or not isinstance(node_ids, list) or not all(isinstance(i, str) for i in node_ids)
+                                    or len(set(node_ids)) != len(node_ids) or inventoried.intersection(node_ids)):
+                                raise ValueError('invalid, overlapping or already registered baseline target')
+                            subtree = {root_id}
+                            pending = [root_id]
+                            while pending:
+                                parent = pending.pop()
+                                descendants = {n['id'] for n in baseline['nodes'] if n['parent'] == parent}
+                                pending.extend(descendants - subtree)
+                                subtree.update(descendants)
+                            if subtree != set(node_ids):
+                                raise ValueError('inventory must exactly enumerate the baseline subtree')
+                            main = ids.get(root_id)
+                            if (target_roots.get(scope_name) != root_id or main is None
+                                    or not main['head'] or main['copy'] or main['family'] != spec['family']
+                                    or main['variant'] != {'State': spec['variant']}
+                                    or main['pageId'] != root['pageId']
+                                    or not any(r['mainId'] == root_id and r['id'] == main['componentId']
+                                               and r['family'] == spec['family'] and r['variant'] == main['variant'] for r in records)):
+                                raise ValueError('same baseline root must become the verified requested native State main')
+                            for node_id in subtree:
+                                current = ids.get(node_id)
+                                ancestry = set()
+                                while current and current['id'] != root_id and current['id'] not in ancestry:
+                                    ancestry.add(current['id'])
+                                    current = ids.get(current['parent'])
+                                if current is None or current['id'] != root_id:
+                                    raise ValueError('inventoried descendant missing or moved outside recovered main')
+                            inventoried.update(subtree)
+                        old_template.update(inventoried)
+                    except (ValueError, TypeError, KeyError) as error:
+                        issue('INVALID_PARTIAL_RECOVERY', 'scope', str(error), True)
+                # Approved first-time RoadmapProjectCard addition only. The native
+                # variant container is outside both main subtrees; do not exempt
+                # existing containers or arbitrary boards based on names/stamps.
+                family = "Component/RoadmapProjectCard"
+                if family in allowed and not any(r["family"] == family for r in baseline["records"]):
+                    members = [r for r in records if r["family"] == family]
+                    main_ids = {r["mainId"] for r in members}
+                    parents = {ids[m]["parent"] for m in main_ids if m in ids}
+                    container = ids.get(next(iter(parents))) if len(parents) == 1 else None
+                    baseline_ids = {n["id"] for n in baseline["nodes"]}
+                    valid = (len(members) == 2
+                             and {r["variant"].get("State") for r in members} == {"submitted", "notSubmitted"}
+                             and container is not None and container["id"] not in baseline_ids
+                             and container.get("variantContainer") is True
+                             and set(container.get("variantMembers", [])) == {r["id"] for r in members}
+                             and container["parent"] is None and container["type"] == "board"
+                             and not container["head"] and not container["copy"]
+                             and container["componentId"] is None and container["family"] is None
+                             and container["refId"] is None and container["variant"] == {}
+                             and normalize_family(container["name"]) == family
+                             and {n["id"] for n in children.get(container["id"], [])} == main_ids
+                             and all(ids[m]["head"] and not ids[m]["copy"]
+                                     and ids[m]["componentId"] == r["id"]
+                                     and ids[m]["family"] == family and ids[m]["variant"] == r["variant"]
+                                     and ids[m]["pageId"] == container["pageId"]
+                                     for r in members for m in [r["mainId"]] if m in ids)
+                             and any(p["id"] == container["pageId"] and p["name"] == "Components" for p in pages))
+                    if valid:
+                        new_template.add(container["id"])
+                    else:
+                        issue("INVALID_NEW_VARIANT_CONTAINER", family,
+                              "new native container must own exactly the two approved State mains with observed native membership")
                 old_target = set()
                 baseline_children = {}
                 for n in baseline["nodes"]:

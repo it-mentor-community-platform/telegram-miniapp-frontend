@@ -1084,7 +1084,7 @@ class ConformanceTests(unittest.TestCase):
         script = '''
 const n = {id:'n', type:'text', name:'Title', hidden:false, opacity:1,
  x:1,y:2,width:30,height:20,characters:'hello',fills:[],children:[],
- component:()=>null, isComponentCopyInstance:()=>false,isComponentHead:()=>false,
+ component:()=>null, isComponentCopyInstance:()=>false,isComponentHead:()=>false,isVariantContainer:()=>false,
  componentRefShape:()=>null,getPluginData:()=>''};
 const penpot={currentFile:{id:'file',name:'Generated UI (do not edit)',
  pages:[{id:'page',name:'Test',root:{children:[n]}}]},library:{local:{components:[]}}};

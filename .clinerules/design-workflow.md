@@ -32,6 +32,22 @@
 
 - Read `design/penpot.json` and discover current IDs before every sync.
 - Authenticate read-only before writes.
+- Before any artwork writes, compare required composition with live source mains
+  and record planned operations/destinations and API evidence per
+  `design/CONFORMANCE.md`. Method existence is not operation permission.
+- Never call `appendChild`/`insertChild` on component copies or inherited
+  containers, or reparent inherited descendants out of a copy. Inspect ancestry.
+  Other structural mutations require context-specific documented support; do not
+  probe by trial writes. Assemble complete new mains before registration/copying;
+  nested copies remain structurally immutable. Incompatible trees require
+  separate approval; no detaching, redraws, or sibling-overlay fallback.
+- Validate destinations before creating instances. Use small write batches,
+  record IDs immediately and re-read parentage/native links and settled bounds.
+  On partial failure stop writes, collect a fresh complete snapshot and inventory
+  partial objects. No automatic rollback/deletion without an authorized supported
+  cleanup plan and fresh post-write preservation evidence.
+- Missing pages require supported creation permission; never create a page before
+  the baseline to evade preservation. Page-only scope does not permit main edits.
 - Synchronize PrimeVue templates to the configured library page and prefix.
 - Synchronize project custom components to the configured custom page/prefix.
 - Both kinds must be native reusable components; custom components must retain
