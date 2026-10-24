@@ -34,9 +34,20 @@ Start the Vite development server:
 npm run dev
 ```
 
-Vite prints the local development URL in the terminal. When opened outside Telegram, the starter
-screen runs in browser-preview mode. Add query parameters to the URL to exercise the init-data
-display locally.
+Vite prints the local development URL in the terminal. Outside Telegram the app follows the
+system light/dark preference, and the "Для разработчиков" panel on the home screen reads init data
+from the page's query parameters (for example `/?query_id=…&user=…`).
+
+The home screen uses mocked data (`src/mocks/`) until the backend exposes it. Pick the mocked
+user's roles with `VITE_MOCK_ROLES` (comma-separated, default `STUDENT`):
+
+```bash
+VITE_MOCK_ROLES=STUDENT,MENTOR,ADMIN npm run dev
+```
+
+Project implementations are mocked too (`src/mocks/projects.ts`). Pick a scenario with
+`VITE_MOCK_PROJECTS`: `empty`, `java3`, `multi` (default), `java6` or `other`. These match the
+states of the `Projects` mockup.
 
 ## Validation and production build
 
@@ -84,15 +95,11 @@ the application:
 
 1. detects `window.Telegram.WebApp`;
 2. reads `initData`;
-3. applies Telegram's light or dark color scheme;
-4. calls `ready()` and requests the expanded viewport;
-5. displays the value locally with an optional copy-to-clipboard action.
+3. applies Telegram's light or dark color scheme and follows `themeChanged`;
+4. hides the BackButton on the home screen;
+5. calls `ready()` and requests the expanded viewport.
 
-The starter page does not transmit init data. A backend must validate Telegram init data before it
+Content is padded by Telegram's safe-area insets (`--tg-safe-area-inset-*`,
+`--tg-content-safe-area-inset-*`). The home screen's developer panel shows the init data with a
+copy-to-clipboard action and does not transmit it. A backend must validate Telegram init data before it
 is trusted for authentication or authorization.
-
-## UI design workflow
-
-Version-controlled UI specifications, Penpot configuration, and workflow instructions are stored
-in [`design/`](design/). See [`design/USAGE.md`](design/USAGE.md) before implementing material UI
-changes from product requirements.

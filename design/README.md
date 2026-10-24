@@ -1,128 +1,190 @@
-# UI design source
+# Design — Telegram Mini App mockups
 
-This directory contains the version-controlled source specifications for the
-Telegram Mini App UI. See [USAGE.md](USAGE.md) for the team workflow.
+UI mockups for the IT Mentor Community Platform Telegram Mini App. They are the reference for
+layout, copy, states and behaviour when implementing screens in this repo.
 
-## Source of truth
+- **Live canvas:** https://claude.ai/artifact/GVdyfc2VDGd72PA8iAnKbg (Claude Design canvas, private
+  to the owner until shared)
+- **Specs the mockups are based on:** `meta/business-analytics/functionality/`
+  (`interview-questions-interval-repetition.md`, `student-roadmap-completion.md`)
 
-- `tokens/` defines reusable visual values.
-- `components/` defines reusable UI components.
-- `pages/` defines approved page layouts and states. Every page must use exactly
-  one feature directory: `pages/<feature>/<screen>.page.json`, for example
-  `pages/home/homepage.page.json`.
-- `penpot.json` identifies the generated Penpot target.
-- `references/` contains input screenshots and other visual references.
-- `exports/` contains generated artifacts and is not a source of truth.
-- `schemas/` documents the supported JSON structures.
+## Files
 
-Business behavior remains defined in the workspace's
-`meta/business-analytics/functionality/` documents. Business requirements are
-inputs to design discussions; approved JSON in this directory is the UI design
-source of truth.
+| File | What it is |
+|---|---|
+| `canvas.json` | Canvas layout: which screens exist, their position and frame size, titles, section headings |
+| `*.dc.html` | One screen, screen state or shared component per file — HTML template + a small logic class |
+| `Components.dc.html` | Catalogue of all shared components and their variants |
 
-Penpot is a generated visual representation of these files, not an independent
-source of truth.
+The `.dc.html` files only render inside the Claude Design canvas editor (they depend on its
+runtime). Opening them directly in a browser will not show the design. In this repo they are for
+history, review and as a readable spec.
 
-## Penpot conventions
+### Base screens and states
 
-- The target file is named by `generatedFileName` in `penpot.json`.
-- The components page is named by `componentsPageName`.
-- Product pages are grouped by feature on Penpot pages named
-  `featurePagePrefix + feature.label`, for example `Pages / Home`.
-- Page frames are named `Page/<PageName>`, for example `Page/Login`.
-- Native reusable component families are named `Component/<Name>`, for example
-  `Component/Button`.
-- Named sections and layout nodes in page JSON must be represented as nested
-  generated layers inside their `Page/<PageName>` frame.
-- Every component specification must become a native Penpot library component.
-  Specifications with multiple variants become native variant sets using the
-  `State` property and exact JSON variant names.
-- Page component nodes must be native copy instances. Detached drawings and
-  flattened or redrawn substitutes are invalid.
-- The components page contains native main instances and variant containers,
-  not documentation boards that list component names, states, or layers.
-- Generated page artwork must be contained by its canonical page frame. It must
-  not remain loose at a Penpot page root.
-- Generated objects must be updated by stable name and never duplicated.
+Each section has **base screens** that hold the full markup. A base screen takes a `scenario`
+(or `start`) prop; **state files** are thin wrappers that render the base screen in one specific
+state via `<dc-import>`. Change a base screen and every state of it changes too.
 
-## Page organization
+| Base screen | State files (scenario) |
+|---|---|
+| `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust) |
+| `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
+| `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
+| `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 
-Each page specification must declare its feature:
+Every screen has a `dark` prop (light/dark mode).
 
-```json
-{
-  "feature": {
-    "key": "home",
-    "label": "Home"
-  },
-  "page": "Homepage"
-}
-```
+## Screen map
 
-The contract is:
+Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 
-```text
-Local file:          design/pages/<feature.key>/<screen>.page.json
-Penpot feature page: featurePagePrefix + feature.label
-Penpot page frame:   pageFramePrefix + page
-```
+| Mockup | Route | Main PrimeVue components |
+|---|---|---|
+| `Main` — home, section launcher | `/` | `Avatar`, `Tag`, `Card`, `ProgressBar` |
+| `Repetition` — my topics | `/student/repetition` | `Breadcrumb`, `Card`, `ProgressBar`, `Button` |
+| `Categories` — all topics | `/student/repetition/topics` | `Breadcrumb`, `IconField` + `InputText`, `SelectButton`, `ToggleButton` |
+| `Topic` — one topic, questions and answers | `/student/repetition/topics/:topicId` | `Breadcrumb`, `Tag`, `Button`, `Accordion` |
+| `Review` — review session | `/student/repetition/review` | `ProgressBar`, `Tag`, `Button` |
+| `Stats` — statistics | `/student/repetition/stats` | `Breadcrumb`, `MeterGroup`, `Card` |
+| `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag` |
+| `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
+| `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
 
-Feature directories and screen filenames use kebab-case. `feature.key` must
-match the directory exactly. Pages with the same feature key must use the same
-feature label, and one feature label may not represent multiple feature keys.
-Structural `section`, `row`, `column`, and `grid` nodes must have stable
-PascalCase names so synchronization and review can map their Penpot containers.
+Blocks PrimeVue does not cover are shared components — see [Components](#components).
 
-## Approval rule
+## Routes
 
-When a page is derived from business requirements, the workflow must first
-present a design proposal and wait for explicit user approval. It must not
-change JSON or Penpot before approval.
+### Structure
 
-## Idempotency rule
+- `/` — home, shared by all roles.
+- `/student/...` — student functionality (everything designed so far). Mentor and admin
+  functionality will get their own prefixes (`/mentor/...`, `/admin/...`) — reserve them.
+- Nesting mirrors the breadcrumbs: each route's parent is its breadcrumb parent, so breadcrumbs are
+  generated from the matched route records (`meta.breadcrumb`), never hand-written per page. Role
+  prefixes are not breadcrumb levels — the trail always starts with the home icon.
 
-- Find an existing page frame or component before creating it.
-- Update generated objects in place where possible.
-- Delete and recreate generated objects only when incremental updates are not
-  supported and doing so is safe.
-- Never append duplicate page frames or components.
-- Never replace a native component, variant, or page instance with a
-  documentation board or detached artwork.
-- Never delete manually maintained Penpot content.
+| Route | Name | Screen | Breadcrumb trail |
+|---|---|---|---|
+| `/` | `home` | Главная | — |
+| `/student/repetition` | `student-repetition` | Повторение | 🏠 |
+| `/student/repetition/topics` | `student-repetition-topics` | Все темы | 🏠 › Повторение |
+| `/student/repetition/topics/:topicId` | `student-repetition-topic` | Тема | 🏠 › Повторение › Все темы |
+| `/student/repetition/review` | `student-repetition-review` | Review session (`?topic=:topicId` = one topic; none = all) | none (close button only) |
+| `/student/repetition/stats` | `student-repetition-stats` | Статистика | 🏠 › Повторение |
+| `/student/projects` | `student-projects` | Мои проекты | 🏠 |
+| `/student/projects/:projectType` | `student-project` | Project page | 🏠 › Мои проекты |
+| `/student/projects/:projectType/implementations/:implementationId` | `student-implementation` | Implementation page | 🏠 › Мои проекты › {project name} |
 
-## Token rule
+Use route **names** in code (`{ name: 'student-project', params: { projectType } }`), not
+hard-coded paths, so prefixes can change without touching screens. A `/student` route record
+without its own page (redirect to `/`) groups the children and is the natural place for a role
+guard.
 
-- JSON references tokens by dotted paths such as `color.primary` or
-  `spacing.md`.
-- Reuse an existing token whenever it represents the intended value.
-- Do not invent an arbitrary reusable color or dimension. Add it to
-  `tokens/tokens.json` first.
-- Validate token and component references before synchronizing Penpot.
+### Parameters
 
-## Requirement traceability
+- `:projectType` — fixed readable slugs (the six project types are a fixed list):
+  `hangman`, `simulation`, `currency-exchange`, `tennis-scoreboard`, `cloud-storage`,
+  `task-scheduler`. Unknown slug → not-found screen.
+- `:topicId`, `:implementationId` — backend IDs.
+- An implementation whose `:projectType` does not match its actual type → redirect to the canonical URL.
 
-New page specifications should record their source documents and assumptions:
+### Telegram deep links
 
-```json
-{
-  "requirements": {
-    "sources": [
-      "meta/business-analytics/functionality/user-profiles.md"
-    ],
-    "approvedAssumptions": [
-      "Projects and reviews are shown in separate sections"
-    ]
-  }
-}
-```
+Bot messages open screens via `https://t.me/<bot>/<app>?startapp=<param>`. Telegram allows only
+`A–Z a–z 0–9 _ -` and ≤ 512 characters in `startapp`, so it is a short code mapped to a route on
+startup (read from the launch params, then `router.replace`):
 
-Existing pages that predate this workflow may omit `requirements` until they
-are next discussed and approved.
+| `startapp` | Opens |
+|---|---|
+| *(empty)* | `/` |
+| `review` | `/student/repetition/review` (all topics) |
+| `review_<topicId>` | `/student/repetition/review?topic=<topicId>` |
+| `topic_<topicId>` | `/student/repetition/topics/<topicId>` |
+| `projects` | `/student/projects` |
+| `project_<projectType>` | `/student/projects/<projectType>` |
+| `impl_<implementationId>` | the implementation page (type resolved from the API) |
+| anything unknown | `/` |
 
-## Validation
+### Router mode
 
-From the repository root, run:
+Use HTML5 history mode (`createWebHistory`), not hash mode: Telegram passes its launch data in the
+URL fragment (`#tgWebAppData=…`), which conflicts with hash routing. Read the launch params (init
+data, `startapp`) before the router starts. nginx must fall back to `index.html` for all app paths.
 
-```bash
-python3 scripts/validate-design.py
-```
+## Components
+
+Shared blocks that PrimeVue does not provide. In the design each is its own file, imported by the
+screens with `<dc-import>`; `Components.dc.html` is a catalogue showing every variant. In the app
+each becomes **one Vue component** in `src/components/`, styled with PrimeVue theme tokens
+(`--p-primary-color`, surface and border tokens, `--p-content-border-radius`) so it follows Aura and
+dark mode. Props below are the design's props — keep the same names in Vue.
+
+| Component | Props | Behaviour / notes | Used on |
+|---|---|---|---|
+| `RoadmapProgress` | `label: string`, `steps: boolean[6]`, `compact?: boolean` | One segment per project type, filled when that type has ≥1 implementation in the track's language. Shows "N из 6 проектов" (`compact`: "N из 6"). Parent hides tracks with 0/6. Screen readers: "Java Backend: сдано 3 из 6 проектов". | Main, Projects |
+| `StatTiles` | `items: { value, label, tone: 'warn' \| 'info' \| 'success' \| 'neutral' }[]` (3 items) | Three equal tiles. `warn` = due for review, `info` = new, `success` = learned, `neutral` = plain count. | Main, Repetition, Topic |
+| `NavListRow` | `icon`, `title`, `subtitle`, `badge?`, `badgeTone?: 'success' \| 'neutral'`, `href`, `divider?` | Whole row is a link (router-link), ≥64 px tall. `divider` draws the top border between rows. Badge renders a PrimeVue `Tag`. | Main |
+| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. | Projects |
+| `LanguageTag` | `label: string`, `counted: boolean` | Solid when the language counts toward roadmap progress (Java, Python, Go); dashed outline + aria "не учитывается в прогрессе" otherwise. | Projects |
+| `EmptyState` | `title`, `text`, `icon: 'info' \| 'chat' \| 'none'` | Card used for "nothing here yet" and explanatory notices. | Projects, Implementation |
+| `Breadcrumbs` | `items: { label, href }[]` | Home icon + items; current page is not repeated (the page title follows). Last item truncates with ellipsis. In the app: wrap PrimeVue `Breadcrumb` and build items from route meta. | Every screen below home except the review session |
+| `ActivityHeatmap` | `days: { date, count }[]` | 53 weeks × 7 days, 5 levels (0, 1–9, 10–19, 20–29, 30+). Opens scrolled to the latest weeks; day tooltip shows the count. | Stats |
+
+Suggested dev aid: a dev-only `/dev/components` route that renders each component's variants (same
+as `Components.dc.html`) — a quick visual check in PRs without adding Storybook.
+
+## Component decisions
+
+Choices made up front so every screen (and every contributor) builds them the same way.
+
+| Pattern | Decision |
+|---|---|
+| Language / specialization choice (Java · Python · Go · Другой, Все · Java · …) | PrimeVue `SelectButton` |
+| Topic add/remove toggle on "Все темы" | PrimeVue `ToggleButton` (on: "На повторении", off: "Добавить") |
+| Questions with expandable answers | PrimeVue `Accordion`, one panel open at a time |
+| Inline edit of GitHub / deploy links | Custom view ⇄ edit toggle with `InputText` + `Button`s — **not** `Inplace` (it can't show "current link + draft + error" together) |
+| Inline field errors | Field invalid state + small error text under the field (PrimeVue `Message` with `variant="simple"`, `severity="error"`) |
+| Notices inside forms (e.g. "won't count toward progress") | Muted helper text with an info icon, not a `Message` box |
+| Stacked learned / in progress / new bar | PrimeVue `MeterGroup` |
+| Single progress bars (topic learned %, review session) | PrimeVue `ProgressBar` (`:showValue="false"`, thin) |
+| Primary actions "Повторить всё", "Сдать проект" | **Open — recommended:** in-page PrimeVue `Button` for now; revisit Telegram `MainButton` once the app shell exists |
+| Back navigation | Telegram `BackButton` + `Breadcrumbs` |
+| Icons | PrimeIcons only |
+
+## Design conventions
+
+- **Platform:** Telegram Mini App. Frames are 390 px wide (phone). Telegram's own header is not drawn.
+  Light/dark follows Telegram's color scheme.
+- **Look:** PrimeVue 4 Aura — Inter, emerald primary, slate surfaces (zinc in dark mode), 12 px card
+  radius. Primary buttons use a darker emerald than Aura's default (`#047857` in light mode) so white
+  text meets WCAG AA contrast; in dark mode `#34d399` with dark text.
+- **Copy:** Russian. Example data is illustrative, not real.
+- **Navigation:** breadcrumbs on every screen below home (the home icon links to `/`); the review
+  session has none — only a close (X) button. Telegram's BackButton is expected alongside.
+- **Icons:** the mockups use hand-drawn stroke icons; the app should use the closest PrimeIcons.
+- **Implementation:** build with PrimeVue components and theme tokens — do not port the mockups'
+  inline styles.
+
+## Workflow (keeping repo and canvas in sync)
+
+The repo is the source of truth; the canvas is a preview of whatever is checked out. Mapping:
+`design/<file>` in the repo = `project/<file>` in the canvas.
+
+- **Design changes requested from Claude:** Claude updates both this folder and the canvas. Review
+  the diff and commit.
+- **Edits made directly in the canvas editor:** ask Claude to *save canvas to repo* before
+  committing or switching branches — otherwise the next sync overwrites them.
+- **Files edited by hand, branch switched or changes pulled:** ask Claude to *sync canvas from repo*.
+- To compare a branch side by side, Claude can publish it to a separate canvas instead.
+
+The canvas also keeps its own linear version history (no branches), so an overwritten state can be
+recovered from there.
+
+## Open questions
+
+- Mapping of the 4 self-rating buttons to SM-2 grades (0–5); intervals shown on the buttons are examples.
+- How many successful repetitions make a question "learned" (`[N]` placeholder on `Stats`).
+- Whether "Повторить всё" / "Сдать проект" become Telegram's MainButton instead of in-page buttons
+  (see Component decisions).
+- Spec links on the project page currently point to each roadmap's root, not the project's page.

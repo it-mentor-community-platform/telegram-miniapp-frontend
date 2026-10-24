@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мои проекты</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 960px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<div style="margin: -12px 0 -10px 0">
+<dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+</div>
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Мои проекты</h1>
+
+<sc-if value="{{hasTracks}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<sc-if value="{{complete}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 10px; background: {{t.primarySoft}}">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: {{t.btnBg}}; color: {{t.btnText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 700; line-height: 20px; color: {{t.primaryText}}">Роадмап Java Backend пройден</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.text2}}">Все 6 проектов сданы. Новые реализации можно добавлять и дальше — например, на другом языке.</span>
+</span>
+</div>
+</sc-if>
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="1">
+<dc-import name="RoadmapProgress" label="{{tr.name}}" steps="{{tr.flags}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+</sc-for>
+<p style="margin: 0; padding-top: 12px; border-top: 1px solid {{t.border}}; font-size: 12px; line-height: 17px; color: {{t.muted}}">{{trackNote}}</p>
+</section>
+</sc-if>
+
+<sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}">
+<dc-import name="EmptyState" icon="none" title="Здесь появится ваш прогресс" text="Выберите любой проект и сдайте ссылку на публичный GitHub-репозиторий. Прогресс считается отдельно для Java, Python и Go роадмапов." dark="{{dark}}" hint-size="100%,120px"></dc-import>
+</sc-if>
+
+<sc-if value="{{onlyOther}}" hint-placeholder-val="{{ false }}">
+<dc-import name="EmptyState" icon="info" title="Прогресс по роадмапам пока не считается" text="Ваши проекты сданы на C# и Rust. В прогресс роадмапов засчитываются реализации на Java, Python и Go." dark="{{dark}}" hint-size="100%,120px"></dc-import>
+</sc-if>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Проекты роадмапа</h2>
+<nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{projects}}" as="p" hint-placeholder-count="6">
+<dc-import name="ProjectRow" icon="{{p.icon}}" title="{{p.name}}" langs="{{p.langs}}" href="{{p.href}}" divider="{{p.divider}}" dark="{{dark}}" hint-size="100%,72px"></dc-import>
+</sc-for>
+</nav>
+<sc-if value="{{hasUntracked}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; padding: 0 4px; display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.muted}}">
+<dc-import name="LanguageTag" label="C#" counted="{{ false }}" dark="{{dark}}" hint-size="32px,18px"></dc-import>
+— язык вне роадмапов, в прогрессе не учитывается
+</p>
+</sc-if>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Пусто","Java 3/6","Несколько языков","Java 6/6","Только другие языки"],"default":"Пусто"},"$preview":{"width":390,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const scenario = this.props.scenario ?? 'Пусто';
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a', dash: '#71717a',
+      chip: '#27272a', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      track: '#3f3f46', bar: '#34d399', btnBg: '#34d399', btnText: '#022c22'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8', dash: '#94a3b8',
+      chip: '#f1f5f9', primarySoft: '#ecfdf5', primaryText: '#047857',
+      track: '#e2e8f0', bar: '#10b981', btnBg: '#047857', btnText: '#ffffff'
+    };
+    const data = {
+      'Пусто': [[], [], [], [], [], []],
+      'Java 3/6': [['Java'], [], ['Java'], ['Java'], [], []],
+      'Несколько языков': [['Java', 'Python', 'Go'], ['Java', 'C#'], ['Java', 'Python'], [], [], []],
+      'Java 6/6': [['Java'], ['Java'], ['Java'], ['Java'], ['Java'], ['Java']],
+      'Только другие языки': [['C#'], [], ['Rust'], [], [], []]
+    };
+    const langsBy = data[scenario] || data['Пусто'];
+    const tracked = ['Java', 'Python', 'Go'];
+    const names = ['Виселица', 'Симуляция', 'Обмен валют', 'Теннисное табло', 'Облачное хранилище', 'Планировщик задач'];
+    const deployable = [false, false, true, true, true, true];
+    const icons = ['hangman', 'simulation', 'exchange', 'tennis', 'cloud', 'planner'];
+    const projects = names.map((name, i) => {
+      const langs = langsBy[i];
+      const done = langs.length > 0;
+      let href;
+      if (i === 2) href = done ? 'ProjectType-List.dc.html' : 'ProjectType-Empty.dc.html';
+      else if (done) href = 'ProjectType-List.dc.html';
+      else href = deployable[i] ? 'ProjectType-Empty.dc.html' : 'ProjectType.dc.html';
+      return {
+        icon: icons[i], name, href,
+        langs: langs.map((l) => ({ name: l, counted: tracked.includes(l) })),
+        divider: i > 0
+      };
+    });
+    const tracks = tracked.map((lang) => {
+      const flags = langsBy.map((ls) => ls.includes(lang));
+      const done = flags.filter(Boolean).length;
+      return {
+        name: lang + ' Backend', done, flags,
+        aria: lang + ' Backend: сдано ' + done + ' из 6 проектов',
+        steps: flags.map((f) => ({ c: f ? t.bar : t.track }))
+      };
+    }).filter((tr) => tr.done > 0);
+    const any = langsBy.some((ls) => ls.length > 0);
+    const hasUntracked = langsBy.some((ls) => ls.some((l) => !tracked.includes(l)));
+    return { t, dark, crumbs: [], projects, tracks,
+      hasTracks: tracks.length > 0,
+      isEmpty: !any,
+      onlyOther: any && tracks.length === 0,
+      complete: tracks.some((tr) => tr.done === 6),
+      hasUntracked: hasUntracked && tracks.length > 0,
+      trackNote: 'В прогрессе учитываются реализации на Java, Python и Go. Несколько реализаций одного проекта на одном языке — один шаг.'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>StatTiles</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; font-family: Inter, system-ui, sans-serif; color: {{t.text}}">
+<sc-for list="{{tiles}}" as="s" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{s.bg}}">
+<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{s.value}}">{{s.v}}</span>
+<span style="font-size: 12px; line-height: 16px; color: {{s.fg}}">{{s.label}}</span>
+</div>
+</sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"items":{"editor":null,"tsType":"{ value: string | number; label: string; tone: \"warn\" | \"info\" | \"success\" | \"neutral\" }[]"},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":64}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      text: '#fafafa', muted: '#a1a1aa', chip: '#27272a',
+      warn: ['rgba(249, 115, 22, 0.16)', '#fdba74'], info: ['rgba(96, 165, 250, 0.16)', '#93c5fd'], success: ['rgba(52, 211, 153, 0.16)', '#6ee7b7']
+    } : {
+      text: '#0f172a', muted: '#64748b', chip: '#f1f5f9',
+      warn: ['#fff7ed', '#c2410c'], info: ['#eff6ff', '#1d4ed8'], success: ['#ecfdf5', '#047857']
+    };
+    const items = this.props.items ?? [
+      { value: 12, label: 'к повторению', tone: 'warn' },
+      { value: 8, label: 'новых', tone: 'info' },
+      { value: 108, label: 'выучено', tone: 'success' }
+    ];
+    const tiles = items.map((s) => {
+      const pair = t[s.tone];
+      return pair
+        ? { v: s.value, label: s.label, bg: pair[0], value: pair[1], fg: pair[1] }
+        : { v: s.value, label: s.label, bg: t.chip, value: t.text, fg: t.muted };
+    });
+    return { t, tiles };
+  }
+}
+</script>
+</body>
+</html>

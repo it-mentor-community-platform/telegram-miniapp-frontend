@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Статистика повторения</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 1120px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<div style="margin: -12px 0 -10px 0">
+<dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+</div>
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Статистика</h1>
+
+<section style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<div style="display: flex; align-items: baseline; justify-content: space-between">
+<span style="font-size: 15px; font-weight: 600">Прогресс по вопросам</span>
+<span style="font-size: 13px; color: {{t.muted}}">171 вопрос · 5 тем</span>
+</div>
+<div role="img" aria-label="Выучено 108, в процессе 55, новых 8" style="display: flex; gap: 2px; height: 12px">
+<div style="flex: 108 1 0; border-radius: 4px; background: {{t.sLearned}}"></div>
+<div style="flex: 55 1 0; border-radius: 4px; background: {{t.sProgress}}"></div>
+<div style="flex: 8 1 0; border-radius: 4px; background: {{t.sNew}}"></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: {{t.muted}}"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{t.sLearned}}"></span>Выучено</span>
+<span style="font-size: 20px; font-weight: 700; line-height: 26px">108</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: {{t.muted}}"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{t.sProgress}}"></span>В процессе</span>
+<span style="font-size: 20px; font-weight: 700; line-height: 26px">55</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: {{t.muted}}"><span style="width: 10px; height: 10px; border-radius: 3px; background: {{t.sNew}}; box-shadow: inset 0 0 0 1px {{t.newRing}}"></span>Новые</span>
+<span style="font-size: 20px; font-weight: 700; line-height: 26px">8</span>
+</div>
+</div>
+<p style="margin: 0; font-size: 12px; line-height: 17px; color: {{t.muted}}">Вопрос считается выученным после [N] успешных повторений подряд.</p>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">Текущая серия</span>
+<span style="font-size: 22px; font-weight: 700; line-height: 28px">12 дней</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">Лучшая серия</span>
+<span style="font-size: 22px; font-weight: 700; line-height: 28px">31 день</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">Повторений за 30 дней</span>
+<span style="font-size: 22px; font-weight: 700; line-height: 28px">412</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">Активных дней за год</span>
+<span style="font-size: 22px; font-weight: 700; line-height: 28px">187</span>
+</div>
+</section>
+
+<dc-import name="ActivityHeatmap" dark="{{dark}}" hint-size="100%,230px"></dc-import>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">По темам</h2>
+<div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{topics}}" as="c" hint-placeholder-count="5">
+<a href="Topic.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; text-decoration: none; border-top: 1px solid {{c.sep}}">
+<span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">{{c.name}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">{{c.learned}} из {{c.total}} выучено</span>
+</span>
+<span role="img" aria-label="Выучено {{c.learned}}, в процессе {{c.prog}}, новых {{c.fresh}}" style="display: flex; gap: 2px; height: 8px">
+<span style="flex: {{c.learned}} 1 0; border-radius: 3px; background: {{t.sLearned}}"></span>
+<span style="flex: {{c.prog}} 1 0; border-radius: 3px; background: {{t.sProgress}}"></span>
+<span style="flex: {{c.fresh}} 1 0; border-radius: 3px; background: {{t.sNew}}"></span>
+</span>
+</a>
+</sc-for>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
+      sLearned: '#6ee7b7', sProgress: '#059669', sNew: '#3f3f46', newRing: 'transparent',
+      heat: ['#27272a', '#064e3b', '#047857', '#10b981', '#6ee7b7']
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
+      sLearned: '#047857', sProgress: '#34d399', sNew: '#e2e8f0', newRing: '#cbd5e1',
+      heat: ['#f1f5f9', '#a7f3d0', '#34d399', '#059669', '#065f46']
+    };
+    const topics = [
+      { name: 'Коллекции', total: 42, learned: 22, fresh: 4 },
+      { name: 'Core', total: 38, learned: 26, fresh: 0 },
+      { name: 'ООП', total: 31, learned: 22, fresh: 4 },
+      { name: 'Многопоточность', total: 36, learned: 17, fresh: 0 },
+      { name: 'Брокеры сообщений', total: 24, learned: 21, fresh: 0 }
+    ].map((c, i) => ({ ...c, prog: c.total - c.learned - c.fresh, sep: i === 0 ? 'transparent' : t.border }));
+    return { t, dark, crumbs: [{ label: 'Повторение', href: 'Repetition.dc.html' }], topics };
+  }
+}
+</script>
+</body>
+</html>

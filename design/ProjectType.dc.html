@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Страница проекта</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 1240px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<header style="display: flex; flex-direction: column; gap: 6px">
+<div style="margin: -12px 0 -6px 0">
+<dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+</div>
+<h1 style="margin: 0; font-size: 24px; font-weight: 700; line-height: 30px">{{p.name}}</h1>
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; line-height: 18px">
+<span style="font-weight: 500; color: {{t.muted}}">Проект {{p.n}} из 6</span>
+<span aria-hidden="true" style="color: {{t.chev}}">·</span>
+<sc-if value="{{has}}" hint-placeholder-val="{{ true }}">
+<span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: {{t.primaryText}}">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Сдан на Java и Python</span>
+</sc-if>
+<sc-if value="{{none}}" hint-placeholder-val="{{ false }}">
+<span style="font-weight: 500; color: {{t.muted}}">Ещё не сдан</span>
+</sc-if>
+</div>
+</header>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Техническое задание</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{specs}}" as="s" hint-placeholder-count="3">
+<a href="{{s.url}}" style="display: flex; align-items: center; justify-content: center; gap: 6px; height: 44px; border-radius: 8px; border: 1px solid {{t.border}}; background: {{t.card}}; color: {{t.text}}; font-size: 14px; font-weight: 600; text-decoration: none">
+{{s.lang}}
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>
+</a>
+</sc-for>
+</div>
+</section>
+
+<sc-if value="{{showAddButton}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{openForm}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 10px; border: 1px solid {{t.primaryBorder}}; background: {{t.primarySoft}}; color: {{t.primaryText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+Добавить реализацию
+</button>
+</sc-if>
+
+<sc-if value="{{formOpen}}" hint-placeholder-val="{{ true }}">
+<form style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 16px; font-weight: 600; line-height: 22px">{{formTitle}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Ревью не обязательно — проект засчитывается сразу после сдачи</span>
+</div>
+
+<div role="group" aria-label="Язык реализации" style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Язык</span>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 10px; background: {{t.chip}}">
+<sc-for list="{{langs}}" as="l" hint-placeholder-count="4">
+<button type="button" onClick="{{l.pick}}" aria-pressed="{{l.pressed}}" style="height: 36px; border: none; border-radius: 7px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; background: {{l.bg}}; color: {{l.fg}}; box-shadow: {{l.sh}}">{{l.label}}</button>
+</sc-for>
+</div>
+<sc-if value="{{isOther}}" hint-placeholder-val="{{ false }}">
+<label style="display: flex; flex-direction: column; gap: 6px; padding-top: 4px">
+<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Название языка</span>
+<input type="text" defaultValue="{{otherName}}" placeholder="Например, Kotlin" style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
+<span style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.muted}}">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+<span>Реализация сохранится в списке, но не попадёт в прогресс роадмапов — он считается только для Java, Python и Go</span>
+</span>
+</label>
+</sc-if>
+</div>
+
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Ссылка на GitHub-репозиторий</span>
+<span style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{ghBorder}}; background: {{t.card}}; color: {{t.muted}}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg>
+<input type="url" defaultValue="{{ghValue}}" aria-invalid="{{ghInvalid}}" placeholder="https://github.com/username/repo" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
+</span>
+<sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
+<span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Этот репозиторий уже зарегистрирован как реализация. Одна ссылка на GitHub — одна реализация: укажите другой репозиторий.</span>
+</span>
+</sc-if>
+<sc-if value="{{noError}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 12px; line-height: 17px; color: {{t.muted}}">Репозиторий должен быть публичным</span>
+</sc-if>
+</label>
+
+<sc-if value="{{p.deploy}}" hint-placeholder-val="{{ true }}">
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Ссылка на деплой <span style="font-weight: 400; color: {{t.muted}}">· необязательно</span></span>
+<span style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.muted}}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9S9.5 5.5 12 3z"></path></svg>
+<input type="url" defaultValue="{{depValue}}" placeholder="https://" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
+</span>
+<span style="font-size: 12px; line-height: 17px; color: {{t.muted}}">Можно добавить или изменить позже</span>
+</label>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<button type="button" style="height: 48px; border: none; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Сдать проект</button>
+<sc-if value="{{has}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{closeForm}}" style="height: 44px; border: none; border-radius: 10px; background: transparent; color: {{t.muted}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Отмена</button>
+</sc-if>
+</div>
+</form>
+</sc-if>
+
+<sc-if value="{{has}}" hint-placeholder-val="{{ false }}">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Мои реализации · 3</h2>
+<nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{impls}}" as="im" hint-placeholder-count="3">
+<a href="{{im.href}}" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; text-decoration: none; color: {{t.text}}; border-top: 1px solid {{im.sep}}">
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<span style="display: flex; align-items: center; gap: 8px">
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 1px 7px; border-radius: 6px; background: {{t.chip}}; color: {{t.text2}}">{{im.lang}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">сдан {{im.date}}</span>
+</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; line-height: 20px; min-width: 0">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg>
+<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{im.repo}}</span>
+</span>
+<sc-if value="{{im.hasDeploy}}" hint-placeholder-val="{{ false }}">
+<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: {{t.muted}}; min-width: 0">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9S9.5 5.5 12 3z"></path></svg>
+<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{im.deploy}}</span>
+</span>
+</sc-if>
+</span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+</sc-for>
+</nav>
+</section>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Виселица — первая сдача","Обмен валют — первая сдача","Обмен валют — 3 реализации","Обмен валют — другой язык","Обмен валют — дубликат"],"default":"Виселица — первая сдача"},"$preview":{"width":390,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: null, lang: null };
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const scenario = this.props.scenario ?? 'Виселица — первая сдача';
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
+      chip: '#27272a', seg: '#3f3f46', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7', primaryBorder: 'rgba(52, 211, 153, 0.35)',
+      btnBg: '#34d399', btnText: '#022c22', errText: '#fca5a5', errBorder: '#f87171'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
+      chip: '#f1f5f9', seg: '#ffffff', primarySoft: '#ecfdf5', primaryText: '#047857', primaryBorder: '#a7f3d0',
+      btnBg: '#047857', btnText: '#ffffff', errText: '#b91c1c', errBorder: '#ef4444'
+    };
+    const cfg = {
+      'Виселица — первая сдача': { p: { n: 1, name: 'Виселица', deploy: false }, has: false, open: true, lang: 'Java', other: '', gh: '', dep: '', err: false },
+      'Обмен валют — первая сдача': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: false, open: true, lang: 'Java', other: '', gh: '', dep: '', err: false },
+      'Обмен валют — 3 реализации': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: true, open: false, lang: 'Java', other: '', gh: '', dep: '', err: false },
+      'Обмен валют — другой язык': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: true, open: true, lang: 'Другой', other: 'Rust', gh: 'https://github.com/sergey-dev/currency-exchange-rust', dep: '', err: false },
+      'Обмен валют — дубликат': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: true, open: true, lang: 'Go', other: '', gh: 'https://github.com/sergey-dev/currency-exchange', dep: 'https://currency-go.sergey-dev.ru', err: true }
+    };
+    const c = cfg[scenario] || cfg['Виселица — первая сдача'];
+    const formOpen = this.state.open ?? c.open;
+    const lang = this.state.lang ?? c.lang;
+    const langs = ['Java', 'Python', 'Go', 'Другой'].map((label) => ({
+      label,
+      pressed: lang === label ? 'true' : 'false',
+      bg: lang === label ? t.seg : 'transparent',
+      fg: lang === label ? t.text : t.muted,
+      sh: lang === label ? '0 1px 2px rgba(15, 23, 42, 0.08)' : 'none',
+      pick: () => this.setState({ lang: label })
+    }));
+    const specs = [
+      { lang: 'Java', url: 'https://zhukovsd.github.io/java-backend-learning-course/' },
+      { lang: 'Python', url: 'https://zhukovsd.github.io/python-backend-learning-course/' },
+      { lang: 'Go', url: 'https://zhukovsd.github.io/golang-backend-learning-course/' }
+    ];
+    const impls = [
+      { lang: 'Python', date: '5 мая 2026', repo: 'github.com/sergey-dev/currency-exchange-fastapi', deploy: 'currency-py.sergey-dev.ru', hasDeploy: true, href: 'Implementation.dc.html' },
+      { lang: 'Java', date: '12 мар 2026', repo: 'github.com/sergey-dev/currency-exchange-spring', deploy: 'currency.sergey-dev.ru', hasDeploy: true, href: 'Implementation.dc.html' },
+      { lang: 'Java', date: '18 янв 2026', repo: 'github.com/sergey-dev/currency-exchange', deploy: '', hasDeploy: false, href: 'Impl-NoDeploy.dc.html' }
+    ].map((x, i) => ({ ...x, sep: i === 0 ? 'transparent' : t.border }));
+    return { t, dark, crumbs: [{ label: 'Мои проекты', href: c.has ? 'Projects-Multi.dc.html' : 'Projects.dc.html' }], p: c.p, has: c.has, none: !c.has, formOpen,
+      projectsHref: c.has ? 'Projects-Multi.dc.html' : 'Projects.dc.html', showAddButton: c.has && !formOpen,
+      formTitle: c.has ? 'Новая реализация' : 'Сдать проект',
+      langs, isOther: lang === 'Другой', otherName: c.other, specs, impls,
+      hasError: c.err, noError: !c.err,
+      ghInvalid: c.err ? 'true' : 'false',
+      ghBorder: c.err ? t.errBorder : t.inputBorder,
+      ghValue: c.gh, depValue: c.dep,
+      openForm: () => this.setState({ open: true }),
+      closeForm: () => this.setState({ open: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

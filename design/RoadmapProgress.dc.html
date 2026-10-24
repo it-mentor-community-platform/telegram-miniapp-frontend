@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>RoadmapProgress</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="display: flex; flex-direction: column; gap: {{gap}}; font-family: Inter, system-ui, sans-serif; color: {{t.text}}">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+<span style="font-size: {{labelSize}}; font-weight: 600; line-height: 20px">{{label}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.muted}}"><span style="font-weight: 600; color: {{t.text}}">{{done}}</span> {{suffix}}</span>
+</div>
+<div role="img" aria-label="{{aria}}" style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{segments}}" as="s" hint-placeholder-count="6">
+<span style="height: 8px; border-radius: 4px; background: {{s.c}}"></span>
+</sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"label":{"editor":null,"tsType":"string"},"steps":{"editor":null,"tsType":"boolean[]"},"compact":{"editor":"boolean","default":false},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":40}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const compact = this.props.compact ?? false;
+    const t = dark
+      ? { text: '#fafafa', muted: '#a1a1aa', track: '#3f3f46', bar: '#34d399' }
+      : { text: '#0f172a', muted: '#64748b', track: '#e2e8f0', bar: '#10b981' };
+    const label = this.props.label ?? 'Java Backend';
+    const steps = this.props.steps ?? [true, false, true, true, false, false];
+    const done = steps.filter(Boolean).length;
+    return {
+      t, label, done,
+      suffix: compact ? 'из 6' : 'из 6 проектов',
+      labelSize: compact ? '13px' : '15px',
+      gap: compact ? '6px' : '8px',
+      aria: label + ': сдано ' + done + ' из 6 проектов',
+      segments: steps.map((s) => ({ c: s ? t.bar : t.track }))
+    };
+  }
+}
+</script>
+</body>
+</html>
