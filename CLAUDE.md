@@ -24,6 +24,9 @@ mockup is which screen and state, the route map and the PrimeVue component map.
 - Implement with PrimeVue components and theme tokens — do not port the mockups' inline styles.
 - Use PrimeIcons instead of the mockups' hand-drawn icons.
 - Every state listed in `design/README.md` should be reachable and is a test case.
+- Routes, route names, project-type slugs, Telegram `startapp` deep-link codes and router mode are
+  defined in `design/README.md` → Routes. Student pages live under `/student`; `/mentor` and `/admin`
+  are reserved for future roles. Navigate by route name, and build breadcrumbs from route meta.
 
 ## Team conventions
 

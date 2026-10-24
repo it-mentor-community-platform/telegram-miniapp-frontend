@@ -13,7 +13,8 @@ layout, copy, states and behaviour when implementing screens in this repo.
 | File | What it is |
 |---|---|
 | `canvas.json` | Canvas layout: which screens exist, their position and frame size, titles, section headings |
-| `*.dc.html` | One screen (artboard) per file — HTML template + a small logic class |
+| `*.dc.html` | One screen, screen state or shared component per file — HTML template + a small logic class |
+| `Components.dc.html` | Catalogue of all shared components and their variants |
 
 The `.dc.html` files only render inside the Claude Design canvas editor (they depend on its
 runtime). Opening them directly in a browser will not show the design. In this repo they are for
@@ -36,22 +37,120 @@ Every screen has a `dark` prop (light/dark mode).
 
 ## Screen map
 
-Suggested routes and the PrimeVue components each mockup maps to.
+Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 
 | Mockup | Route | Main PrimeVue components |
 |---|---|---|
 | `Main` — home, section launcher | `/` | `Avatar`, `Tag`, `Card`, `ProgressBar` |
-| `Repetition` — my topics | `/repetition` | `Breadcrumb`, `Card`, `ProgressBar`, `Button` |
-| `Categories` — all topics | `/repetition/topics` | `Breadcrumb`, `IconField` + `InputText`, `SelectButton`, `Button` (toggle) |
-| `Topic` — one topic, questions and answers | `/repetition/topics/:id` | `Breadcrumb`, `Tag`, `Button`, `Accordion` |
-| `Review` — review session | `/repetition/review` (`?topic=:id` for one topic) | `ProgressBar`, `Tag`, `Button` |
-| `Stats` — statistics | `/repetition/stats` | `Breadcrumb`, `MeterGroup`, `Card` |
-| `Projects` — my projects | `/projects` | `Breadcrumb`, `Card`, `Tag` |
-| `ProjectType` — project page | `/projects/:type` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
-| `Implementation` — implementation page | `/projects/implementations/:id` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
+| `Repetition` — my topics | `/student/repetition` | `Breadcrumb`, `Card`, `ProgressBar`, `Button` |
+| `Categories` — all topics | `/student/repetition/topics` | `Breadcrumb`, `IconField` + `InputText`, `SelectButton`, `ToggleButton` |
+| `Topic` — one topic, questions and answers | `/student/repetition/topics/:topicId` | `Breadcrumb`, `Tag`, `Button`, `Accordion` |
+| `Review` — review session | `/student/repetition/review` | `ProgressBar`, `Tag`, `Button` |
+| `Stats` — statistics | `/student/repetition/stats` | `Breadcrumb`, `MeterGroup`, `Card` |
+| `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag` |
+| `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
+| `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
 
-Not covered by PrimeVue (custom components): the 6-segment roadmap progress bar, the 365-day
-activity heatmap, and the icon + two-line + chevron list rows (styled router links).
+Blocks PrimeVue does not cover are shared components — see [Components](#components).
+
+## Routes
+
+### Structure
+
+- `/` — home, shared by all roles.
+- `/student/...` — student functionality (everything designed so far). Mentor and admin
+  functionality will get their own prefixes (`/mentor/...`, `/admin/...`) — reserve them.
+- Nesting mirrors the breadcrumbs: each route's parent is its breadcrumb parent, so breadcrumbs are
+  generated from the matched route records (`meta.breadcrumb`), never hand-written per page. Role
+  prefixes are not breadcrumb levels — the trail always starts with the home icon.
+
+| Route | Name | Screen | Breadcrumb trail |
+|---|---|---|---|
+| `/` | `home` | Главная | — |
+| `/student/repetition` | `student-repetition` | Повторение | 🏠 |
+| `/student/repetition/topics` | `student-repetition-topics` | Все темы | 🏠 › Повторение |
+| `/student/repetition/topics/:topicId` | `student-repetition-topic` | Тема | 🏠 › Повторение › Все темы |
+| `/student/repetition/review` | `student-repetition-review` | Review session (`?topic=:topicId` = one topic; none = all) | none (close button only) |
+| `/student/repetition/stats` | `student-repetition-stats` | Статистика | 🏠 › Повторение |
+| `/student/projects` | `student-projects` | Мои проекты | 🏠 |
+| `/student/projects/:projectType` | `student-project` | Project page | 🏠 › Мои проекты |
+| `/student/projects/:projectType/implementations/:implementationId` | `student-implementation` | Implementation page | 🏠 › Мои проекты › {project name} |
+
+Use route **names** in code (`{ name: 'student-project', params: { projectType } }`), not
+hard-coded paths, so prefixes can change without touching screens. A `/student` route record
+without its own page (redirect to `/`) groups the children and is the natural place for a role
+guard.
+
+### Parameters
+
+- `:projectType` — fixed readable slugs (the six project types are a fixed list):
+  `hangman`, `simulation`, `currency-exchange`, `tennis-scoreboard`, `cloud-storage`,
+  `task-scheduler`. Unknown slug → not-found screen.
+- `:topicId`, `:implementationId` — backend IDs.
+- An implementation whose `:projectType` does not match its actual type → redirect to the canonical URL.
+
+### Telegram deep links
+
+Bot messages open screens via `https://t.me/<bot>/<app>?startapp=<param>`. Telegram allows only
+`A–Z a–z 0–9 _ -` and ≤ 512 characters in `startapp`, so it is a short code mapped to a route on
+startup (read from the launch params, then `router.replace`):
+
+| `startapp` | Opens |
+|---|---|
+| *(empty)* | `/` |
+| `review` | `/student/repetition/review` (all topics) |
+| `review_<topicId>` | `/student/repetition/review?topic=<topicId>` |
+| `topic_<topicId>` | `/student/repetition/topics/<topicId>` |
+| `projects` | `/student/projects` |
+| `project_<projectType>` | `/student/projects/<projectType>` |
+| `impl_<implementationId>` | the implementation page (type resolved from the API) |
+| anything unknown | `/` |
+
+### Router mode
+
+Use HTML5 history mode (`createWebHistory`), not hash mode: Telegram passes its launch data in the
+URL fragment (`#tgWebAppData=…`), which conflicts with hash routing. Read the launch params (init
+data, `startapp`) before the router starts. nginx must fall back to `index.html` for all app paths.
+
+## Components
+
+Shared blocks that PrimeVue does not provide. In the design each is its own file, imported by the
+screens with `<dc-import>`; `Components.dc.html` is a catalogue showing every variant. In the app
+each becomes **one Vue component** in `src/components/`, styled with PrimeVue theme tokens
+(`--p-primary-color`, surface and border tokens, `--p-content-border-radius`) so it follows Aura and
+dark mode. Props below are the design's props — keep the same names in Vue.
+
+| Component | Props | Behaviour / notes | Used on |
+|---|---|---|---|
+| `RoadmapProgress` | `label: string`, `steps: boolean[6]`, `compact?: boolean` | One segment per project type, filled when that type has ≥1 implementation in the track's language. Shows "N из 6 проектов" (`compact`: "N из 6"). Parent hides tracks with 0/6. Screen readers: "Java Backend: сдано 3 из 6 проектов". | Main, Projects |
+| `StatTiles` | `items: { value, label, tone: 'warn' \| 'info' \| 'success' \| 'neutral' }[]` (3 items) | Three equal tiles. `warn` = due for review, `info` = new, `success` = learned, `neutral` = plain count. | Main, Repetition, Topic |
+| `NavListRow` | `icon`, `title`, `subtitle`, `badge?`, `badgeTone?: 'success' \| 'neutral'`, `href`, `divider?` | Whole row is a link (router-link), ≥64 px tall. `divider` draws the top border between rows. Badge renders a PrimeVue `Tag`. | Main |
+| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. | Projects |
+| `LanguageTag` | `label: string`, `counted: boolean` | Solid when the language counts toward roadmap progress (Java, Python, Go); dashed outline + aria "не учитывается в прогрессе" otherwise. | Projects |
+| `EmptyState` | `title`, `text`, `icon: 'info' \| 'chat' \| 'none'` | Card used for "nothing here yet" and explanatory notices. | Projects, Implementation |
+| `Breadcrumbs` | `items: { label, href }[]` | Home icon + items; current page is not repeated (the page title follows). Last item truncates with ellipsis. In the app: wrap PrimeVue `Breadcrumb` and build items from route meta. | Every screen below home except the review session |
+| `ActivityHeatmap` | `days: { date, count }[]` | 53 weeks × 7 days, 5 levels (0, 1–9, 10–19, 20–29, 30+). Opens scrolled to the latest weeks; day tooltip shows the count. | Stats |
+
+Suggested dev aid: a dev-only `/dev/components` route that renders each component's variants (same
+as `Components.dc.html`) — a quick visual check in PRs without adding Storybook.
+
+## Component decisions
+
+Choices made up front so every screen (and every contributor) builds them the same way.
+
+| Pattern | Decision |
+|---|---|
+| Language / specialization choice (Java · Python · Go · Другой, Все · Java · …) | PrimeVue `SelectButton` |
+| Topic add/remove toggle on "Все темы" | PrimeVue `ToggleButton` (on: "На повторении", off: "Добавить") |
+| Questions with expandable answers | PrimeVue `Accordion`, one panel open at a time |
+| Inline edit of GitHub / deploy links | Custom view ⇄ edit toggle with `InputText` + `Button`s — **not** `Inplace` (it can't show "current link + draft + error" together) |
+| Inline field errors | Field invalid state + small error text under the field (PrimeVue `Message` with `variant="simple"`, `severity="error"`) |
+| Notices inside forms (e.g. "won't count toward progress") | Muted helper text with an info icon, not a `Message` box |
+| Stacked learned / in progress / new bar | PrimeVue `MeterGroup` |
+| Single progress bars (topic learned %, review session) | PrimeVue `ProgressBar` (`:showValue="false"`, thin) |
+| Primary actions "Повторить всё", "Сдать проект" | **Open — recommended:** in-page PrimeVue `Button` for now; revisit Telegram `MainButton` once the app shell exists |
+| Back navigation | Telegram `BackButton` + `Breadcrumbs` |
+| Icons | PrimeIcons only |
 
 ## Design conventions
 
@@ -86,5 +185,6 @@ recovered from there.
 
 - Mapping of the 4 self-rating buttons to SM-2 grades (0–5); intervals shown on the buttons are examples.
 - How many successful repetitions make a question "learned" (`[N]` placeholder on `Stats`).
-- Whether "Повторить всё" / "Сдать проект" become Telegram's MainButton instead of in-page buttons.
+- Whether "Повторить всё" / "Сдать проект" become Telegram's MainButton instead of in-page buttons
+  (see Component decisions).
 - Spec links on the project page currently point to each roadmap's root, not the project's page.

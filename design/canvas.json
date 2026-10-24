@@ -2,42 +2,311 @@
   "v": 3,
   "attachments": {},
   "boards": {
-    "Categories.dc.html": {"h": 1240, "is_interactive": true, "title": "Все темы", "w": 390, "x": 470, "y": 1440},
-    "Main.dc.html": {"h": 940, "is_interactive": true, "title": "Главная", "w": 390, "x": 0, "y": 0},
-    "Repetition.dc.html": {"h": 1040, "is_interactive": true, "title": "Повторение — мои темы", "w": 390, "x": 0, "y": 1440},
-    "Review-Answer.dc.html": {"h": 844, "is_interactive": true, "title": "Повторение — ответ открыт", "w": 390, "x": 1880, "y": 1440},
-    "Review-Done.dc.html": {"h": 844, "is_interactive": true, "title": "Повторение — итог", "w": 390, "x": 2350, "y": 1440},
-    "Review.dc.html": {"h": 844, "is_interactive": true, "title": "Повторение — вопрос", "w": 390, "x": 1411, "y": 1440},
-    "Stats.dc.html": {"h": 1120, "is_interactive": true, "title": "Статистика", "w": 390, "x": 2820, "y": 1440},
-    "Topic.dc.html": {"h": 1100, "is_interactive": true, "title": "Тема", "w": 390, "x": 940, "y": 1440},
-
-    "Projects.dc.html": {"h": 960, "is_interactive": true, "title": "1 · Ничего не сдано", "w": 390, "x": 0, "y": 3060},
-    "Projects-Java3.dc.html": {"h": 960, "is_interactive": true, "title": "2 · Java 3/6", "w": 390, "x": 470, "y": 3060},
-    "Projects-Multi.dc.html": {"h": 960, "is_interactive": true, "title": "3 · Несколько языков + C#", "w": 390, "x": 940, "y": 3060},
-    "Projects-Java6.dc.html": {"h": 960, "is_interactive": true, "title": "4 · Java 6/6, роадмап пройден", "w": 390, "x": 1410, "y": 3060},
-    "Projects-Other.dc.html": {"h": 960, "is_interactive": true, "title": "5 · Только C# и Rust", "w": 390, "x": 1880, "y": 3060},
-
-    "ProjectType.dc.html": {"h": 1240, "is_interactive": true, "title": "1 · Виселица — первая сдача", "w": 390, "x": 0, "y": 4440},
-    "ProjectType-Empty.dc.html": {"h": 1240, "is_interactive": true, "title": "2 · Обмен валют — первая сдача", "w": 390, "x": 470, "y": 4440},
-    "ProjectType-List.dc.html": {"h": 1240, "is_interactive": true, "title": "3 · Обмен валют — 3 реализации", "w": 390, "x": 940, "y": 4440},
-    "ProjectType-AddOther.dc.html": {"h": 1240, "is_interactive": true, "title": "4 · Новая реализация на Rust", "w": 390, "x": 1410, "y": 4440},
-    "ProjectType-Duplicate.dc.html": {"h": 1240, "is_interactive": true, "title": "5 · Репозиторий уже сдан", "w": 390, "x": 1880, "y": 4440},
-
-    "Implementation.dc.html": {"h": 1040, "is_interactive": true, "title": "1 · Обмен валют — деплой и 2 ревью", "w": 390, "x": 0, "y": 6000},
-    "Impl-Hangman.dc.html": {"h": 1040, "is_interactive": true, "title": "2 · Виселица — без ревью", "w": 390, "x": 470, "y": 6000},
-    "Impl-NoDeploy.dc.html": {"h": 1040, "is_interactive": true, "title": "3 · Обмен валют — без деплоя", "w": 390, "x": 940, "y": 6000},
-    "Impl-EditGithub.dc.html": {"h": 1040, "is_interactive": true, "title": "4 · Редактирование GitHub", "w": 390, "x": 1410, "y": 6000},
-    "Impl-GithubTaken.dc.html": {"h": 1040, "is_interactive": true, "title": "5 · Новая ссылка уже занята", "w": 390, "x": 1880, "y": 6000},
-    "Impl-EditDeploy.dc.html": {"h": 1040, "is_interactive": true, "title": "6 · Редактирование деплоя", "w": 390, "x": 2350, "y": 6000}
+    "ActivityHeatmap.dc.html": {
+      "h": 230,
+      "title": "ActivityHeatmap",
+      "w": 358,
+      "x": 2820,
+      "y": 7660
+    },
+    "Breadcrumbs.dc.html": {
+      "h": 44,
+      "title": "Breadcrumbs",
+      "w": 358,
+      "x": 470,
+      "y": 7660
+    },
+    "Categories.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "Все темы",
+      "w": 390,
+      "x": 470,
+      "y": 1440
+    },
+    "Components.dc.html": {
+      "h": 1940,
+      "is_interactive": true,
+      "title": "Каталог компонентов",
+      "w": 390,
+      "x": 0,
+      "y": 7660
+    },
+    "EmptyState.dc.html": {
+      "h": 120,
+      "title": "EmptyState",
+      "w": 358,
+      "x": 2382,
+      "y": 7660
+    },
+    "Impl-EditDeploy.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "6 · Редактирование деплоя",
+      "w": 390,
+      "x": 2350,
+      "y": 6000
+    },
+    "Impl-EditGithub.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "4 · Редактирование GitHub",
+      "w": 390,
+      "x": 1410,
+      "y": 6000
+    },
+    "Impl-GithubTaken.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "5 · Новая ссылка уже занята",
+      "w": 390,
+      "x": 1880,
+      "y": 6000
+    },
+    "Impl-Hangman.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "2 · Виселица — без ревью",
+      "w": 390,
+      "x": 470,
+      "y": 6000
+    },
+    "Impl-NoDeploy.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "3 · Обмен валют — без деплоя",
+      "w": 390,
+      "x": 940,
+      "y": 6000
+    },
+    "Implementation.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "1 · Обмен валют — деплой и 2 ревью",
+      "w": 390,
+      "x": 0,
+      "y": 6000
+    },
+    "LanguageTag.dc.html": {
+      "h": 40,
+      "w": 80,
+      "x": 2222,
+      "y": 7660
+    },
+    "Main.dc.html": {
+      "h": 940,
+      "is_interactive": true,
+      "title": "Главная",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "NavListRow.dc.html": {
+      "h": 64,
+      "title": "NavListRow",
+      "w": 358,
+      "x": 1784,
+      "y": 7660
+    },
+    "ProjectType-AddOther.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "4 · Новая реализация на Rust",
+      "w": 390,
+      "x": 1410,
+      "y": 4440
+    },
+    "ProjectType-Duplicate.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "5 · Репозиторий уже сдан",
+      "w": 390,
+      "x": 1880,
+      "y": 4440
+    },
+    "ProjectType-Empty.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "2 · Обмен валют — первая сдача",
+      "w": 390,
+      "x": 470,
+      "y": 4440
+    },
+    "ProjectType-List.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "3 · Обмен валют — 3 реализации",
+      "w": 390,
+      "x": 940,
+      "y": 4440
+    },
+    "ProjectType.dc.html": {
+      "h": 1240,
+      "is_interactive": true,
+      "title": "1 · Виселица — первая сдача",
+      "w": 390,
+      "x": 0,
+      "y": 4440
+    },
+    "Projects-Java3.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "2 · Java 3/6",
+      "w": 390,
+      "x": 470,
+      "y": 3060
+    },
+    "Projects-Java6.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "4 · Java 6/6, роадмап пройден",
+      "w": 390,
+      "x": 1410,
+      "y": 3060
+    },
+    "Projects-Multi.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "3 · Несколько языков + C#",
+      "w": 390,
+      "x": 940,
+      "y": 3060
+    },
+    "Projects-Other.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "5 · Только C# и Rust",
+      "w": 390,
+      "x": 1880,
+      "y": 3060
+    },
+    "Projects.dc.html": {
+      "h": 960,
+      "is_interactive": true,
+      "title": "1 · Ничего не сдано",
+      "w": 390,
+      "x": 0,
+      "y": 3060
+    },
+    "Repetition.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Повторение — мои темы",
+      "w": 390,
+      "x": 0,
+      "y": 1440
+    },
+    "Review-Answer.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение — ответ открыт",
+      "w": 390,
+      "x": 1880,
+      "y": 1440
+    },
+    "Review-Done.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение — итог",
+      "w": 390,
+      "x": 2350,
+      "y": 1440
+    },
+    "Review.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение — вопрос",
+      "w": 390,
+      "x": 1411,
+      "y": 1440
+    },
+    "RoadmapProgress.dc.html": {
+      "h": 40,
+      "title": "RoadmapProgress",
+      "w": 358,
+      "x": 908,
+      "y": 7660
+    },
+    "StatTiles.dc.html": {
+      "h": 64,
+      "title": "StatTiles",
+      "w": 358,
+      "x": 1346,
+      "y": 7660
+    },
+    "Stats.dc.html": {
+      "h": 1120,
+      "is_interactive": true,
+      "title": "Статистика",
+      "w": 390,
+      "x": 2820,
+      "y": 1440
+    },
+    "Topic.dc.html": {
+      "h": 1100,
+      "is_interactive": true,
+      "title": "Тема",
+      "w": 390,
+      "x": 940,
+      "y": 1440
+    },
+    "ProjectRow.dc.html": {
+      "x": 3258,
+      "y": 7660,
+      "w": 358,
+      "h": 72,
+      "title": "ProjectRow"
+    }
   },
-  "createdOnFiles": {"at": "2026-10-24T12:00:00Z", "v": 1},
+  "createdOnFiles": {
+    "at": "2026-10-24T12:00:00Z",
+    "v": 1
+  },
   "designSystems": [],
-  "launch": {"view": "canvas"},
+  "launch": {
+    "view": "canvas"
+  },
   "notes": {
-    "irTitle": {"kind": "title1", "maxW": 3210, "text": "Интервальное повторение", "w": 240, "x": 0, "y": 1180},
-    "rmTitle": {"kind": "title1", "maxW": 2270, "text": "Роадмап · Мои проекты", "x": 0, "y": 2800},
-    "rmTypeTitle": {"kind": "title1", "maxW": 2270, "text": "Роадмап · Страница проекта", "x": 0, "y": 4180},
-    "rmImplTitle": {"kind": "title1", "maxW": 2740, "text": "Роадмап · Страница реализации", "x": 0, "y": 5740}
+    "cmpTitle": {
+      "kind": "title1",
+      "maxW": 3616,
+      "text": "Компоненты",
+      "w": 240,
+      "x": 0,
+      "y": 7400
+    },
+    "irTitle": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "Интервальное повторение",
+      "w": 240,
+      "x": 0,
+      "y": 1180
+    },
+    "rmImplTitle": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Роадмап · Страница реализации",
+      "w": 240,
+      "x": 0,
+      "y": 5740
+    },
+    "rmTitle": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Роадмап · Мои проекты",
+      "w": 240,
+      "x": 0,
+      "y": 2800
+    },
+    "rmTypeTitle": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Роадмап · Страница проекта",
+      "w": 240,
+      "x": 0,
+      "y": 4180
+    }
   },
   "order": [
     "Main.dc.html",
@@ -63,7 +332,16 @@
     "Impl-NoDeploy.dc.html",
     "Impl-EditGithub.dc.html",
     "Impl-GithubTaken.dc.html",
-    "Impl-EditDeploy.dc.html"
+    "Impl-EditDeploy.dc.html",
+    "Components.dc.html",
+    "Breadcrumbs.dc.html",
+    "RoadmapProgress.dc.html",
+    "StatTiles.dc.html",
+    "NavListRow.dc.html",
+    "LanguageTag.dc.html",
+    "EmptyState.dc.html",
+    "ActivityHeatmap.dc.html",
+    "ProjectRow.dc.html"
   ],
   "pages": [],
   "title": "IT Ментор — Telegram Mini App"

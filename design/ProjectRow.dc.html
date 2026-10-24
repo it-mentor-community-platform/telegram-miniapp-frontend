@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ProjectRow</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<a href="{{href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 72px; box-sizing: border-box; text-decoration: none; font-family: Inter, system-ui, sans-serif; color: {{t.text}}; background: {{t.card}}; border-top: 1px solid {{sep}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: {{numBg}}; color: {{numFg}}">
+<sc-if value="{{is.hangman}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21h10"></path><path d="M7 21V3h8v3"></path><circle cx="15" cy="8.5" r="2.5"></circle><path d="M15 11v5M12.5 13h5M15 16l-2 3M15 16l2 3"></path></svg></sc-if>
+<sc-if value="{{is.simulation}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"></path><path d="M12 13c0-4 3-7 8-7 0 5-3 8-8 7z"></path><path d="M12 15.5c0-3-2.5-5.5-7-5.5 0 4 2.5 6 7 5.5z"></path></svg></sc-if>
+<sc-if value="{{is.exchange}}" hint-placeholder-val="{{ true }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-3.5-3.5"></path><path d="M20 16H6l3.5 3.5"></path></svg></sc-if>
+<sc-if value="{{is.tennis}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6a9 9 0 0 1 0 12.8"></path><path d="M18.4 5.6a9 9 0 0 0 0 12.8"></path></svg></sc-if>
+<sc-if value="{{is.cloud}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.6 4.5 4.5 0 0 0 7 18.5z"></path></svg></sc-if>
+<sc-if value="{{is.planner}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path><path d="m9 15 2 2 4-4"></path></svg></sc-if>
+</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">{{title}}</span>
+<sc-if value="{{done}}" hint-placeholder-val="{{ true }}">
+<span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
+<span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; line-height: 16px; color: {{t.primaryText}}">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Сдан</span>
+<sc-for list="{{langs}}" as="l" hint-placeholder-count="1">
+<dc-import name="LanguageTag" label="{{l.name}}" counted="{{l.counted}}" dark="{{dark}}" hint-size="48px,18px"></dc-import>
+</sc-for>
+</span>
+</sc-if>
+<sc-if value="{{notDone}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; font-weight: 500; line-height: 16px; color: {{t.muted}}">Не сдан</span>
+</sc-if>
+</span>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"icon":{"editor":"enum","options":["hangman","simulation","exchange","tennis","cloud","planner"],"default":"exchange"},"title":{"editor":null,"tsType":"string"},"langs":{"editor":null,"tsType":"{ name: string; counted: boolean }[]"},"href":{"editor":null,"tsType":"string"},"divider":{"editor":"boolean","default":false},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":72}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      card: '#18181b', border: '#27272a', text: '#fafafa', muted: '#a1a1aa', chev: '#71717a', chip: '#27272a',
+      primaryText: '#6ee7b7', btnBg: '#34d399', btnText: '#022c22'
+    } : {
+      card: '#ffffff', border: '#e2e8f0', text: '#0f172a', muted: '#64748b', chev: '#94a3b8', chip: '#f1f5f9',
+      primaryText: '#047857', btnBg: '#047857', btnText: '#ffffff'
+    };
+    const langs = this.props.langs ?? [{ name: 'Java', counted: true }, { name: 'Python', counted: true }];
+    const done = langs.length > 0;
+    const icon = this.props.icon ?? 'exchange';
+    const is = {};
+    ['hangman', 'simulation', 'exchange', 'tennis', 'cloud', 'planner'].forEach((k) => { is[k] = icon === k; });
+    return {
+      t, dark, langs, done, notDone: !done, is,
+      title: this.props.title ?? 'Обмен валют',
+      href: this.props.href ?? '#',
+      numBg: done ? t.btnBg : t.chip,
+      numFg: done ? t.btnText : t.muted,
+      sep: this.props.divider ? t.border : 'transparent'
+    };
+  }
+}
+</script>
+</body>
+</html>

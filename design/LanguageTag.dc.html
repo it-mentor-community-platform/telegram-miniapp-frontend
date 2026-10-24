@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>LanguageTag</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<span aria-label="{{aria}}" style="display: inline-block; font-family: Inter, system-ui, sans-serif; font-size: 12px; font-weight: 600; line-height: 16px; padding: 0 6px; border-radius: 6px; background: {{bg}}; color: {{fg}}; border: 1px {{bs}} {{bc}}">{{label}}</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"label":{"editor":null,"tsType":"string"},"counted":{"editor":"boolean","default":true},"dark":{"editor":"boolean","default":false},"$preview":{"width":80,"height":20}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const counted = this.props.counted ?? true;
+    const t = dark
+      ? { chip: '#27272a', text2: '#d4d4d8', muted: '#a1a1aa', dash: '#71717a' }
+      : { chip: '#f1f5f9', text2: '#334155', muted: '#64748b', dash: '#94a3b8' };
+    const label = this.props.label ?? 'Java';
+    return {
+      label,
+      aria: counted ? label : label + ' — не учитывается в прогрессе',
+      bg: counted ? t.chip : 'transparent',
+      fg: counted ? t.text2 : t.muted,
+      bs: counted ? 'solid' : 'dashed',
+      bc: counted ? t.chip : t.dash
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>NavListRow</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<a href="{{href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; font-family: Inter, system-ui, sans-serif; color: {{t.text}}; background: {{t.card}}; border-top: 1px solid {{sep}}">
+<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<sc-if value="{{is.user}}" hint-placeholder-val="{{ true }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></sc-if>
+<sc-if value="{{is.review}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="m8 10 3 3 5-5"></path></svg></sc-if>
+<sc-if value="{{is.mentor}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path></svg></sc-if>
+<sc-if value="{{is.people}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9.5" r="2.5"></circle><path d="M17 14.5a5 5 0 0 1 4.5 5"></path></svg></sc-if>
+<sc-if value="{{is.chart}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 6-6"></path></svg></sc-if>
+<sc-if value="{{is.shield}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path><path d="m9 12 2 2 4-4"></path></svg></sc-if>
+</span>
+<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">{{title}}</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">{{subtitle}}</span></span>
+<sc-if value="{{hasBadge}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{badgeBg}}; color: {{badgeFg}}; white-space: nowrap">{{badge}}</span>
+</sc-if>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="m9 6 6 6-6 6"></path></svg>
+</a>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"icon":{"editor":"enum","options":["user","review","mentor","people","chart","shield"],"default":"user"},"title":{"editor":null,"tsType":"string"},"subtitle":{"editor":null,"tsType":"string"},"badge":{"editor":null,"tsType":"string"},"badgeTone":{"editor":"enum","options":["success","neutral"],"default":"success"},"href":{"editor":null,"tsType":"string"},"divider":{"editor":"boolean","default":false},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":64}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      card: '#18181b', border: '#27272a', text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a', chip: '#27272a',
+      successBg: 'rgba(52, 211, 153, 0.16)', successFg: '#6ee7b7'
+    } : {
+      card: '#ffffff', border: '#e2e8f0', text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8', chip: '#f1f5f9',
+      successBg: '#ecfdf5', successFg: '#047857'
+    };
+    const icon = this.props.icon ?? 'user';
+    const badge = this.props.badge ?? '';
+    const neutral = (this.props.badgeTone ?? 'success') === 'neutral';
+    const is = {};
+    ['user', 'review', 'mentor', 'people', 'chart', 'shield'].forEach((k) => { is[k] = icon === k; });
+    return {
+      t, is, badge,
+      title: this.props.title ?? 'Профиль',
+      subtitle: this.props.subtitle ?? 'Достижения, проекты и ревью',
+      href: this.props.href ?? '#',
+      hasBadge: badge !== '',
+      badgeBg: neutral ? t.chip : t.successBg,
+      badgeFg: neutral ? t.muted : t.successFg,
+      sep: this.props.divider ? t.border : 'transparent'
+    };
+  }
+}
+</script>
+</body>
+</html>

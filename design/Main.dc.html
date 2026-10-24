@@ -43,20 +43,7 @@ a{color:inherit}a:hover{color:inherit}
 </span>
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
 </div>
-<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
-<span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.warnSoft}}">
-<span style="font-size: 20px; font-weight: 700; line-height: 24px; color: {{t.warnText}}">12</span>
-<span style="font-size: 12px; line-height: 16px; color: {{t.warnText}}">к повторению</span>
-</span>
-<span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.chip}}">
-<span style="font-size: 20px; font-weight: 700; line-height: 24px">5</span>
-<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">тем</span>
-</span>
-<span style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; background: {{t.chip}}">
-<span style="font-size: 20px; font-weight: 700; line-height: 24px">108</span>
-<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">выучено</span>
-</span>
-</div>
+<dc-import name="StatTiles" items="{{stats}}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
 </a>
 
 <a href="Projects.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
@@ -71,69 +58,22 @@ a{color:inherit}a:hover{color:inherit}
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
 </div>
 <div style="display: flex; flex-direction: column; gap: 12px">
-<div style="display: flex; flex-direction: column; gap: 6px">
-<div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; line-height: 18px">
-<span style="font-weight: 600">Java Backend</span>
-<span style="color: {{t.muted}}">3 из 6</span>
-</div>
-<div style="height: 8px; border-radius: 4px; background: {{t.track}}; overflow: hidden"><div style="width: 50%; height: 8px; border-radius: 4px; background: {{t.bar}}"></div></div>
-</div>
-<div style="display: flex; flex-direction: column; gap: 6px">
-<div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; line-height: 18px">
-<span style="font-weight: 600">Python Backend</span>
-<span style="color: {{t.muted}}">1 из 6</span>
-</div>
-<div style="height: 8px; border-radius: 4px; background: {{t.track}}; overflow: hidden"><div style="width: 16.7%; height: 8px; border-radius: 4px; background: {{t.bar}}"></div></div>
-</div>
+<dc-import name="RoadmapProgress" label="Java Backend" steps="{{javaSteps}}" compact="{{ true }}" dark="{{dark}}" hint-size="100%,32px"></dc-import>
+<dc-import name="RoadmapProgress" label="Python Backend" steps="{{pythonSteps}}" compact="{{ true }}" dark="{{dark}}" hint-size="100%,32px"></dc-import>
 </div>
 </a>
 
 <section style="display: flex; flex-direction: column; gap: 8px">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Разделы</h2>
 <nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
-
-<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none">
-<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Профиль</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Достижения, проекты и ревью</span></span>
-<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{t.primarySoft}}; color: {{t.primaryText}}">4 ачивки</span>
-<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
-</a>
-
-<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
-<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="m8 10 3 3 5-5"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Ревью</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Ревью на ваши проекты</span></span>
-<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
-</a>
-
-<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
-<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c3 2 9 2 12 0v-5"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Кабинет ментора</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Цены на ревью и услуги</span></span>
-<sc-if value="{{inactiveMentor}}" hint-placeholder-val="{{ true }}">
-<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{t.chip}}; color: {{t.muted}}">Неактивен</span>
-</sc-if>
-<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
-</a>
-
-<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
-<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><circle cx="17.5" cy="9.5" r="2.5"></circle><path d="M17 14.5a5 5 0 0 1 4.5 5"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Участники</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Поиск по имени, GitHub, Telegram</span></span>
-<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
-</a>
-
-<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
-<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 6-6"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Рынок труда</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Вакансии и зарплаты на hh.ru</span></span>
-<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
-</a>
-
+<dc-import name="NavListRow" icon="user" title="Профиль" subtitle="Достижения, проекты и ревью" badge="4 ачивки" href="#" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="NavListRow" icon="review" title="Ревью" subtitle="Ревью на ваши проекты" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="NavListRow" icon="mentor" title="Кабинет ментора" subtitle="Цены на ревью и услуги" badge="{{mentorBadge}}" badge-tone="neutral" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="NavListRow" icon="people" title="Участники" subtitle="Поиск по имени, GitHub, Telegram" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="NavListRow" icon="chart" title="Рынок труда" subtitle="Вакансии и зарплаты на hh.ru" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
 <sc-if value="{{isAdmin}}" hint-placeholder-val="{{ false }}">
-<a href="#" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; border-top: 1px solid {{t.border}}">
-<span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
-<span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0"><span style="font-size: 15px; font-weight: 600; line-height: 20px">Администрирование</span><span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Роли пользователей</span></span>
-<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
-</a>
+<dc-import name="NavListRow" icon="shield" title="Администрирование" subtitle="Роли пользователей" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
 </sc-if>
-
 </nav>
 </section>
 
@@ -166,7 +106,7 @@ class Component extends DCLogic {
     const roles = [{ label: 'Студент', bg: t.primarySoft, fg: t.primaryText }];
     if (isMentor) roles.push({ label: 'Ментор', bg: t.infoSoft, fg: t.infoText });
     if (isAdmin) roles.push({ label: 'Админ', bg: t.violetSoft, fg: t.violetText });
-    return { t, roles, isAdmin, inactiveMentor: !isMentor };
+    return { t, dark, javaSteps: [true, false, true, true, false, false], pythonSteps: [true, false, false, false, false, false], mentorBadge: isMentor ? '' : 'Неактивен', stats: [{ value: 12, label: 'к повторению', tone: 'warn' }, { value: 5, label: 'тем', tone: 'neutral' }, { value: 108, label: 'выучено', tone: 'neutral' }], roles, isAdmin, inactiveMentor: !isMentor };
   }
 }
 </script>

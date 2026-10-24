@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Каталог компонентов</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+</style>
+</helmet>
+<div style="width: 390px; height: 1940px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 28px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<header style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Компоненты</h1>
+<p style="margin: 0; font-size: 13px; line-height: 18px; color: {{t.muted}}">Общие блоки, которых нет в PrimeVue. Каждый — отдельный файл; экраны импортируют их. В коде — один Vue-компонент на блок.</p>
+</header>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">RoadmapProgress</span><span style="font-size: 12px; color: {{t.muted}}">6 сегментов — какие проекты сданы. Трек с 0/6 не показывается.</span></div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<dc-import name="RoadmapProgress" label="Go Backend" steps="{{s0}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+<dc-import name="RoadmapProgress" label="Java Backend" steps="{{s3}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+<dc-import name="RoadmapProgress" label="Python Backend" steps="{{s6}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+<dc-import name="RoadmapProgress" label="Java Backend · compact" steps="{{s3}}" compact="{{ true }}" dark="{{dark}}" hint-size="100%,32px"></dc-import>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">StatTiles</span><span style="font-size: 12px; color: {{t.muted}}">3 числа. Тона: warn · info · success · neutral.</span></div>
+<dc-import name="StatTiles" items="{{tilesA}}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="StatTiles" items="{{tilesB}}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">NavListRow</span><span style="font-size: 12px; color: {{t.muted}}">Иконка, две строки, необязательный бейдж, шеврон. Ссылка (router-link).</span></div>
+<div style="display: flex; flex-direction: column; border-radius: 12px; border: 1px solid {{t.border}}; overflow: hidden">
+<dc-import name="NavListRow" icon="review" title="Без бейджа" subtitle="Подзаголовок строки" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="NavListRow" icon="user" title="Бейдж success" subtitle="Подзаголовок строки" badge="4 ачивки" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<dc-import name="NavListRow" icon="mentor" title="Бейдж neutral" subtitle="Подзаголовок строки" badge="Неактивен" badge-tone="neutral" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">ProjectRow</span><span style="font-size: 12px; color: {{t.muted}}">Иконка проекта, статус, все языки реализаций. Иконка залита, если проект сдан хотя бы на одном языке.</span></div>
+<div style="display: flex; flex-direction: column; border-radius: 12px; border: 1px solid {{t.border}}; overflow: hidden">
+<dc-import name="ProjectRow" icon="hangman" title="Виселица" langs="{{pr1}}" dark="{{dark}}" hint-size="100%,72px"></dc-import>
+<dc-import name="ProjectRow" icon="simulation" title="Симуляция" langs="{{pr2}}" divider="{{ true }}" dark="{{dark}}" hint-size="100%,72px"></dc-import>
+<dc-import name="ProjectRow" icon="cloud" title="Облачное хранилище" langs="{{pr0}}" divider="{{ true }}" dark="{{dark}}" hint-size="100%,72px"></dc-import>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">LanguageTag</span><span style="font-size: 12px; color: {{t.muted}}">Сплошной — язык учитывается в прогрессе; пунктир — не учитывается.</span></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<dc-import name="LanguageTag" label="Java" dark="{{dark}}" hint-size="40px,18px"></dc-import>
+<dc-import name="LanguageTag" label="Python" dark="{{dark}}" hint-size="52px,18px"></dc-import>
+<dc-import name="LanguageTag" label="Go" dark="{{dark}}" hint-size="28px,18px"></dc-import>
+<dc-import name="LanguageTag" label="C#" counted="{{ false }}" dark="{{dark}}" hint-size="30px,18px"></dc-import>
+<dc-import name="LanguageTag" label="Rust" counted="{{ false }}" dark="{{dark}}" hint-size="40px,18px"></dc-import>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">EmptyState</span><span style="font-size: 12px; color: {{t.muted}}">Иконка: none · info · chat.</span></div>
+<dc-import name="EmptyState" icon="none" title="Здесь появится ваш прогресс" text="Выберите любой проект и сдайте ссылку на публичный GitHub-репозиторий." dark="{{dark}}" hint-size="100%,100px"></dc-import>
+<dc-import name="EmptyState" icon="info" title="Прогресс пока не считается" text="Реализации на C# и Rust не входят в роадмапы." dark="{{dark}}" hint-size="100%,100px"></dc-import>
+<dc-import name="EmptyState" icon="chat" title="Ревью пока нет" text="Когда ментор оставит ревью, оно появится здесь." dark="{{dark}}" hint-size="100%,100px"></dc-import>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Breadcrumbs</span><span style="font-size: 12px; color: {{t.muted}}">Обёртка над PrimeVue Breadcrumb, пункты строятся из маршрута. Текущая страница не повторяется.</span></div>
+<dc-import name="Breadcrumbs" items="{{c0}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+<dc-import name="Breadcrumbs" items="{{c1}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+<dc-import name="Breadcrumbs" items="{{c2}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">ActivityHeatmap</span><span style="font-size: 12px; color: {{t.muted}}">365 дней, 5 уровней. Открывается на последних неделях, листается влево.</span></div>
+<dc-import name="ActivityHeatmap" dark="{{dark}}" hint-size="100%,230px"></dc-import>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1940}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark
+      ? { bg: '#09090b', card: '#18181b', border: '#27272a', text: '#fafafa', muted: '#a1a1aa' }
+      : { bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', text: '#0f172a', muted: '#64748b' };
+    return {
+      t, dark,
+      s0: [false, false, false, false, false, false],
+      s3: [true, false, true, true, false, false],
+      s6: [true, true, true, true, true, true],
+      tilesA: [{ value: 12, label: 'к повторению', tone: 'warn' }, { value: 8, label: 'новых', tone: 'info' }, { value: 108, label: 'выучено', tone: 'success' }],
+      tilesB: [{ value: 12, label: 'к повторению', tone: 'warn' }, { value: 5, label: 'тем', tone: 'neutral' }, { value: 108, label: 'выучено', tone: 'neutral' }],
+      pr1: [{ name: 'Java', counted: true }, { name: 'Python', counted: true }, { name: 'Go', counted: true }],
+      pr2: [{ name: 'Java', counted: true }, { name: 'C#', counted: false }],
+      pr0: [],
+      c0: [],
+      c1: [{ label: 'Мои проекты', href: 'Projects.dc.html' }],
+      c2: [{ label: 'Мои проекты', href: 'Projects.dc.html' }, { label: 'Облачное хранилище', href: 'ProjectType.dc.html' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

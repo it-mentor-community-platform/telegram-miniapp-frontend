@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ActivityHeatmap</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<section style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; font-family: Inter, system-ui, sans-serif; color: {{t.text}}">
+<div style="display: flex; align-items: baseline; justify-content: space-between">
+<span style="font-size: 15px; font-weight: 600">Активность за год</span>
+<span style="font-size: 13px; color: {{t.muted}}">{{yearTotal}} повторений</span>
+</div>
+<div style="display: flex; gap: 6px">
+<div aria-hidden="true" style="display: flex; flex-direction: column; gap: 3px; padding-top: 19px; font-size: 10px; line-height: 11px; color: {{t.muted}}">
+<span style="height: 11px">Пн</span><span style="height: 11px"></span><span style="height: 11px">Ср</span><span style="height: 11px"></span><span style="height: 11px">Пт</span><span style="height: 11px"></span><span style="height: 11px">Вс</span>
+</div>
+<div style="flex: 1; min-width: 0; overflow-x: auto; direction: rtl; padding-bottom: 4px">
+<div style="direction: ltr; display: inline-flex; flex-direction: column; gap: 6px">
+<div aria-hidden="true" style="display: flex; gap: 3px; height: 13px">
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="53">
+<span style="width: 11px; flex-shrink: 0; overflow: visible; white-space: nowrap; font-size: 10px; line-height: 13px; color: {{t.muted}}">{{w.label}}</span>
+</sc-for>
+</div>
+<div role="img" aria-label="Тепловая карта: количество повторённых вопросов по дням за последние 365 дней" style="display: flex; gap: 3px">
+<sc-for list="{{weeks}}" as="w" hint-placeholder-count="53">
+<div style="display: flex; flex-direction: column; gap: 3px">
+<sc-for list="{{w.days}}" as="d" hint-placeholder-count="7">
+<div title="{{d.tip}}" style="width: 11px; height: 11px; border-radius: 2px; background: {{d.c}}"></div>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; font-size: 11px; line-height: 14px; color: {{t.muted}}">
+<span style="margin-right: 4px">Меньше</span>
+<sc-for list="{{legend}}" as="l" hint-placeholder-count="5">
+<span style="width: 11px; height: 11px; border-radius: 2px; background: {{l.c}}"></span>
+</sc-for>
+<span style="margin-left: 4px">Больше</span>
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"days":{"editor":null,"tsType":"{ date: string; count: number }[]"},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":230}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const t = dark ? {
+      card: '#18181b', border: '#27272a', shadow: 'none', text: '#fafafa', muted: '#a1a1aa',
+      heat: ['#27272a', '#064e3b', '#047857', '#10b981', '#6ee7b7']
+    } : {
+      card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)', text: '#0f172a', muted: '#64748b',
+      heat: ['#f1f5f9', '#a7f3d0', '#34d399', '#059669', '#065f46']
+    };
+    const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    const today = new Date(2026, 9, 24);
+    const first = new Date(2025, 9, 20);
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const level = (n) => (n === 0 ? 0 : n < 10 ? 1 : n < 20 ? 2 : n < 30 ? 3 : 4);
+    let yearTotal = 0;
+    const weeks = [];
+    for (let w = 0; w < 53; w++) {
+      const days = [];
+      let label = '';
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(first.getFullYear(), first.getMonth(), first.getDate() + w * 7 + d);
+        if (date.getDate() === 1) label = months[date.getMonth()];
+        const ago = Math.round((today - date) / 86400000);
+        if (ago < 0) { days.push({ c: 'transparent', tip: '' }); continue; }
+        let n = 0;
+        if (ago < 12) n = 8 + Math.floor(rnd() * 26);
+        else if (ago === 12) n = 0;
+        else if (ago < 230) { const r = rnd(); n = r < 0.28 ? 0 : Math.floor(rnd() * (ago < 120 ? 34 : 22)) + 1; }
+        else { const r = rnd(); n = r < 0.85 ? 0 : Math.floor(rnd() * 10) + 1; }
+        yearTotal += n;
+        days.push({ c: t.heat[level(n)], tip: date.getDate() + ' ' + months[date.getMonth()] + ': ' + n + ' вопр.' });
+      }
+      weeks.push({ label, days });
+    }
+    return { t, weeks, yearTotal, legend: t.heat.map((c) => ({ c })) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>EmptyState</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<section style="display: flex; gap: 12px; align-items: flex-start; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; font-family: Inter, system-ui, sans-serif; color: {{t.text}}">
+<sc-if value="{{isInfo}}" hint-placeholder-val="{{ true }}">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+</span>
+</sc-if>
+<sc-if value="{{isChat}}" hint-placeholder-val="{{ false }}">
+<span style="width: 36px; height: 36px; border-radius: 50%; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+</span>
+</sc-if>
+<span style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<span style="font-size: 15px; font-weight: 600; line-height: 20px">{{title}}</span>
+<span style="font-size: 14px; line-height: 20px; color: {{t.muted}}">{{text}}</span>
+</span>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":null,"tsType":"string"},"text":{"editor":null,"tsType":"string"},"icon":{"editor":"enum","options":["info","chat","none"],"default":"info"},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const icon = this.props.icon ?? 'info';
+    const t = dark
+      ? { card: '#18181b', border: '#27272a', text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chip: '#27272a' }
+      : { card: '#ffffff', border: '#e2e8f0', text: '#0f172a', text2: '#334155', muted: '#64748b', chip: '#f1f5f9' };
+    return {
+      t,
+      isInfo: icon === 'info',
+      isChat: icon === 'chat',
+      title: this.props.title ?? 'Ревью пока нет',
+      text: this.props.text ?? 'Ревью необязательно: реализация уже засчитана в прогресс Java Backend.'
+    };
+  }
+}
+</script>
+</body>
+</html>
