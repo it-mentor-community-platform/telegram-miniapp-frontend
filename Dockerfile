@@ -6,7 +6,10 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+
+# Vite mode: local-stack | staging | prod. CI picks it from the pushed branch.
+ARG APP_MODE=local-stack
+RUN npm run typecheck && npx vite build --mode "$APP_MODE"
 
 FROM nginx:1.29-alpine AS runtime
 

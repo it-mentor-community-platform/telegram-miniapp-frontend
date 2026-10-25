@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getCurrentUser } from './mocks/user'
+import { session, whenAuthenticated } from './session'
 import HomeView from './views/HomeView.vue'
 import StudentProjectsView from './views/StudentProjectsView.vue'
 
@@ -18,7 +18,7 @@ export const router = createRouter({
     {
       path: '/student',
       redirect: { name: 'home' },
-      beforeEnter: () => (getCurrentUser().roles.includes('STUDENT') ? true : { name: 'home' }),
+      beforeEnter: () => (session.user?.roles.includes('STUDENT') ? true : { name: 'home' }),
       children: [
         {
           path: 'projects',
@@ -31,3 +31,6 @@ export const router = createRouter({
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
   ],
 })
+
+// Role guards need the authenticated user, so navigation waits for authentication.
+router.beforeEach(() => whenAuthenticated)
