@@ -49,6 +49,9 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          # prod branch → prod mode, staging branch → staging mode, any other branch → local-stack mode.
+          build-args: |
+            APP_MODE=${{ github.ref_name == 'prod' && 'prod' || github.ref_name == 'staging' && 'staging' || 'local-stack' }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

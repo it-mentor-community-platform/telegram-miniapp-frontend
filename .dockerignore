@@ -8,3 +8,4 @@ dist
 design
 tmp
 *.log
+*.local

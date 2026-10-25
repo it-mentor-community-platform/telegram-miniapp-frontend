@@ -58,8 +58,7 @@ Blocks PrimeVue does not cover are shared components — see [Components](#compo
 
 The bottom of `Main` has a collapsible **"Для разработчиков"** panel carried over from the starter
 `App.vue`: Telegram/browser status tag, read-only init data, and a copy-to-clipboard button with
-"Скопировано" feedback (button disabled when there is no init data; outside Telegram, init data is
-read from the page's query string). Render it only in test environments (e.g. behind a
+"Скопировано" feedback (button disabled when there is no init data). Render it only in test environments (e.g. behind a
 `VITE_SHOW_DEV_TOOLS` flag) — never in production. `Main`'s `devPanel` prop shows it hidden /
 collapsed / expanded; `inTelegram` switches the status. PrimeVue: `Panel` (toggleable) or a
 `Button` + `Textarea` (readonly), `Tag`, `Button`.
@@ -74,11 +73,11 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 | Opened outside Telegram | `window.Telegram.WebApp.initData` is empty (regular browser, link opened outside the Mini App) | `AuthError` — explains the app only works inside Telegram; primary "Открыть в Telegram", secondary "Нет Telegram? Установить" |
 | Login failed | Backend rejects the init data (invalid / expired) or the auth request fails | `AuthError-Failed` — "Попробовать снова" retries the auth request; secondary link to the community chat |
 
-- "Открыть в Telegram" links to the Mini App (`https://t.me/<bot>/<app>`) with a `startapp` code for
-  the current path (see [Telegram deep links](#telegram-deep-links)), so the user lands on the same
-  page. Bot/app names: `[BOT_USERNAME]`, `[APP_SHORT_NAME]` — to be configured.
-- In test environments a dashed developer hint mentions passing init data via query parameters or
-  using dummy auth (`devHint` prop); never in production.
+- "Открыть в Telegram" links to the bot's main Mini App (`https://t.me/<bot>?startapp`). The bot is
+  per environment (`VITE_TELEGRAM_BOT_USERNAME`). Planned: a `startapp` code for the current path
+  (see [Telegram deep links](#telegram-deep-links)), so the user lands on the same page.
+- The mockup's `devHint` prop (a dashed developer hint about query-parameter init data or dummy
+  auth) is not implemented: the app supports neither, even in test environments.
 - PrimeVue: `Button`, `Message` is not needed — this is a full-screen state.
 
 ## Routes

@@ -5,8 +5,7 @@ import Tag from 'primevue/tag'
 import Textarea from 'primevue/textarea'
 import { initData, isTelegram } from '../../telegram'
 
-const fallbackText =
-  'Init data не найдена. Откройте приложение из Telegram или добавьте query-параметры к URL.'
+const fallbackText = 'Init data не найдена. Откройте приложение из Telegram.'
 
 const open = ref(false)
 const copied = ref(false)
@@ -58,8 +57,7 @@ async function copyInitData() {
         </span>
       </div>
       <p class="dev-note">
-        Видно только в тестовых окружениях. Панель ничего не отправляет на сервер. В браузере init
-        data берётся из query-параметров страницы.
+        Видно только в тестовых окружениях. Панель ничего не отправляет на сервер.
       </p>
     </div>
   </section>

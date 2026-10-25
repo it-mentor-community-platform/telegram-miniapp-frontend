@@ -8,12 +8,13 @@ import RoadmapProgress from '../components/RoadmapProgress.vue'
 import StatTiles from '../components/StatTiles.vue'
 import { getHomeData } from '../mocks/home'
 import { getMyProjects } from '../mocks/projects'
-import { getCurrentUser, type Role } from '../mocks/user'
 import { buildRoadmapTracks } from '../roadmap'
+import { session, type Role } from '../session'
 import DevPanel from './home/DevPanel.vue'
 import SectionCard from './home/SectionCard.vue'
 
-const user = getCurrentUser()
+// App.vue renders routes only for an authenticated session, so the user is always set here.
+const user = session.user!
 const home = getHomeData()
 const tracks = buildRoadmapTracks(getMyProjects())
 
@@ -23,7 +24,8 @@ const roleTags: Record<Role, { label: string; severity?: 'success' | 'info'; cla
   ADMIN: { label: 'Админ', class: 'tag-violet' },
 }
 
-const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+const initials = `${user.firstName.charAt(0)}${user.lastName?.charAt(0) ?? ''}`
+const showDevTools = import.meta.env.VITE_SHOW_DEV_TOOLS === 'true'
 const isMentor = user.roles.includes('MENTOR')
 const isAdmin = user.roles.includes('ADMIN')
 </script>
@@ -112,7 +114,7 @@ const isAdmin = user.roles.includes('ADMIN')
       />
     </ListSection>
 
-    <DevPanel />
+    <DevPanel v-if="showDevTools" />
   </div>
 </template>
 
