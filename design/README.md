@@ -32,6 +32,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
+| `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable) |
 
 Every screen has a `dark` prop (light/dark mode).
 
@@ -52,6 +53,33 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
 
 Blocks PrimeVue does not cover are shared components — see [Components](#components).
+
+### Developer panel (home, test environments only)
+
+The bottom of `Main` has a collapsible **"Для разработчиков"** panel carried over from the starter
+`App.vue`: Telegram/browser status tag, read-only init data, and a copy-to-clipboard button with
+"Скопировано" feedback (button disabled when there is no init data; outside Telegram, init data is
+read from the page's query string). Render it only in test environments (e.g. behind a
+`VITE_SHOW_DEV_TOOLS` flag) — never in production. `Main`'s `devPanel` prop shows it hidden /
+collapsed / expanded; `inTelegram` switches the status. PrimeVue: `Panel` (toggleable) or a
+`Button` + `Textarea` (readonly), `Tag`, `Button`.
+
+## Authentication screens
+
+Shown by the app shell **instead of any route** when the user can't be authenticated; the URL is
+left unchanged so the target page opens once the problem is fixed. Not a route of its own.
+
+| Case | When | Screen |
+|---|---|---|
+| Opened outside Telegram | `window.Telegram.WebApp.initData` is empty (regular browser, link opened outside the Mini App) | `AuthError` — explains the app only works inside Telegram; primary "Открыть в Telegram", secondary "Нет Telegram? Установить" |
+| Login failed | Backend rejects the init data (invalid / expired) or the auth request fails | `AuthError-Failed` — "Попробовать снова" retries the auth request; secondary link to the community chat |
+
+- "Открыть в Telegram" links to the Mini App (`https://t.me/<bot>/<app>`) with a `startapp` code for
+  the current path (see [Telegram deep links](#telegram-deep-links)), so the user lands on the same
+  page. Bot/app names: `[BOT_USERNAME]`, `[APP_SHORT_NAME]` — to be configured.
+- In test environments a dashed developer hint mentions passing init data via query parameters or
+  using dummy auth (`devHint` prop); never in production.
+- PrimeVue: `Button`, `Message` is not needed — this is a full-screen state.
 
 ## Routes
 
