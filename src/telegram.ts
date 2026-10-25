@@ -7,8 +7,10 @@ const telegram =
 
 export const isTelegram = Boolean(telegram)
 
-// Outside Telegram, init data can be passed as query parameters for local testing.
-export const initData = telegram?.initData || window.location.search.replace(/^\?/, '')
+// Empty outside Telegram: the app can't authenticate there and shows the auth error screen.
+export const initData = telegram?.initData ?? ''
+
+export const telegramUser = telegram?.initDataUnsafe.user
 
 export function initTelegram() {
   if (telegram) {
