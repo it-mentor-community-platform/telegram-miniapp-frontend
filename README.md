@@ -169,3 +169,23 @@ route. The URL is kept, so the target page opens once a retry succeeds:
 
 API code lives in `src/api/`: DTO types, fetch functions, and the `ApiError` subclasses failed calls
 reject with.
+
+## Backend API specs
+
+The staging gateway serves the OpenAPI specs behind basic auth:
+
+- auth-service: `https://staging.platform.zhukovsd.it/api/auth/v3/api-docs`
+- project-service: `https://staging.platform.zhukovsd.it/api/project/v3/api-docs`
+
+Get the credentials from the team and put them in `.openapi.netrc.local` (git-ignored). Never
+commit them:
+
+```
+machine staging.platform.zhukovsd.it login <username> password <password>
+```
+
+Then fetch a spec:
+
+```bash
+curl -sf --netrc-file .openapi.netrc.local https://staging.platform.zhukovsd.it/api/auth/v3/api-docs
+```
