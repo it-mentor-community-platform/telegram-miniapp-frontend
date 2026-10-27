@@ -26,6 +26,10 @@ export function initTelegram() {
   media.addEventListener('change', (event) => applyColorScheme(event.matches))
 }
 
+export function closeApp() {
+  telegram?.close()
+}
+
 // Telegram's BackButton replaces in-app back navigation: hidden on home, elsewhere it leads to the
 // breadcrumb parent rather than browser history, so deep-linked screens still have somewhere to go.
 export function bindBackButton(router: Router) {

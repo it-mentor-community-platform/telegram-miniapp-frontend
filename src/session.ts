@@ -1,5 +1,10 @@
 import { reactive } from 'vue'
-import { ApiError, authenticateByTelegram, setAccessTokenProvider } from './api'
+import {
+  ApiError,
+  authenticateByTelegram,
+  setAccessTokenProvider,
+  setUnauthorizedHandler,
+} from './api'
 import { initData, telegramUser } from './telegram'
 
 export type Role = 'STUDENT' | 'MENTOR' | 'ADMIN'
@@ -11,7 +16,7 @@ export type CurrentUser = {
   roles: Role[]
 }
 
-export type SessionStatus = 'pending' | 'authenticated' | 'outside-telegram' | 'failed'
+export type SessionStatus = 'pending' | 'authenticated' | 'outside-telegram' | 'failed' | 'expired'
 
 const knownRoles: Role[] = ['STUDENT', 'MENTOR', 'ADMIN']
 
@@ -23,6 +28,12 @@ export const session = reactive<{ status: SessionStatus; user: CurrentUser | nul
 // Kept in memory only: every Mini App launch brings fresh init data to authenticate with.
 let accessToken: string | undefined
 setAccessTokenProvider(() => accessToken)
+
+// The init data expires along with the token, so re-authenticating can't help: only a relaunch can.
+setUnauthorizedHandler(() => {
+  accessToken = undefined
+  session.status = 'expired'
+})
 
 let resolveAuthenticated: () => void
 // Resolves on the first successful authentication. Until then the router holds the initial

@@ -11,7 +11,11 @@ import AuthErrorView from './views/AuthErrorView.vue'
          authentication succeeds. -->
     <RouterView v-if="session.status === 'authenticated'" />
     <AuthErrorView
-      v-else-if="session.status === 'outside-telegram' || session.status === 'failed'"
+      v-else-if="
+        session.status === 'outside-telegram' ||
+        session.status === 'failed' ||
+        session.status === 'expired'
+      "
       :reason="session.status"
     />
     <div v-else class="flex flex-1 items-center justify-center">
