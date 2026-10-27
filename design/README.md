@@ -32,7 +32,8 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
-| `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable) |
+| `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
+| `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 on the ID field), `DevLogin-Error` (400 / 500 / network), `DevLogin-Expired` (dummy session ran out) |
 
 Every screen has a `dark` prop (light/dark mode).
 
@@ -51,6 +52,7 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 | `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag` |
 | `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
+| `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `InputNumber` (`:min="1"`, `:useGrouping="false"`), `InputGroup` + `InputGroupAddon` («@») + `InputText`, `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
 Blocks PrimeVue does not cover are shared components — see [Components](#components).
 
@@ -72,12 +74,22 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 |---|---|---|
 | Opened outside Telegram | `window.Telegram.WebApp.initData` is empty (regular browser, link opened outside the Mini App) | `AuthError` — explains the app only works inside Telegram; primary "Открыть в Telegram", secondary "Нет Telegram? Установить" |
 | Login failed | Backend rejects the init data (invalid / expired) or the auth request fails | `AuthError-Failed` — "Попробовать снова" retries the auth request; secondary link to the community chat |
+| Session expired | Any API call returns 401 after a successful login (token older than 30 min) | `AuthError-Expired` — asks to close and reopen the app; primary «Закрыть приложение», secondary link to the community chat |
+| Dummy login (test env, browser) | init data is empty **and** the environment is local stack or staging | `DevLogin` — replaces `AuthError`. Form: user ID, Telegram username, roles → `POST /api/auth/by-dummy` `{ user_id, roles, telegram_username }`. States: `DevLogin-Filled`, `-Loading`, `-NotFound` (404 → «Пользователь с ID 42 не найден» on the ID field), `-Error` (400 / 500 / network → server text or «Сервер недоступен. Попробуйте ещё раз.» above the button), `-Expired` (a dummy session hit 401 → back to this form with «Сессия истекла — войдите снова»). |
 
 - "Открыть в Telegram" links to the bot's main Mini App (`https://t.me/<bot>?startapp`). The bot is
   per environment (`VITE_TELEGRAM_BOT_USERNAME`). Planned: a `startapp` code for the current path
   (see [Telegram deep links](#telegram-deep-links)), so the user lands on the same page.
-- The mockup's `devHint` prop (a dashed developer hint about query-parameter init data or dummy
-  auth) is not implemented: the app supports neither, even in test environments.
+- **Production** always shows `AuthError` outside Telegram; `DevLogin` must not exist in prod
+  builds. **Inside Telegram** nothing changes in any environment: init data is present, so the
+  normal Telegram login runs and `DevLogin` never appears.
+- `DevLogin` details: «Telegram username» has a fixed «@» prefix and is sent without it (a pasted
+  leading «@» is stripped). Roles are a multi-select (at least one); the session gets exactly these
+  roles, regardless of the user's real roles. «Войти» stays disabled until ID ≥ 1, username and at
+  least one role are set. Secondary «Открыть в Telegram» is the normal way in. On desktop browsers
+  the screen is a centred 390 px column.
+- The old `AuthError` `devHint` prop (dashed developer hint) is superseded by `DevLogin` — don't
+  implement it.
 - PrimeVue: `Button`, `Message` is not needed — this is a full-screen state.
 
 ## Routes
@@ -143,9 +155,9 @@ data, `startapp`) before the router starts. nginx must fall back to `index.html`
 
 Shared blocks that PrimeVue does not provide. In the design each is its own file, imported by the
 screens with `<dc-import>`; `Components.dc.html` is a catalogue showing every variant. In the app
-each becomes **one Vue component** in `src/components/`, styled with PrimeVue theme tokens
-(`--p-primary-color`, surface and border tokens, `--p-content-border-radius`) so it follows Aura and
-dark mode. Props below are the design's props — keep the same names in Vue.
+each becomes **one Vue component** in `src/components/`, built from PrimeVue components where
+possible and styled with theme tokens and Tailwind utilities (see `CLAUDE.md` → Styling), so it
+follows Aura and dark mode. Props below are the design's props — keep the same names in Vue.
 
 | Component | Props | Behaviour / notes | Used on |
 |---|---|---|---|
@@ -177,6 +189,7 @@ Choices made up front so every screen (and every contributor) builds them the sa
 | Single progress bars (topic learned %, review session) | PrimeVue `ProgressBar` (`:showValue="false"`, thin) |
 | Primary actions "Повторить всё", "Сдать проект" | **Open — recommended:** in-page PrimeVue `Button` for now; revisit Telegram `MainButton` once the app shell exists |
 | Back navigation | Telegram `BackButton` + `Breadcrumbs` |
+| Multi-choice from a short fixed list (dummy-login roles) | PrimeVue `SelectButton` with `multiple` — same look as single-choice `SelectButton`, checkmark on selected items |
 | Icons | PrimeIcons only |
 
 ## Design conventions

@@ -1,6 +1,7 @@
+import type { AxiosResponse } from 'axios'
 import { jwtDecode } from 'jwt-decode'
 import { ACCESS_TOKEN_HEADER, client } from './client'
-import type { TelegramAuthRequestDto } from './dto/auth'
+import type { DummyAuthRequestDto, TelegramAuthRequestDto } from './dto/auth'
 import type { AccessTokenClaimsDto } from './dto/token'
 import { InvalidTokenError } from './errors'
 
@@ -15,7 +16,17 @@ export async function authenticateByTelegram(initData: string): Promise<AccessTo
   const response = await client.post<void>('/api/auth/by-telegram', {
     initDataRaw: initData,
   } satisfies TelegramAuthRequestDto)
+  return readAccessToken(response)
+}
 
+// Test environments only: issues a token for any existing user with the given roles.
+// Rejects with NotFoundError for an unknown user id, BadRequestError for unknown roles.
+export async function authenticateByDummy(request: DummyAuthRequestDto): Promise<AccessToken> {
+  const response = await client.post<void>('/api/auth/by-dummy', request)
+  return readAccessToken(response)
+}
+
+function readAccessToken(response: AxiosResponse): AccessToken {
   const raw = response.headers[ACCESS_TOKEN_HEADER.toLowerCase()]
   if (typeof raw !== 'string' || raw === '') {
     throw new InvalidTokenError(`Response has no ${ACCESS_TOKEN_HEADER} header`)

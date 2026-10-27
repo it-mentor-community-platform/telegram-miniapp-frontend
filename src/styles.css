@@ -1,34 +1,81 @@
-:root {
-  font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+/* PrimeVue's layer sits between Tailwind's base and utilities, so utility classes override component
+   styles. The order must match `cssLayer` in main.ts. */
+@layer theme, base, primevue, components, utilities;
+
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+/* Light/dark follows Telegram via the .app-dark class (see telegram.ts), not prefers-color-scheme. */
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
+/* Text sizes from the design that Tailwind's scale lacks. */
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --text-page: 1.375rem;
+  --text-page--line-height: 1.75rem;
+  --text-md: 0.9375rem;
+  --text-md--line-height: 1.25rem;
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.125rem;
+  --text-note: 0.75rem;
+  --text-note--line-height: 1.0625rem;
 }
 
-* {
-  box-sizing: border-box;
+/* Tonal background + foreground pairs; values per color scheme live in theme.ts. */
+@utility tint-success {
+  background: var(--p-tint-success-background);
+  color: var(--p-tint-success-color);
 }
 
-html,
-body,
-#app {
-  min-height: 100%;
-  margin: 0;
+@utility tint-warn {
+  background: var(--p-tint-warn-background);
+  color: var(--p-tint-warn-color);
 }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-  background: var(--p-surface-50);
-  color: var(--p-text-color);
+@utility tint-info {
+  background: var(--p-tint-info-background);
+  color: var(--p-tint-info-color);
 }
 
-.app-dark body {
-  background: var(--p-surface-950);
+@utility tint-help {
+  background: var(--p-tint-help-background);
+  color: var(--p-tint-help-color);
 }
 
-button,
-textarea {
-  font: inherit;
+@utility tint-neutral {
+  background: var(--p-tint-neutral-background);
+  color: var(--p-tint-neutral-color);
+}
+
+/* Chevrons, separators and dashed outlines. */
+@utility text-subtle-color {
+  color: var(--p-subtle-color);
+}
+
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--p-primary-color);
+    outline-offset: -2px;
+  }
+}
+
+@layer base {
+  :root {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--p-app-background);
+    color: var(--p-text-color);
+  }
 }

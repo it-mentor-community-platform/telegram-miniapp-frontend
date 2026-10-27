@@ -12,6 +12,9 @@ export const initData = telegram?.initData ?? ''
 
 export const telegramUser = telegram?.initDataUnsafe.user
 
+// The bot's main Mini App, for "Открыть в Telegram" links outside Telegram.
+export const telegramAppUrl = `https://t.me/${import.meta.env.VITE_TELEGRAM_BOT_USERNAME}?startapp`
+
 export function initTelegram() {
   if (telegram) {
     applyColorScheme(telegram.colorScheme === 'dark')
@@ -24,6 +27,10 @@ export function initTelegram() {
   const media = window.matchMedia('(prefers-color-scheme: dark)')
   applyColorScheme(media.matches)
   media.addEventListener('change', (event) => applyColorScheme(event.matches))
+}
+
+export function closeApp() {
+  telegram?.close()
 }
 
 // Telegram's BackButton replaces in-app back navigation: hidden on home, elsewhere it leads to the

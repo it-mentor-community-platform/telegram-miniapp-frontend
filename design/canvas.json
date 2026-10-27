@@ -270,6 +270,61 @@
       "w": 390,
       "h": 844,
       "title": "Вход · ошибка"
+    },
+    "AuthError-Expired.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Вход · сессия истекла"
+    },
+    "DevLogin.dc.html": {
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · пустая форма",
+      "is_interactive": true
+    },
+    "DevLogin-Filled.dc.html": {
+      "x": 2350,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · заполнено",
+      "is_interactive": true
+    },
+    "DevLogin-Loading.dc.html": {
+      "x": 2820,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · загрузка",
+      "is_interactive": true
+    },
+    "DevLogin-NotFound.dc.html": {
+      "x": 3290,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · 404",
+      "is_interactive": true
+    },
+    "DevLogin-Error.dc.html": {
+      "x": 3760,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · ошибка",
+      "is_interactive": true
+    },
+    "DevLogin-Expired.dc.html": {
+      "x": 4230,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · сессия истекла",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -326,6 +381,13 @@
     "Main.dc.html",
     "AuthError.dc.html",
     "AuthError-Failed.dc.html",
+    "AuthError-Expired.dc.html",
+    "DevLogin.dc.html",
+    "DevLogin-Filled.dc.html",
+    "DevLogin-Loading.dc.html",
+    "DevLogin-NotFound.dc.html",
+    "DevLogin-Error.dc.html",
+    "DevLogin-Expired.dc.html",
     "Repetition.dc.html",
     "Categories.dc.html",
     "Topic.dc.html",

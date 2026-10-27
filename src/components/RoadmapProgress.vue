@@ -12,83 +12,25 @@ const total = computed(() => props.steps.length)
 </script>
 
 <template>
-  <div class="roadmap-progress" :class="{ compact }">
-    <div class="roadmap-header">
-      <span class="roadmap-label">{{ label }}</span>
-      <span class="roadmap-count">
-        <strong>{{ done }}</strong> из {{ total }}{{ compact ? '' : ' проектов' }}
+  <div class="flex flex-col" :class="compact ? 'gap-1.5' : 'gap-2'">
+    <div class="flex items-baseline justify-between gap-2">
+      <span class="font-semibold" :class="compact ? 'text-meta' : 'text-md'">{{ label }}</span>
+      <span class="text-meta text-muted-color">
+        <strong class="font-semibold text-color">{{ done }}</strong> из {{ total }}{{ compact ? '' : ' проектов' }}
       </span>
     </div>
     <div
-      class="roadmap-segments"
+      class="grid gap-1"
       role="img"
       :aria-label="`${label}: сдано ${done} из ${total} проектов`"
       :style="{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }"
     >
-      <span v-for="(step, index) in steps" :key="index" class="segment" :class="{ filled: step }" />
+      <span
+        v-for="(step, index) in steps"
+        :key="index"
+        class="h-2 rounded-sm"
+        :class="step ? 'bg-(--p-roadmap-segment-filled-background)' : 'bg-(--p-roadmap-segment-background)'"
+      />
     </div>
   </div>
 </template>
-
-<style scoped>
-.roadmap-progress {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.roadmap-progress.compact {
-  gap: 0.375rem;
-}
-
-.roadmap-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.roadmap-label {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.25rem;
-}
-
-.compact .roadmap-label {
-  font-size: 0.8125rem;
-}
-
-.roadmap-count {
-  color: var(--p-text-muted-color);
-  font-size: 0.8125rem;
-  line-height: 1.125rem;
-}
-
-.roadmap-count strong {
-  color: var(--p-text-color);
-  font-weight: 600;
-}
-
-.roadmap-segments {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.segment {
-  height: 0.5rem;
-  border-radius: 0.25rem;
-  background: var(--p-content-border-color);
-}
-
-.segment.filled {
-  background: var(--p-emerald-500);
-}
-
-.app-dark .segment {
-  background: var(--p-surface-700);
-}
-
-.app-dark .segment.filled {
-  background: var(--p-emerald-400);
-}
-</style>

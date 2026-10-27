@@ -8,6 +8,7 @@ Vue frontend for the IT Mentor Community Platform Telegram Mini App.
 - Vite
 - PrimeVue 4 with the Aura theme
 - PrimeIcons
+- Tailwind CSS 4 with `tailwindcss-primeui` (utilities bound to PrimeVue theme tokens)
 - nginx
 - Docker
 
@@ -53,6 +54,12 @@ Each environment is a Vite mode with its own committed `.env.<mode>` file:
 | `prod` | `https://platform.zhukovsd.it` | `it_mentor_community_bot` | no |
 
 Override a value locally in `.env.<mode>.local` (git-ignored).
+
+With developer tools on (local-stack, staging), opening the app in a regular browser shows a dummy
+login form instead of "Откройте приложение в Telegram": enter an auth-service user id (`Users.id`,
+not the Telegram id), a username and roles, and the app signs in via `POST /api/auth/by-dummy`.
+Nothing is remembered: after a reload or when the 30-minute token expires, sign in again. Prod builds
+don't contain the form.
 
 `npm run dev` runs in `local-stack` mode over https and proxies `/api` to `VITE_API_BASE_URL`, so the
 app calls its own origin. A built `local-stack` image calls `http://localhost:8080` directly, which
@@ -169,3 +176,23 @@ route. The URL is kept, so the target page opens once a retry succeeds:
 
 API code lives in `src/api/`: DTO types, fetch functions, and the `ApiError` subclasses failed calls
 reject with.
+
+## Backend API specs
+
+The staging gateway serves the OpenAPI specs behind basic auth:
+
+- auth-service: `https://staging.platform.zhukovsd.it/api/auth/v3/api-docs`
+- project-service: `https://staging.platform.zhukovsd.it/api/project/v3/api-docs`
+
+Get the credentials from the team and put them in `.openapi.netrc.local` (git-ignored). Never
+commit them:
+
+```
+machine staging.platform.zhukovsd.it login <username> password <password>
+```
+
+Then fetch a spec:
+
+```bash
+curl -sf --netrc-file .openapi.netrc.local https://staging.platform.zhukovsd.it/api/auth/v3/api-docs
+```

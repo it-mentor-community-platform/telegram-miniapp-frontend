@@ -1,17 +1,18 @@
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, loadEnv } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 
 export default defineConfig(({ command, mode, isPreview }) => {
   if (command !== 'serve' || isPreview) {
-    return { plugins: [vue()] }
+    return { plugins: [vue(), tailwindcss()] }
   }
 
   // Dev server: https with a locally trusted certificate, so Telegram Desktop can open it as a Mini
   // App, and the API proxied on the same origin (no CORS, no mixed content).
   const { VITE_API_BASE_URL } = loadEnv(mode, process.cwd())
   return {
-    plugins: [vue(), mkcert()],
+    plugins: [vue(), tailwindcss(), mkcert()],
     define: { 'import.meta.env.VITE_API_BASE_URL': JSON.stringify('') },
     server: {
       // IPv4 loopback: Node binds `localhost` to ::1 only on macOS, so https://127.0.0.1:5173 would
