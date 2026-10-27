@@ -14,10 +14,16 @@ import {
 export const ACCESS_TOKEN_HEADER = 'X-Access-Token'
 
 let accessTokenProvider: () => string | undefined = () => undefined
+let unauthorizedHandler: () => void = () => {}
 
 // The app tells the client where to take the token from, so this package holds no session state.
 export function setAccessTokenProvider(provider: () => string | undefined) {
   accessTokenProvider = provider
+}
+
+// Called when a request that carried an access token gets 401, i.e. the token has expired.
+export function setUnauthorizedHandler(handler: () => void) {
+  unauthorizedHandler = handler
 }
 
 export const client = axios.create({
@@ -33,7 +39,17 @@ client.interceptors.request.use((config) => {
   return config
 })
 
-client.interceptors.response.use(undefined, (error: unknown) => Promise.reject(toApiError(error)))
+client.interceptors.response.use(undefined, (error: unknown) => {
+  // A 401 without a token (the auth request itself) is a failed login, not an expired session.
+  if (
+    isAxiosError(error) &&
+    error.response?.status === 401 &&
+    error.config?.headers.has(ACCESS_TOKEN_HEADER)
+  ) {
+    unauthorizedHandler()
+  }
+  return Promise.reject(toApiError(error))
+})
 
 function toApiError(error: unknown) {
   if (!isAxiosError(error)) {

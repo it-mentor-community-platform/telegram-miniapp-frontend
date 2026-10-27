@@ -23,6 +23,7 @@ interface TelegramWebApp {
   colorScheme?: 'light' | 'dark'
   BackButton?: TelegramBackButton
   ready: () => void
+  close: () => void
   expand?: () => void
   onEvent?: (eventType: 'themeChanged', callback: () => void) => void
   offEvent?: (eventType: 'themeChanged', callback: () => void) => void
