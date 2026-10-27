@@ -4,7 +4,7 @@ import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import { authenticate } from '../session'
-import { closeApp } from '../telegram'
+import { closeApp, telegramAppUrl } from '../telegram'
 
 // Shown by the app shell instead of any route; see design/AuthError.dc.html.
 const props = defineProps<{
@@ -31,8 +31,6 @@ const content = {
     text: 'Прошло больше 30 минут с момента входа. Закройте приложение и откройте его снова — вход произойдёт автоматически.',
   },
 }[props.reason]
-
-const telegramAppUrl = `https://t.me/${import.meta.env.VITE_TELEGRAM_BOT_USERNAME}?startapp`
 
 const steps = [
   'Нажмите «Открыть в Telegram» — приложение откроется на той же странице.',

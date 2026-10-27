@@ -12,6 +12,9 @@ export const initData = telegram?.initData ?? ''
 
 export const telegramUser = telegram?.initDataUnsafe.user
 
+// The bot's main Mini App, for "Открыть в Telegram" links outside Telegram.
+export const telegramAppUrl = `https://t.me/${import.meta.env.VITE_TELEGRAM_BOT_USERNAME}?startapp`
+
 export function initTelegram() {
   if (telegram) {
     applyColorScheme(telegram.colorScheme === 'dark')
