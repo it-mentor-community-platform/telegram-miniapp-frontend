@@ -32,7 +32,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
-| `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable) |
+| `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
 
 Every screen has a `dark` prop (light/dark mode).
 
@@ -72,6 +72,7 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 |---|---|---|
 | Opened outside Telegram | `window.Telegram.WebApp.initData` is empty (regular browser, link opened outside the Mini App) | `AuthError` — explains the app only works inside Telegram; primary "Открыть в Telegram", secondary "Нет Telegram? Установить" |
 | Login failed | Backend rejects the init data (invalid / expired) or the auth request fails | `AuthError-Failed` — "Попробовать снова" retries the auth request; secondary link to the community chat |
+| Session expired | Any API call returns 401 after a successful login (token older than 30 min) | `AuthError-Expired` — asks to close and reopen the app; primary «Закрыть приложение», secondary link to the community chat |
 
 - "Открыть в Telegram" links to the bot's main Mini App (`https://t.me/<bot>?startapp`). The bot is
   per environment (`VITE_TELEGRAM_BOT_USERNAME`). Planned: a `startapp` code for the current path

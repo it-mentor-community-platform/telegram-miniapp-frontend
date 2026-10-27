@@ -270,6 +270,13 @@
       "w": 390,
       "h": 844,
       "title": "Вход · ошибка"
+    },
+    "AuthError-Expired.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Вход · сессия истекла"
     }
   },
   "createdOnFiles": {
@@ -326,6 +333,7 @@
     "Main.dc.html",
     "AuthError.dc.html",
     "AuthError-Failed.dc.html",
+    "AuthError-Expired.dc.html",
     "Repetition.dc.html",
     "Categories.dc.html",
     "Topic.dc.html",
