@@ -63,7 +63,7 @@ const outside = props.reason === 'outside-telegram'
         shape="circle"
         class="size-18"
         :class="content.tint"
-        pt:icon:class="text-[2rem]"
+        :dt="{ icon: { size: '2rem' } }"
         aria-hidden="true"
       />
 

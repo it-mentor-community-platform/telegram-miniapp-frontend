@@ -24,7 +24,7 @@ defineProps<{
             <Avatar
               :icon="`pi ${icon}`"
               class="tint-success size-11 shrink-0"
-              pt:icon:class="text-xl"
+              :dt="{ icon: { size: '1.25rem' } }"
               aria-hidden="true"
             />
             <span class="flex min-w-0 flex-1 flex-col gap-0.5">
