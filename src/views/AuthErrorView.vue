@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
+import Card from 'primevue/card'
 import { authenticate } from '../session'
 
 // Shown by the app shell instead of any route; see design/AuthError.dc.html.
@@ -31,38 +33,57 @@ const failed = props.reason === 'failed'
 </script>
 
 <template>
-  <div class="auth-error">
-    <div class="auth-main">
-      <span class="auth-icon" :class="{ failed }" aria-hidden="true">
-        <i :class="['pi', failed ? 'pi-shield' : 'pi-telegram']" />
-      </span>
+  <!-- Fills the app shell, whose padding already includes the safe areas. -->
+  <div class="flex flex-1 flex-col gap-6">
+    <div class="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+      <Avatar
+        :icon="failed ? 'pi pi-shield' : 'pi pi-telegram'"
+        shape="circle"
+        class="size-18"
+        :class="failed ? 'tint-warn' : 'tint-success'"
+        pt:icon:class="text-[2rem]"
+        aria-hidden="true"
+      />
 
-      <div class="auth-copy">
+      <div class="flex max-w-80 flex-col gap-2">
         <template v-if="failed">
-          <h1 class="auth-title">Не удалось войти</h1>
-          <p class="auth-text">
+          <h1 class="text-page font-bold">Не удалось войти</h1>
+          <p class="text-md/[1.375rem] text-muted-color">
             Telegram не подтвердил вход или сервер сейчас недоступен. Попробуйте ещё раз — если
             ошибка повторится, напишите нам.
           </p>
         </template>
         <template v-else>
-          <h1 class="auth-title">Откройте приложение в Telegram</h1>
-          <p class="auth-text">
+          <h1 class="text-page font-bold">Откройте приложение в Telegram</h1>
+          <p class="text-md/[1.375rem] text-muted-color">
             IT Ментор — мини-приложение Telegram. Вход происходит автоматически через ваш аккаунт,
             поэтому в обычном браузере приложение не работает.
           </p>
         </template>
       </div>
 
-      <ol v-if="!failed" class="auth-steps">
-        <li v-for="(step, index) in steps" :key="step" class="auth-step">
-          <span class="auth-step-number" aria-hidden="true">{{ index + 1 }}</span>
-          <span class="auth-step-text">{{ step }}</span>
-        </li>
-      </ol>
+      <Card v-if="!failed" class="w-full text-left">
+        <template #content>
+          <ol class="flex flex-col gap-3">
+            <li
+              v-for="(step, index) in steps"
+              :key="step"
+              class="flex items-start gap-3 text-sm text-(--p-tint-neutral-color)"
+            >
+              <Avatar
+                :label="String(index + 1)"
+                shape="circle"
+                class="size-6 shrink-0 text-xs font-bold text-color"
+                aria-hidden="true"
+              />
+              <span class="pt-0.5">{{ step }}</span>
+            </li>
+          </ol>
+        </template>
+      </Card>
     </div>
 
-    <div class="auth-actions">
+    <div class="flex flex-col gap-2">
       <template v-if="failed">
         <Button
           label="Попробовать снова"
@@ -100,134 +121,3 @@ const failed = props.reason === 'failed'
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Fills the app shell, whose padding already includes the safe areas. */
-.auth-error {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.auth-main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  text-align: center;
-}
-
-.auth-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 4.5rem;
-  height: 4.5rem;
-  border-radius: 50%;
-  background: var(--p-emerald-50);
-  color: var(--p-emerald-700);
-}
-
-.auth-icon .pi {
-  font-size: 2rem;
-}
-
-.auth-icon.failed {
-  background: var(--p-orange-50);
-  color: var(--p-orange-700);
-}
-
-.app-dark .auth-icon {
-  background: color-mix(in srgb, var(--p-emerald-400) 16%, transparent);
-  color: var(--p-emerald-300);
-}
-
-.app-dark .auth-icon.failed {
-  background: color-mix(in srgb, var(--p-orange-500) 16%, transparent);
-  color: var(--p-orange-300);
-}
-
-.auth-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 20rem;
-}
-
-.auth-title {
-  margin: 0;
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.75rem;
-}
-
-.auth-text {
-  margin: 0;
-  color: var(--p-text-muted-color);
-  font-size: 0.9375rem;
-  line-height: 1.375rem;
-}
-
-.auth-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  width: 100%;
-  margin: 0;
-  padding: 1rem;
-  list-style: none;
-  border: 1px solid var(--p-content-border-color);
-  border-radius: var(--p-content-border-radius);
-  background: var(--p-content-background);
-  text-align: left;
-}
-
-.auth-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  color: var(--p-surface-700);
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.app-dark .auth-step {
-  color: var(--p-surface-300);
-}
-
-.auth-step-number {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  background: var(--p-surface-100);
-  color: var(--p-text-color);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.app-dark .auth-step-number {
-  background: var(--p-surface-800);
-}
-
-.auth-step-text {
-  padding-top: 0.125rem;
-}
-
-.auth-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* Link buttons (as="a") would otherwise get the browser's link underline. */
-.auth-actions a {
-  text-decoration: none;
-}
-</style>

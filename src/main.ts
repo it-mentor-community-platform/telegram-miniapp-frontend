@@ -20,6 +20,8 @@ app.use(PrimeVue, {
     preset: AppPreset,
     options: {
       darkModeSelector: '.app-dark',
+      // Tailwind utilities sit in a later layer, so they override component styles.
+      cssLayer: { name: 'primevue', order: 'theme, base, primevue' },
     },
   },
 })

@@ -21,7 +21,7 @@ const tracks = buildRoadmapTracks(getMyProjects())
 const roleTags: Record<Role, { label: string; severity?: 'success' | 'info'; class?: string }> = {
   STUDENT: { label: 'Студент', severity: 'success' },
   MENTOR: { label: 'Ментор', severity: 'info' },
-  ADMIN: { label: 'Админ', class: 'tag-violet' },
+  ADMIN: { label: 'Админ', class: 'tint-help' },
 }
 
 const initials = `${user.firstName.charAt(0)}${user.lastName?.charAt(0) ?? ''}`
@@ -31,12 +31,12 @@ const isAdmin = user.roles.includes('ADMIN')
 </script>
 
 <template>
-  <div class="home">
-    <header class="home-header">
-      <Avatar :label="initials" shape="circle" size="large" class="home-avatar" />
-      <div class="home-greeting">
-        <h1 class="home-title">Привет, {{ user.firstName }}</h1>
-        <div class="home-roles">
+  <div class="flex flex-col gap-5">
+    <header class="flex items-center gap-3">
+      <Avatar :label="initials" shape="circle" size="large" class="tint-success shrink-0 text-[1.0625rem] font-semibold" />
+      <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+        <h1 class="text-lg/[1.375rem] font-semibold">Привет, {{ user.firstName }}</h1>
+        <div class="flex flex-wrap gap-1.5">
           <Tag
             v-for="role in user.roles"
             :key="role"
@@ -52,7 +52,7 @@ const isAdmin = user.roles.includes('ADMIN')
         rounded
         severity="secondary"
         aria-label="Настройки"
-        class="home-settings"
+        class="size-11 shrink-0"
       />
     </header>
 
@@ -66,7 +66,7 @@ const isAdmin = user.roles.includes('ADMIN')
       subtitle="Прогресс по роадмапу"
       :to="{ name: 'student-projects' }"
     >
-      <div v-if="tracks.length > 0" class="home-tracks">
+      <div v-if="tracks.length > 0" class="flex flex-col gap-3">
         <RoadmapProgress
           v-for="track in tracks"
           :key="track.language"
@@ -117,76 +117,3 @@ const isAdmin = user.roles.includes('ADMIN')
     <DevPanel v-if="showDevTools" />
   </div>
 </template>
-
-<style scoped>
-.home {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.home-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.home-avatar {
-  flex-shrink: 0;
-  width: 3rem;
-  height: 3rem;
-  background: var(--p-emerald-50);
-  color: var(--p-emerald-700);
-  font-size: 1.0625rem;
-  font-weight: 600;
-}
-
-.app-dark .home-avatar {
-  background: color-mix(in srgb, var(--p-emerald-400) 16%, transparent);
-  color: var(--p-emerald-300);
-}
-
-.home-greeting {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 0.375rem;
-  min-width: 0;
-}
-
-.home-title {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.375rem;
-}
-
-.home-roles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.375rem;
-}
-
-.tag-violet {
-  background: var(--p-violet-50);
-  color: var(--p-violet-700);
-}
-
-.app-dark .tag-violet {
-  background: color-mix(in srgb, var(--p-violet-400) 16%, transparent);
-  color: var(--p-violet-300);
-}
-
-.home-settings {
-  flex-shrink: 0;
-  width: 2.75rem;
-  height: 2.75rem;
-}
-
-.home-tracks {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-</style>

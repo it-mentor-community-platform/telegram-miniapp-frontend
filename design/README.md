@@ -143,9 +143,9 @@ data, `startapp`) before the router starts. nginx must fall back to `index.html`
 
 Shared blocks that PrimeVue does not provide. In the design each is its own file, imported by the
 screens with `<dc-import>`; `Components.dc.html` is a catalogue showing every variant. In the app
-each becomes **one Vue component** in `src/components/`, styled with PrimeVue theme tokens
-(`--p-primary-color`, surface and border tokens, `--p-content-border-radius`) so it follows Aura and
-dark mode. Props below are the design's props — keep the same names in Vue.
+each becomes **one Vue component** in `src/components/`, built from PrimeVue components where
+possible and styled with theme tokens and Tailwind utilities (see `CLAUDE.md` → Styling), so it
+follows Aura and dark mode. Props below are the design's props — keep the same names in Vue.
 
 | Component | Props | Behaviour / notes | Used on |
 |---|---|---|---|
