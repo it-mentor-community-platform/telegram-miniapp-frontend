@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Avatar from 'primevue/avatar'
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
 import type { ProjectIcon } from '../roadmap'
 import LanguageTag from './LanguageTag.vue'
@@ -26,124 +27,25 @@ const icons: Record<ProjectIcon, string> = {
   <component
     :is="to ? RouterLink : 'div'"
     :to="to"
-    class="project-row"
-    :class="{ divider, interactive: to }"
+    class="flex min-h-18 items-center gap-3 px-4 py-3 text-color"
+    :class="{ 'border-t border-surface': divider, 'focus-ring hover:bg-emphasis': to }"
   >
-    <span class="row-icon" :class="{ done: langs.length > 0 }" aria-hidden="true">
-      <i :class="['pi', icons[icon]]" />
-    </span>
-    <span class="row-text">
-      <span class="row-title">{{ title }}</span>
-      <span v-if="langs.length > 0" class="row-status">
-        <span class="row-done"><i class="pi pi-check" aria-hidden="true" />Сдан</span>
+    <Avatar
+      :icon="`pi ${icons[icon]}`"
+      class="shrink-0"
+      :class="langs.length > 0 ? 'bg-primary text-primary-contrast' : 'text-muted-color'"
+      aria-hidden="true"
+    />
+    <span class="flex min-w-0 flex-1 flex-col gap-1.5">
+      <span class="text-md font-semibold">{{ title }}</span>
+      <span v-if="langs.length > 0" class="flex flex-wrap items-center gap-1.5">
+        <span class="inline-flex items-center gap-1 text-xs font-semibold text-(--p-tint-success-color)">
+          <i class="pi pi-check text-xs" aria-hidden="true" />Сдан
+        </span>
         <LanguageTag v-for="lang in langs" :key="lang.name" :label="lang.name" :counted="lang.counted" />
       </span>
-      <span v-else class="row-not-done">Не сдан</span>
+      <span v-else class="text-xs font-medium text-muted-color">Не сдан</span>
     </span>
-    <i class="pi pi-chevron-right row-chevron" aria-hidden="true" />
+    <i class="pi pi-chevron-right shrink-0 text-sm text-subtle-color" aria-hidden="true" />
   </component>
 </template>
-
-<style scoped>
-.project-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 4.5rem;
-  padding: 0.75rem 1rem;
-  color: var(--p-text-color);
-  text-decoration: none;
-}
-
-.project-row.divider {
-  border-top: 1px solid var(--p-content-border-color);
-}
-
-.project-row.interactive:hover {
-  background: var(--p-content-hover-background);
-}
-
-.project-row.interactive:focus-visible {
-  outline: 2px solid var(--p-primary-color);
-  outline-offset: -2px;
-}
-
-.row-icon {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.625rem;
-  background: var(--p-surface-100);
-  color: var(--p-text-muted-color);
-  font-size: 1.125rem;
-}
-
-.app-dark .row-icon {
-  background: var(--p-surface-800);
-}
-
-.row-icon.done,
-.app-dark .row-icon.done {
-  background: var(--p-primary-color);
-  color: var(--p-primary-contrast-color);
-}
-
-.row-text {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 0.375rem;
-  min-width: 0;
-}
-
-.row-title {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.25rem;
-}
-
-.row-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.375rem;
-}
-
-.row-done {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: var(--p-emerald-700);
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1rem;
-}
-
-.app-dark .row-done {
-  color: var(--p-emerald-300);
-}
-
-.row-done .pi {
-  font-size: 0.75rem;
-}
-
-.row-not-done {
-  color: var(--p-text-muted-color);
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1rem;
-}
-
-.row-chevron {
-  flex-shrink: 0;
-  color: var(--p-surface-400);
-  font-size: 0.875rem;
-}
-
-.app-dark .row-chevron {
-  color: var(--p-surface-500);
-}
-</style>

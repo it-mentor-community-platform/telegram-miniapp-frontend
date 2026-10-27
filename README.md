@@ -8,6 +8,7 @@ Vue frontend for the IT Mentor Community Platform Telegram Mini App.
 - Vite
 - PrimeVue 4 with the Aura theme
 - PrimeIcons
+- Tailwind CSS 4 with `tailwindcss-primeui` (utilities bound to PrimeVue theme tokens)
 - nginx
 - Docker
 
