@@ -23,6 +23,10 @@ export type ProjectType = {
   slug: ProjectTypeSlug
   title: string
   icon: ProjectIcon
+  // Whether an implementation can have a deploy link (web projects from currency exchange on).
+  deployable: boolean
+  // Page of the spec in each roadmap course: <course>/projects/<specPath>/.
+  specPath: string
 }
 
 export type RoadmapTrack = {
@@ -36,18 +40,45 @@ export type LanguagesByProjectType = Record<ProjectTypeId, readonly string[]>
 
 // In roadmap order.
 export const PROJECT_TYPES: ProjectType[] = [
-  { id: 'HANGMAN', slug: 'hangman', title: 'Виселица', icon: 'hangman' },
-  { id: 'SIMULATION', slug: 'simulation', title: 'Симуляция', icon: 'simulation' },
-  { id: 'CURRENCY_EXCHANGE', slug: 'currency-exchange', title: 'Обмен валют', icon: 'exchange' },
-  { id: 'TENNIS_SCOREBOARD', slug: 'tennis-scoreboard', title: 'Теннисное табло', icon: 'tennis' },
-  { id: 'CLOUD_FILE_STORAGE', slug: 'cloud-storage', title: 'Облачное хранилище', icon: 'cloud' },
-  { id: 'TASK_TRACKER', slug: 'task-scheduler', title: 'Планировщик задач', icon: 'planner' },
+  { id: 'HANGMAN', slug: 'hangman', title: 'Виселица', icon: 'hangman', deployable: false, specPath: 'hangman' },
+  { id: 'SIMULATION', slug: 'simulation', title: 'Симуляция', icon: 'simulation', deployable: false, specPath: 'simulation' },
+  { id: 'CURRENCY_EXCHANGE', slug: 'currency-exchange', title: 'Обмен валют', icon: 'exchange', deployable: true, specPath: 'currency-exchange' },
+  { id: 'TENNIS_SCOREBOARD', slug: 'tennis-scoreboard', title: 'Теннисное табло', icon: 'tennis', deployable: true, specPath: 'tennis-scoreboard' },
+  { id: 'CLOUD_FILE_STORAGE', slug: 'cloud-storage', title: 'Облачное хранилище', icon: 'cloud', deployable: true, specPath: 'cloud-file-storage' },
+  { id: 'TASK_TRACKER', slug: 'task-scheduler', title: 'Планировщик задач', icon: 'planner', deployable: true, specPath: 'task-tracker' },
 ]
+
+export function projectTypeBySlug(slug: string): ProjectType | undefined {
+  return PROJECT_TYPES.find((type) => type.slug === slug)
+}
 
 export const TRACKED_LANGUAGES = ['Java', 'Python', 'Go']
 
+// Roadmap course per tracked language; each project's spec is a page of it, at the same path in
+// every course.
+const COURSE_URLS: { language: string; url: string }[] = [
+  { language: 'Java', url: 'https://zhukovsd.github.io/java-backend-learning-course/' },
+  { language: 'Python', url: 'https://zhukovsd.github.io/python-backend-learning-course/' },
+  { language: 'Go', url: 'https://zhukovsd.github.io/golang-backend-learning-course/' },
+]
+
+export function specLinks(type: ProjectType): { language: string; url: string }[] {
+  return COURSE_URLS.map(({ language, url }) => ({ language, url: `${url}projects/${type.specPath}/` }))
+}
+
 export function isTracked(language: string) {
   return TRACKED_LANGUAGES.includes(language)
+}
+
+// Unique languages, tracked ones first in roadmap order, then the rest as given.
+export function sortLanguages(languages: readonly string[]): string[] {
+  const unique = [...new Set(languages)]
+  return [...TRACKED_LANGUAGES.filter((language) => unique.includes(language)), ...unique.filter((language) => !isTracked(language))]
+}
+
+// "Java", "Java и Go", "Java, Python и Go".
+export function joinRussian(items: readonly string[]) {
+  return items.length > 1 ? `${items.slice(0, -1).join(', ')} и ${items.at(-1)}` : items.join('')
 }
 
 // One track per tracked language with at least one completed step; several implementations of

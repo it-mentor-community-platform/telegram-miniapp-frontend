@@ -11,28 +11,54 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+@keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes pt-spin{to{transform:rotate(360deg)}}
 </style>
 </helmet>
-<div style="width: 390px; height: 1240px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: 390px; height: {{frameH}}px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
 <header style="display: flex; flex-direction: column; gap: 6px">
 <div style="margin: -12px 0 -6px 0">
 <dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
 </div>
+<sc-if value="{{found}}" hint-placeholder-val="{{ true }}">
 <h1 style="margin: 0; font-size: 24px; font-weight: 700; line-height: 30px">{{p.name}}</h1>
-<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; line-height: 18px">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; line-height: 18px; min-height: 18px">
 <span style="font-weight: 500; color: {{t.muted}}">Проект {{p.n}} из 6</span>
+<sc-if value="{{showDot}}" hint-placeholder-val="{{ true }}">
 <span aria-hidden="true" style="color: {{t.chev}}">·</span>
+</sc-if>
+<sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
+<span aria-hidden="true" style="display: inline-block; width: 120px; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</sc-if>
 <sc-if value="{{has}}" hint-placeholder-val="{{ true }}">
 <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: {{t.primaryText}}">
-<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Сдан на Java и Python</span>
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>{{statusText}}</span>
 </sc-if>
 <sc-if value="{{none}}" hint-placeholder-val="{{ false }}">
 <span style="font-weight: 500; color: {{t.muted}}">Ещё не сдан</span>
 </sc-if>
 </div>
+</sc-if>
 </header>
 
+<sc-if value="{{notFound}}" hint-placeholder-val="{{ false }}">
+<main style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding-bottom: 80px; text-align: center">
+<span style="width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{t.chip}}; color: {{t.muted}}">
+<svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path><path d="M9 9l4 4M13 9l-4 4"></path></svg>
+</span>
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 300px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Проект не найден</h1>
+<p style="margin: 0; font-size: 15px; line-height: 22px; color: {{t.muted}}">Возможно, ссылка устарела или в ней опечатка. Все проекты роадмапа — в разделе «Мои проекты».</p>
+</div>
+<a href="Projects.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 15px; font-weight: 600; text-decoration: none">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"></path></svg>
+К моим проектам
+</a>
+</main>
+</sc-if>
+
+<sc-if value="{{found}}" hint-placeholder-val="{{ true }}">
 <section style="display: flex; flex-direction: column; gap: 8px">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Техническое задание</h2>
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
@@ -44,6 +70,20 @@ body{margin:0}
 </sc-for>
 </div>
 </section>
+</sc-if>
+
+<sc-if value="{{showSuccess}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 8px 12px 14px; border-radius: 10px; background: {{t.primarySoft}}; border: 1px solid {{t.primaryBorder}}">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.primaryText}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="m8 12.5 2.5 2.5L16 9.5"></path></svg>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 14px; font-weight: 700; line-height: 20px; color: {{t.primaryText}}">{{successTitle}}</span>
+<span style="font-size: 13px; line-height: 18px; color: {{t.text2}}">{{successText}}</span>
+</span>
+<button type="button" onClick="{{dismiss}}" aria-label="Закрыть" style="width: 32px; height: 32px; margin-top: -6px; border: none; border-radius: 8px; background: transparent; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+</button>
+</div>
+</sc-if>
 
 <sc-if value="{{showAddButton}}" hint-placeholder-val="{{ false }}">
 <button type="button" onClick="{{openForm}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 10px; border: 1px solid {{t.primaryBorder}}; background: {{t.primarySoft}}; color: {{t.primaryText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">
@@ -53,13 +93,14 @@ body{margin:0}
 </sc-if>
 
 <sc-if value="{{formOpen}}" hint-placeholder-val="{{ true }}">
-<form style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<form aria-busy="{{busyAttr}}" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
 <div style="display: flex; flex-direction: column; gap: 2px">
 <span style="font-size: 16px; font-weight: 600; line-height: 22px">{{formTitle}}</span>
 <span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Ревью не обязательно — проект засчитывается сразу после сдачи</span>
 </div>
 
-<div role="group" aria-label="Язык реализации" style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; flex-direction: column; gap: 16px; opacity: {{fieldOpacity}}; pointer-events: {{fieldPE}}">
+<div role="group" aria-label="Язык реализации" aria-disabled="{{busyAttr}}" style="display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Язык</span>
 <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 10px; background: {{t.chip}}">
 <sc-for list="{{langs}}" as="l" hint-placeholder-count="4">
@@ -69,7 +110,7 @@ body{margin:0}
 <sc-if value="{{isOther}}" hint-placeholder-val="{{ false }}">
 <label style="display: flex; flex-direction: column; gap: 6px; padding-top: 4px">
 <span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Название языка</span>
-<input type="text" defaultValue="{{otherName}}" placeholder="Например, Kotlin" style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
+<input type="text" defaultValue="{{otherName}}" placeholder="Например, Kotlin" style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{inputBg}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
 <span style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.muted}}">
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
 <span>Реализация сохранится в списке, но не попадёт в прогресс роадмапов — он считается только для Java, Python и Go</span>
@@ -80,14 +121,14 @@ body{margin:0}
 
 <label style="display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Ссылка на GitHub-репозиторий</span>
-<span style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{ghBorder}}; background: {{t.card}}; color: {{t.muted}}">
+<span style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{ghBorder}}; background: {{inputBg}}; color: {{t.muted}}">
 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"></path><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"></path></svg>
 <input type="url" defaultValue="{{ghValue}}" aria-invalid="{{ghInvalid}}" placeholder="https://github.com/username/repo" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
 </span>
 <sc-if value="{{hasError}}" hint-placeholder-val="{{ false }}">
 <span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
 <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
-<span>Этот репозиторий уже зарегистрирован как реализация. Одна ссылка на GitHub — одна реализация: укажите другой репозиторий.</span>
+<span>{{ghErrText}}</span>
 </span>
 </sc-if>
 <sc-if value="{{noError}}" hint-placeholder-val="{{ true }}">
@@ -98,32 +139,88 @@ body{margin:0}
 <sc-if value="{{p.deploy}}" hint-placeholder-val="{{ true }}">
 <label style="display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Ссылка на деплой <span style="font-weight: 400; color: {{t.muted}}">· необязательно</span></span>
-<span style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.muted}}">
+<span style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{depBorder}}; background: {{inputBg}}; color: {{t.muted}}">
 <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9S9.5 5.5 12 3z"></path></svg>
-<input type="url" defaultValue="{{depValue}}" placeholder="https://" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
+<input type="url" defaultValue="{{depValue}}" aria-invalid="{{depInvalid}}" placeholder="https://" style="flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
 </span>
+<sc-if value="{{depErr}}" hint-placeholder-val="{{ false }}">
+<span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Укажите ссылку, начинающуюся с https://</span>
+</span>
+</sc-if>
+<sc-if value="{{depOk}}" hint-placeholder-val="{{ true }}">
 <span style="font-size: 12px; line-height: 17px; color: {{t.muted}}">Можно добавить или изменить позже</span>
+</sc-if>
 </label>
+</sc-if>
+</div>
+
+<sc-if value="{{submitErr}}" hint-placeholder-val="{{ false }}">
+<div role="alert" style="display: flex; gap: 8px; align-items: flex-start; padding: 10px 12px; border-radius: 8px; background: {{t.errSoft}}; border: 1px solid {{t.errSoftBorder}}; color: {{t.errText}}; font-size: 13px; line-height: 18px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Не удалось сдать проект. Попробуйте ещё раз.</span>
+</div>
 </sc-if>
 
 <div style="display: flex; flex-direction: column; gap: 4px">
-<button type="button" style="height: 48px; border: none; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">Сдать проект</button>
+<button type="button" aria-disabled="{{btnDisabledAttr}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: none; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: {{btnCursor}}; opacity: {{btnOpacity}}">
+<sc-if value="{{submitting}}" hint-placeholder-val="{{ false }}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" style="animation: pt-spin 0.8s linear infinite"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.3" stroke-width="2.5"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></path></svg>
+</sc-if>
+Сдать проект
+</button>
+<sc-if value="{{showMissing}}" hint-placeholder-val="{{ false }}">
+<span style="padding-top: 2px; text-align: center; font-size: 12px; line-height: 17px; color: {{t.muted}}">{{missingText}}</span>
+</sc-if>
 <sc-if value="{{has}}" hint-placeholder-val="{{ false }}">
-<button type="button" onClick="{{closeForm}}" style="height: 44px; border: none; border-radius: 10px; background: transparent; color: {{t.muted}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Отмена</button>
+<button type="button" onClick="{{closeForm}}" style="height: 44px; border: none; border-radius: 10px; background: transparent; color: {{t.muted}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; opacity: {{fieldOpacity}}; pointer-events: {{fieldPE}}">Отмена</button>
 </sc-if>
 </div>
 </form>
 </sc-if>
 
+<sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
+<div aria-busy="true" aria-label="Загрузка реализаций" style="display: flex; flex-direction: column; gap: 20px">
+<section aria-hidden="true" style="display: flex; flex-direction: column; gap: 8px">
+<span style="display: block; width: 150px; height: 14px; margin: 2px 4px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{skelRows}}" as="k" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-top: 1px solid {{k.sep}}">
+<span style="display: flex; gap: 8px">
+<span style="width: 52px; height: 18px; border-radius: 6px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<span style="width: 96px; height: 18px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</span>
+<span style="width: {{k.w}}; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</div>
+</sc-for>
+</div>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{isLoadError}}" hint-placeholder-val="{{ false }}">
+<section role="alert" style="display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border-radius: 12px; background: {{t.errSoft}}; border: 1px solid {{t.errSoftBorder}}">
+<div style="display: flex; gap: 10px; align-items: flex-start; color: {{t.errText}}; font-size: 14px; line-height: 20px">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Не удалось загрузить реализации. Проверьте соединение и попробуйте ещё раз.</span>
+</div>
+<button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid {{t.errSoftBorder}}; background: {{t.card}}; color: {{t.errText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
+Попробовать снова
+</button>
+</section>
+</sc-if>
+
 <sc-if value="{{has}}" hint-placeholder-val="{{ false }}">
 <section style="display: flex; flex-direction: column; gap: 8px">
-<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Мои реализации · 3</h2>
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Мои реализации · {{implCount}}</h2>
 <nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
 <sc-for list="{{impls}}" as="im" hint-placeholder-count="3">
-<a href="{{im.href}}" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; text-decoration: none; color: {{t.text}}; border-top: 1px solid {{im.sep}}">
+<a href="{{im.href}}" style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; text-decoration: none; color: {{t.text}}; background: {{im.bg}}; border-top: 1px solid {{im.sep}}">
 <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
 <span style="display: flex; align-items: center; gap: 8px">
-<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 1px 7px; border-radius: 6px; background: {{t.chip}}; color: {{t.text2}}">{{im.lang}}</span>
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 1px 7px; border-radius: 6px; background: {{im.chip}}; color: {{t.text2}}">{{im.lang}}</span>
 <span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">сдан {{im.date}}</span>
 </span>
 <span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; line-height: 20px; min-width: 0">
@@ -146,35 +243,85 @@ body{margin:0}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Виселица — первая сдача","Обмен валют — первая сдача","Обмен валют — 3 реализации","Обмен валют — другой язык","Обмен валют — дубликат"],"default":"Виселица — первая сдача"},"$preview":{"width":390,"height":1240}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Виселица — первая сдача","Обмен валют — первая сдача","Обмен валют — 3 реализации","Обмен валют — другой язык","Обмен валют — дубликат","Загрузка","Ошибка загрузки","Отправка","Ошибка отправки","Неверные ссылки","Сдан впервые","Новая реализация сдана","Проект не найден"],"default":"Виселица — первая сдача"},"$preview":{"width":390,"height":1240}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { open: null, lang: null };
+    this.state = { open: null, lang: null, dismissed: false };
   }
   renderVals() {
     const dark = this.props.dark ?? false;
     const scenario = this.props.scenario ?? 'Виселица — первая сдача';
     const t = dark ? {
-      bg: '#09090b', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none',
+      bg: '#09090b', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none', skel: '#27272a',
       text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
       chip: '#27272a', seg: '#3f3f46', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7', primaryBorder: 'rgba(52, 211, 153, 0.35)',
-      btnBg: '#34d399', btnText: '#022c22', errText: '#fca5a5', errBorder: '#f87171'
+      newRow: 'rgba(52, 211, 153, 0.10)', newChip: 'rgba(52, 211, 153, 0.22)',
+      btnBg: '#34d399', btnText: '#022c22', errText: '#fca5a5', errBorder: '#f87171',
+      errSoft: 'rgba(248, 113, 113, 0.14)', errSoftBorder: 'rgba(248, 113, 113, 0.35)'
     } : {
-      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)', skel: '#e2e8f0',
       text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
       chip: '#f1f5f9', seg: '#ffffff', primarySoft: '#ecfdf5', primaryText: '#047857', primaryBorder: '#a7f3d0',
-      btnBg: '#047857', btnText: '#ffffff', errText: '#b91c1c', errBorder: '#ef4444'
+      newRow: '#f0fdf4', newChip: '#d1fae5',
+      btnBg: '#047857', btnText: '#ffffff', errText: '#b91c1c', errBorder: '#ef4444',
+      errSoft: '#fef2f2', errSoftBorder: '#fecaca'
     };
+    const hangman = { n: 1, name: 'Виселица', deploy: false };
+    const exchange = { n: 3, name: 'Обмен валют', deploy: true };
+    const filled = { lang: 'Java', other: '', gh: 'https://github.com/sergey-dev/currency-exchange', dep: 'https://currency.sergey-dev.ru' };
+    const base = { mode: 'normal', list: 'none', open: true, lang: null, other: '', gh: '', dep: '', err: null, depErr: false, success: false };
     const cfg = {
-      'Виселица — первая сдача': { p: { n: 1, name: 'Виселица', deploy: false }, has: false, open: true, lang: 'Java', other: '', gh: '', dep: '', err: false },
-      'Обмен валют — первая сдача': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: false, open: true, lang: 'Java', other: '', gh: '', dep: '', err: false },
-      'Обмен валют — 3 реализации': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: true, open: false, lang: 'Java', other: '', gh: '', dep: '', err: false },
-      'Обмен валют — другой язык': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: true, open: true, lang: 'Другой', other: 'Rust', gh: 'https://github.com/sergey-dev/currency-exchange-rust', dep: '', err: false },
-      'Обмен валют — дубликат': { p: { n: 3, name: 'Обмен валют', deploy: true }, has: true, open: true, lang: 'Go', other: '', gh: 'https://github.com/sergey-dev/currency-exchange', dep: 'https://currency-go.sergey-dev.ru', err: true }
+      'Виселица — первая сдача': { p: hangman },
+      'Обмен валют — первая сдача': { p: exchange },
+      'Обмен валют — 3 реализации': { p: exchange, list: 'three', open: false, lang: 'Java' },
+      'Обмен валют — другой язык': { p: exchange, list: 'three', lang: 'Другой', other: 'Rust', gh: 'https://github.com/sergey-dev/currency-exchange-rust' },
+      'Обмен валют — дубликат': { p: exchange, list: 'three', lang: 'Go', gh: 'https://github.com/sergey-dev/currency-exchange', dep: 'https://currency-go.sergey-dev.ru', err: 'dup' },
+      'Загрузка': { p: exchange, mode: 'loading' },
+      'Ошибка загрузки': { p: exchange, mode: 'loadError' },
+      'Отправка': { p: exchange, mode: 'submitting', ...filled },
+      'Ошибка отправки': { p: exchange, mode: 'submitError', ...filled },
+      'Неверные ссылки': { p: exchange, lang: 'Java', gh: 'github.com/sergey-dev', dep: 'currency.sergey-dev.ru', err: 'invalid', depErr: true },
+      'Сдан впервые': { p: exchange, list: 'first', open: false, success: true, newLang: 'Java' },
+      'Новая реализация сдана': { p: exchange, list: 'more', open: false, success: true, newLang: 'Go' },
+      'Проект не найден': { p: exchange, mode: 'notFound', open: false }
     };
-    const c = cfg[scenario] || cfg['Виселица — первая сдача'];
-    const formOpen = this.state.open ?? c.open;
+    const c = { ...base, ...(cfg[scenario] || cfg['Виселица — первая сдача']) };
+    const mode = c.mode;
+    const isLoading = mode === 'loading';
+    const isLoadError = mode === 'loadError';
+    const notFound = mode === 'notFound';
+    const submitting = mode === 'submitting';
+    const known = !isLoading && !isLoadError && !notFound;
+
+    const three = [
+      { lang: 'Python', date: '5 мая 2026', repo: 'github.com/sergey-dev/currency-exchange-fastapi', deploy: 'currency-py.sergey-dev.ru', href: 'Implementation.dc.html' },
+      { lang: 'Java', date: '12 мар 2026', repo: 'github.com/sergey-dev/currency-exchange-spring', deploy: 'currency.sergey-dev.ru', href: 'Implementation.dc.html' },
+      { lang: 'Java', date: '18 янв 2026', repo: 'github.com/sergey-dev/currency-exchange', deploy: '', href: 'Impl-NoDeploy.dc.html' }
+    ];
+    const lists = {
+      none: [],
+      three,
+      first: [{ lang: 'Java', date: 'сегодня', repo: 'github.com/sergey-dev/currency-exchange', deploy: 'currency.sergey-dev.ru', href: 'Implementation.dc.html', isNew: true }],
+      more: [{ lang: 'Go', date: 'сегодня', repo: 'github.com/sergey-dev/currency-exchange-go', deploy: 'currency-go.sergey-dev.ru', href: 'Implementation.dc.html', isNew: true }, ...three]
+    };
+    const raw = known ? lists[c.list] : [];
+    const impls = raw.map((x, i) => ({
+      ...x,
+      hasDeploy: !!x.deploy,
+      sep: i === 0 ? 'transparent' : t.border,
+      bg: x.isNew ? t.newRow : 'transparent',
+      chip: x.isNew ? t.newChip : t.chip
+    }));
+    const has = impls.length > 0;
+    const order = ['Java', 'Python', 'Go'];
+    const uniq = [...new Set(impls.map((x) => x.lang))].sort((a, b) => {
+      const ia = order.indexOf(a), ib = order.indexOf(b);
+      return (ia < 0 ? 9 : ia) - (ib < 0 ? 9 : ib);
+    });
+    const joinRu = (a) => (a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' и ' + a[a.length - 1]);
+
+    const formOpen = !notFound && (this.state.open ?? c.open);
     const lang = this.state.lang ?? c.lang;
     const langs = ['Java', 'Python', 'Go', 'Другой'].map((label) => ({
       label,
@@ -189,19 +336,52 @@ class Component extends DCLogic {
       { lang: 'Python', url: 'https://zhukovsd.github.io/python-backend-learning-course/' },
       { lang: 'Go', url: 'https://zhukovsd.github.io/golang-backend-learning-course/' }
     ];
-    const impls = [
-      { lang: 'Python', date: '5 мая 2026', repo: 'github.com/sergey-dev/currency-exchange-fastapi', deploy: 'currency-py.sergey-dev.ru', hasDeploy: true, href: 'Implementation.dc.html' },
-      { lang: 'Java', date: '12 мар 2026', repo: 'github.com/sergey-dev/currency-exchange-spring', deploy: 'currency.sergey-dev.ru', hasDeploy: true, href: 'Implementation.dc.html' },
-      { lang: 'Java', date: '18 янв 2026', repo: 'github.com/sergey-dev/currency-exchange', deploy: '', hasDeploy: false, href: 'Impl-NoDeploy.dc.html' }
-    ].map((x, i) => ({ ...x, sep: i === 0 ? 'transparent' : t.border }));
-    return { t, dark, crumbs: [{ label: 'Мои проекты', href: c.has ? 'Projects-Multi.dc.html' : 'Projects.dc.html' }], p: c.p, has: c.has, none: !c.has, formOpen,
-      projectsHref: c.has ? 'Projects-Multi.dc.html' : 'Projects.dc.html', showAddButton: c.has && !formOpen,
-      formTitle: c.has ? 'Новая реализация' : 'Сдать проект',
-      langs, isOther: lang === 'Другой', otherName: c.other, specs, impls,
-      hasError: c.err, noError: !c.err,
+    const missing = [];
+    if (!lang) missing.push('выберите язык');
+    else if (lang === 'Другой' && !c.other) missing.push('укажите название языка');
+    if (!c.gh) missing.push('укажите ссылку на репозиторий');
+    const canSubmit = missing.length === 0;
+    const btnOff = submitting || !canSubmit;
+    const missingText = missing.length ? missing.join(' и ').replace(/^./, (s) => s.toUpperCase()) : '';
+    const ghErrText = c.err === 'dup'
+      ? 'Этот репозиторий уже зарегистрирован как реализация. Одна ссылка на GitHub — одна реализация: укажите другой репозиторий.'
+      : 'Укажите ссылку вида https://github.com/username/repo';
+    const newLang = c.newLang || 'Java';
+    const tracked = order.includes(newLang);
+    return {
+      t, dark, frameH: notFound ? 844 : 1240,
+      crumbs: [{ label: 'Мои проекты', href: has ? 'Projects-Multi.dc.html' : 'Projects.dc.html' }],
+      p: c.p, found: !notFound, notFound, isLoading, isLoadError,
+      has, none: known && !has, showDot: !isLoadError,
+      statusText: 'Сдан на ' + joinRu(uniq),
+      implCount: impls.length, impls,
+      skelRows: [{ w: '88%', sep: 'transparent' }, { w: '64%', sep: t.border }],
+      showSuccess: known && c.success && !this.state.dismissed,
+      successTitle: c.list === 'first' ? 'Проект сдан' : 'Реализация добавлена',
+      successText: tracked
+        ? 'Реализация на ' + newLang + ' засчитана в прогресс ' + newLang + ' Backend.'
+        : 'Реализация сохранена. В прогресс роадмапов она не попадает.',
+      dismiss: () => this.setState({ dismissed: true }),
+      formOpen, showAddButton: has && !formOpen,
+      formTitle: has ? 'Новая реализация' : 'Сдать проект',
+      langs, isOther: lang === 'Другой', otherName: c.other, specs,
+      hasError: !!c.err, noError: !c.err,
+      ghErrText,
       ghInvalid: c.err ? 'true' : 'false',
       ghBorder: c.err ? t.errBorder : t.inputBorder,
+      depErr: c.depErr, depOk: !c.depErr,
+      depInvalid: c.depErr ? 'true' : 'false',
+      depBorder: c.depErr ? t.errBorder : t.inputBorder,
       ghValue: c.gh, depValue: c.dep,
+      submitting, submitErr: mode === 'submitError',
+      busyAttr: submitting ? 'true' : 'false',
+      fieldOpacity: submitting ? '0.6' : '1',
+      fieldPE: submitting ? 'none' : 'auto',
+      inputBg: submitting ? t.chip : t.card,
+      btnOpacity: btnOff ? '0.6' : '1',
+      btnCursor: btnOff ? 'default' : 'pointer',
+      btnDisabledAttr: btnOff ? 'true' : 'false',
+      showMissing: !submitting && !canSubmit, missingText,
       openForm: () => this.setState({ open: true }),
       closeForm: () => this.setState({ open: false })
     };
