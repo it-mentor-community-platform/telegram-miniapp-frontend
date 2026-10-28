@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Message from 'primevue/message'
@@ -31,16 +31,24 @@ const languages = computed(() => sortLanguages((implementations.value ?? []).map
 const submitted = computed(() => languages.value.length > 0)
 
 const formOpen = ref(false)
+const formEdited = ref(false)
 const success = ref<{ title: string; text: string }>()
 const highlightedId = ref<number>()
 
-// Nothing known to be submitted (none yet, or the list failed to load): the form is simply open.
-// Otherwise it opens from «Добавить реализацию».
+// Nothing known to be submitted (still loading, none yet, or the list failed to load): the form is
+// simply open. Otherwise it opens from «Добавить реализацию».
 const showForm = computed(() => {
-  if (loadState.value === 'loading' || success.value) {
+  if (success.value) {
     return formOpen.value
   }
   return !submitted.value || formOpen.value
+})
+
+// A list that arrives non-empty collapses the form, unless the user has started filling it in.
+watch(loadState, (state) => {
+  if (state === 'loaded' && submitted.value && formEdited.value) {
+    formOpen.value = true
+  }
 })
 
 function openForm() {
@@ -48,8 +56,13 @@ function openForm() {
   formOpen.value = true
 }
 
-function onSubmitted(implementation: Implementation) {
+function closeForm() {
   formOpen.value = false
+  formEdited.value = false
+}
+
+function onSubmitted(implementation: Implementation) {
+  closeForm()
   success.value = {
     title: implementations.value?.length === 1 ? 'Проект сдан' : 'Реализация добавлена',
     text: isTracked(implementation.language)
@@ -102,45 +115,6 @@ function onSubmitted(implementation: Implementation) {
       </div>
     </section>
 
-    <template v-if="loadState === 'loading'">
-      <div class="flex flex-col gap-5" aria-busy="true" aria-label="Загрузка реализаций">
-        <Skeleton height="3rem" border-radius="0.625rem" />
-        <div class="flex flex-col gap-2" aria-hidden="true">
-          <Skeleton width="9.375rem" height="0.875rem" class="mx-1 my-0.5" />
-          <Card class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
-            <template #content>
-              <div
-                v-for="(width, index) in ['88%', '64%']"
-                :key="width"
-                class="flex flex-col gap-2 px-4 py-3.5"
-                :class="{ 'border-t border-surface': index > 0 }"
-              >
-                <span class="flex gap-2">
-                  <Skeleton width="3.25rem" height="1.125rem" />
-                  <Skeleton width="6rem" height="1.125rem" />
-                </span>
-                <Skeleton :width="width" height="0.875rem" />
-              </div>
-            </template>
-          </Card>
-        </div>
-      </div>
-    </template>
-
-    <Message v-if="loadState === 'failed'" severity="error" icon="pi pi-exclamation-circle" role="alert">
-      <div class="flex flex-col items-start gap-3">
-        <span>Не удалось загрузить реализации. Проверьте соединение и попробуйте ещё раз.</span>
-        <Button
-          label="Попробовать снова"
-          icon="pi pi-refresh"
-          severity="danger"
-          variant="outlined"
-          size="small"
-          @click="load"
-        />
-      </div>
-    </Message>
-
     <Message v-if="success" severity="success" closable role="status" @close="success = undefined">
       <span class="flex flex-col gap-0.5">
         <span class="font-bold">{{ success.title }}</span>
@@ -158,13 +132,49 @@ function onSubmitted(implementation: Implementation) {
     />
 
     <ImplementationForm
-      v-if="showForm && loadState !== 'loading'"
+      v-if="showForm"
       :project-type="projectType"
       :first="!submitted"
       :submit="submit"
+      @edited="formEdited = true"
       @submitted="onSubmitted"
-      @cancel="formOpen = false"
+      @cancel="closeForm"
     />
+
+    <!-- Only the list depends on the request; the header, specs and form are already shown. -->
+    <div v-if="loadState === 'loading'" class="flex flex-col gap-2" aria-busy="true" aria-label="Загрузка реализаций">
+      <Skeleton width="9.375rem" height="0.875rem" class="mx-1 my-0.5" />
+      <Card class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
+        <template #content>
+          <div
+            v-for="(width, index) in ['88%', '64%']"
+            :key="width"
+            class="flex flex-col gap-2 px-4 py-3.5"
+            :class="{ 'border-t border-surface': index > 0 }"
+          >
+            <span class="flex gap-2">
+              <Skeleton width="3.25rem" height="1.125rem" />
+              <Skeleton width="6rem" height="1.125rem" />
+            </span>
+            <Skeleton :width="width" height="0.875rem" />
+          </div>
+        </template>
+      </Card>
+    </div>
+
+    <Message v-if="loadState === 'failed'" severity="error" icon="pi pi-exclamation-circle" role="alert">
+      <div class="flex flex-col items-start gap-3">
+        <span>Не удалось загрузить реализации. Проверьте соединение и попробуйте ещё раз.</span>
+        <Button
+          label="Попробовать снова"
+          icon="pi pi-refresh"
+          severity="danger"
+          variant="outlined"
+          size="small"
+          @click="load"
+        />
+      </div>
+    </Message>
 
     <ListSection v-if="submitted" :title="`Мои реализации · ${implementations!.length}`">
       <ImplementationRow

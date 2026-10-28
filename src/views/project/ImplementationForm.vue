@@ -19,6 +19,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  // The user changed something, so the form shouldn't collapse under them.
+  edited: []
   submitted: [implementation: Implementation]
   cancel: []
 }>()
@@ -42,6 +44,8 @@ const ids = { otherLanguage: useId(), github: useId(), deploy: useId(), language
 // Format is checked on submit; editing a field clears its error.
 watch(githubUrl, () => (githubError.value = undefined))
 watch(deployUrl, () => (deployError.value = undefined))
+
+watch([language, otherLanguage, githubUrl, deployUrl], () => emit('edited'), { once: true })
 
 const missing = computed(() => {
   const parts: string[] = []
