@@ -42,6 +42,16 @@ environments, the dummy login below). See [Local testing in Telegram](#local-tes
 Project progress (home card and the projects screen) comes from project-service. The rest of home
 (repetition stats, achievements) is still mocked in `src/mocks/` until the backend exposes it.
 
+Project pages (`/student/projects/<project>`) use mocked implementations
+(`src/mocks/implementations.ts`), a different fixed scenario per project, independent of the real
+progress: nothing submitted (Виселица, Теннисное табло), one implementation (Симуляция), several in
+one language (Обмен валют), only untracked languages (Облачное хранилище), three languages
+(Планировщик задач). Submitting is mocked as well and kept until reload. To reach the other states:
+
+- submit a repository that is already listed (e.g. `https://github.com/sergey-dev/currency-exchange`) →
+  duplicate error; a repository named `fail` (`https://github.com/<you>/fail`) → submit error;
+- add `?mock=load-error` to the page URL → loading fails; `?mock=slow` → 3-second requests (skeletons).
+
 ## Environments
 
 Each environment is a Vite mode with its own committed `.env.<mode>` file:

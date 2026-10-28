@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { session, whenAuthenticated } from './session'
 import HomeView from './views/HomeView.vue'
 import StudentProjectsView from './views/StudentProjectsView.vue'
+import StudentProjectView from './views/StudentProjectView.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -21,10 +22,14 @@ export const router = createRouter({
       beforeEnter: () => (session.user?.roles.includes('STUDENT') ? true : { name: 'home' }),
       children: [
         {
+          // Unnamed parent: its breadcrumb links to the list, its empty-path child.
           path: 'projects',
-          name: 'student-projects',
-          component: StudentProjectsView,
           meta: { breadcrumb: 'Мои проекты' },
+          children: [
+            { path: '', name: 'student-projects', component: StudentProjectsView },
+            // `:projectType` is the readable slug; an unknown one renders the not-found state.
+            { path: ':projectType', name: 'student-project', component: StudentProjectView },
+          ],
         },
       ],
     },

@@ -13,7 +13,7 @@ import ProjectRow from '../components/ProjectRow.vue'
 import RoadmapProgress from '../components/RoadmapProgress.vue'
 import { useBreadcrumbs } from '../composables/useBreadcrumbs'
 import { useMyProjects } from '../composables/useMyProjects'
-import { buildRoadmapTracks, isTracked, PROJECT_TYPES, toLanguagesByProjectType } from '../roadmap'
+import { buildRoadmapTracks, isTracked, joinRussian, PROJECT_TYPES, toLanguagesByProjectType } from '../roadmap'
 
 const breadcrumbs = useBreadcrumbs()
 const { languagesByType: loaded, loading, failed, load } = useMyProjects()
@@ -46,10 +46,6 @@ const untrackedText = computed(
     `Ваши проекты сданы на ${joinRussian(untrackedLanguages.value)}. ` +
     'В прогресс роадмапов засчитываются реализации на Java, Python и Go.',
 )
-
-function joinRussian(items: string[]) {
-  return items.length > 1 ? `${items.slice(0, -1).join(', ')} и ${items.at(-1)}` : items.join('')
-}
 </script>
 
 <template>
@@ -151,6 +147,7 @@ function joinRussian(items: string[]) {
         :langs="project.langs"
         :divider="index > 0"
         :status="loadStatus"
+        :to="{ name: 'student-project', params: { projectType: project.slug } }"
       />
       <template v-if="tracks.length > 0 && untrackedLanguages.length > 0" #footer>
         <p class="px-1 text-note text-muted-color">
