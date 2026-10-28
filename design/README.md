@@ -29,7 +29,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | Base screen | State files (scenario) |
 |---|---|
 | `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust), `Projects-Loading` (first load, skeletons), `Projects-Error` (load failed, retry) |
-| `ProjectType.dc.html` (Hangman, first submission, nothing filled in → «Сдать проект» disabled) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered), `ProjectType-Loading` (first load, skeletons), `ProjectType-LoadError` (implementations failed to load: form stays, retry in place of the list), `ProjectType-Submitting` (request in flight), `ProjectType-SubmitError` (server / network error on submit), `ProjectType-InvalidUrl` (GitHub and deploy URLs fail validation), `ProjectType-Submitted` (first implementation just submitted), `ProjectType-SubmittedMore` (another implementation added to a list of 3), `ProjectType-NotFound` (unknown slug) |
+| `ProjectType.dc.html` (Hangman, first submission, nothing filled in → «Сдать проект» disabled) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered), `ProjectType-Loading` (first load: form shown, status and list are skeletons), `ProjectType-LoadError` (implementations failed to load: form stays, retry in place of the list), `ProjectType-Submitting` (request in flight), `ProjectType-SubmitError` (server / network error on submit), `ProjectType-InvalidUrl` (GitHub and deploy URLs fail validation), `ProjectType-Submitted` (first implementation just submitted), `ProjectType-SubmittedMore` (another implementation added to a list of 3), `ProjectType-NotFound` (unknown slug) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 | `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
@@ -82,12 +82,12 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
 `ProjectType` reads the student's implementations of that project type and submits new ones
 (`POST`, body: language, GitHub URL, optional deploy URL).
 
-- **Loading** — first load only. `ProjectType-Loading`: breadcrumbs, title, «Проект N из 6» and the
-  spec links are known up front and render normally; the «Сдан на …» status is a `Skeleton`. Below
-  the specs: a button-height `Skeleton` (where «Добавить реализацию» goes) and a two-row skeleton
-  «Мои реализации» list. The form is **not** skeletoned: it only opens when nothing is submitted,
-  which isn't known yet — so the skeleton shows the more common layout, and when the result is
-  "nothing submitted" the form opens in place of the button skeleton.
+- **Loading** — first load only. `ProjectType-Loading`: only the implementations list and the
+  status derived from it need the request; everything else is known from the route and renders
+  normally — breadcrumbs, title, «Проект N из 6», spec links and the submit form, open. The «Сдан
+  на …» status is a `Skeleton`, and a two-row skeleton «Мои реализации» list sits where the list
+  goes. When the list arrives and is non-empty, the form collapses to «Добавить реализацию» — unless
+  the user has already started filling it in.
 - **Load failed** (any error except 401 → `AuthError-Expired`) — `ProjectType-LoadError`: only
   the implementations list depends on the request, so everything else renders: breadcrumbs, title,
   «Проект N из 6» (without the «Сдан на …» status, which comes from the list), spec links and the
