@@ -29,7 +29,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | Base screen | State files (scenario) |
 |---|---|
 | `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust), `Projects-Loading` (first load, skeletons), `Projects-Error` (load failed, retry) |
-| `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
+| `ProjectType.dc.html` (Hangman, first submission, nothing filled in → «Сдать проект» disabled) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered), `ProjectType-Loading` (first load, skeletons), `ProjectType-LoadError` (implementations failed to load: form stays, retry in place of the list), `ProjectType-Submitting` (request in flight), `ProjectType-SubmitError` (server / network error on submit), `ProjectType-InvalidUrl` (GitHub and deploy URLs fail validation), `ProjectType-Submitted` (first implementation just submitted), `ProjectType-SubmittedMore` (another implementation added to a list of 3), `ProjectType-NotFound` (unknown slug) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 | `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
@@ -51,7 +51,7 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 | `Review` — review session | `/student/repetition/review` | `ProgressBar`, `Tag`, `Button` |
 | `Stats` — statistics | `/student/repetition/stats` | `Breadcrumb`, `MeterGroup`, `Card` |
 | `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag`; `Skeleton` (loading), `Message` `severity="error"` + `Button` «Попробовать снова» (load failed) |
-| `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
+| `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message`; `Skeleton` (loading); `Message` `severity="error"` + `Button` «Попробовать снова» (load failed); `Button` `:loading` + `:disabled` (submit); `Message` `severity="error"` above the button (submit failed); `Message` `severity="error"` `variant="simple"` `size="small"` under a field (validation, duplicate) + `invalid` on `InputText`; `Message` `severity="success"` `closable` (submitted) |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
 | `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `InputNumber` (`:min="1"`, `:useGrouping="false"`), `InputGroup` + `InputGroupAddon` («@») + `InputText`, `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
@@ -76,6 +76,47 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
   the whole card is the link to `Projects`, where the retry lives.
 - project-service also returns `WEATHER_VIEWER` and `OTHER`; they are not part of the six-project
   roadmap and are ignored (not listed, not counted).
+
+### Project page data
+
+`ProjectType` reads the student's implementations of that project type and submits new ones
+(`POST`, body: language, GitHub URL, optional deploy URL).
+
+- **Loading** — first load only. `ProjectType-Loading`: breadcrumbs, title, «Проект N из 6» and the
+  spec links are known up front and render normally; the «Сдан на …» status is a `Skeleton`. Below
+  the specs: a button-height `Skeleton` (where «Добавить реализацию» goes) and a two-row skeleton
+  «Мои реализации» list. The form is **not** skeletoned: it only opens when nothing is submitted,
+  which isn't known yet — so the skeleton shows the more common layout, and when the result is
+  "nothing submitted" the form opens in place of the button skeleton.
+- **Load failed** (any error except 401 → `AuthError-Expired`) — `ProjectType-LoadError`: only
+  the implementations list depends on the request, so everything else renders: breadcrumbs, title,
+  «Проект N из 6» (without the «Сдан на …» status, which comes from the list), spec links and the
+  submit form, open. An error `Message` «Не удалось загрузить реализации. Проверьте соединение и
+  попробуйте ещё раз.» + «Попробовать снова» takes the place of «Мои реализации» (same block as
+  `Projects-Error`). Submitting still works — the backend rejects a duplicate repository (409) as usual.
+- **Submit disabled** — «Сдать проект» is disabled until a language is picked (and named, for
+  «Другой») and the GitHub URL is not empty; a muted hint under it says what is missing
+  («Выберите язык и укажите ссылку на репозиторий»). Format is checked on submit, not while typing.
+- **Validation** (client-side, on submit) — `ProjectType-InvalidUrl`: GitHub URL must match
+  `https://github.com/<owner>/<repo>` (allow a trailing `/` or `.git`) → «Укажите ссылку вида
+  https://github.com/username/repo»; deploy URL, if filled, must start with `https://` → «Укажите
+  ссылку, начинающуюся с https://». Inline error under the field (same style as the duplicate
+  error), red border, `aria-invalid`. Errors clear when the field is edited.
+- **Submitting** — `ProjectType-Submitting`: «Сдать проект» shows a spinner (`Button :loading`),
+  all inputs, the language picker and «Отмена» are disabled.
+- **Submit failed** — duplicate repository (409) → inline error on the GitHub field
+  (`ProjectType-Duplicate`). Any other error (500 / network) → `ProjectType-SubmitError`: error
+  `Message` «Не удалось сдать проект. Попробуйте ещё раз.» above the button; entered values stay;
+  pressing the button again retries.
+- **Submitted** — the form closes; a closable success `Message` appears in its place (inline rather
+  than a `Toast`: it stays until dismissed or the page is left, doesn't overlap Telegram's header,
+  and sits where the user was looking). Text: «Проект сдан» (first implementation) or «Реализация
+  добавлена», plus «Реализация на Go засчитана в прогресс Go Backend.» (for languages outside the
+  roadmap: «…В прогресс роадмапов она не попадает.»). The new implementation is inserted at the top
+  of «Мои реализации» with a light-green background that fades out after ~2 s; the header status
+  updates (`ProjectType-Submitted`: «Ещё не сдан» → «Сдан на Java»; `ProjectType-SubmittedMore`:
+  → «Сдан на Java, Python и Go»). Use the response body, no refetch. Invalidate the cached
+  `my/summary` so `Projects` / `Main` show the new progress.
 
 ### Developer panel (home, test environments only)
 
@@ -145,7 +186,11 @@ guard.
 
 - `:projectType` — fixed readable slugs (the six project types are a fixed list):
   `hangman`, `simulation`, `currency-exchange`, `tennis-scoreboard`, `cloud-storage`,
-  `task-scheduler`. Unknown slug → not-found screen.
+  `task-scheduler`. Unknown slug → not-found screen (`ProjectType-NotFound`): resolved
+  client-side from the fixed list, before any request; breadcrumbs (Главная › Мои проекты), a
+  «Проект не найден» message and a «К моим проектам» button. The URL stays as typed (no redirect),
+  so Telegram's back button still works. Reuse the same layout for an unknown `:implementationId`
+  (backend 404).
 - `:topicId`, `:implementationId` — backend IDs.
 - An implementation whose `:projectType` does not match its actual type → redirect to the canonical URL.
 
