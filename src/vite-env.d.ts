@@ -8,8 +8,6 @@ interface ImportMetaEnv {
   readonly VITE_TELEGRAM_BOT_USERNAME: string
   // "true" shows developer tools (home "Для разработчиков" panel). Never in prod.
   readonly VITE_SHOW_DEV_TOOLS?: string
-  // Mocked project implementations: empty | java3 | multi | java6 | other. Defaults to "multi".
-  readonly VITE_MOCK_PROJECTS?: string
 }
 
 interface ImportMeta {

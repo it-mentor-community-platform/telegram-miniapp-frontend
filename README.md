@@ -36,12 +36,11 @@ npm run dev
 ```
 
 The app authenticates with Telegram init data, so it only gets past the auth screen inside
-Telegram. In a regular browser it shows "Откройте приложение в Telegram". See
-[Local testing in Telegram](#local-testing-in-telegram).
+Telegram. In a regular browser it shows "Откройте приложение в Telegram" (or, in test
+environments, the dummy login below). See [Local testing in Telegram](#local-testing-in-telegram).
 
-The home and projects screens still use mocked data (`src/mocks/`) until the backend exposes it.
-Pick a projects scenario with `VITE_MOCK_PROJECTS`: `empty`, `java3`, `multi` (default), `java6`
-or `other`. These match the states of the `Projects` mockup.
+Project progress (home card and the projects screen) comes from project-service. The rest of home
+(repetition stats, achievements) is still mocked in `src/mocks/` until the backend exposes it.
 
 ## Environments
 
