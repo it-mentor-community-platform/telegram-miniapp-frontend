@@ -20,6 +20,13 @@ defineProps<{
   expired?: boolean
 }>()
 
+// Names the environment by Vite mode; the fallback covers a mode added later with dev tools on.
+const environmentLabels: Record<string, string> = {
+  staging: 'Staging окружение',
+  'local-stack': 'Локальное окружение',
+}
+const environmentLabel = environmentLabels[import.meta.env.MODE] ?? 'Тестовое окружение'
+
 const userId = ref<number | null>(null)
 const username = ref('')
 const roles = ref<Role[]>([])
@@ -82,7 +89,7 @@ async function submit() {
           :dt="{ icon: { size: '1.75rem' } }"
           aria-hidden="true"
         />
-        <Tag value="Тестовое окружение" severity="warn" class="tracking-wide uppercase" />
+        <Tag :value="environmentLabel" severity="warn" class="tracking-wide uppercase" />
         <h1 class="text-page font-bold">Вход для разработчиков</h1>
         <p class="max-w-82 text-sm text-muted-color">
           Приложение открыто в браузере. В тестовом окружении можно войти под любым пользователем без
