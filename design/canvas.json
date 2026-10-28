@@ -325,6 +325,22 @@
       "h": 844,
       "title": "Dev-вход · сессия истекла",
       "is_interactive": true
+    },
+    "Projects-Loading.dc.html": {
+      "x": 2350,
+      "y": 3360,
+      "w": 390,
+      "h": 960,
+      "title": "6 · Загрузка",
+      "is_interactive": true
+    },
+    "Projects-Error.dc.html": {
+      "x": 2820,
+      "y": 3360,
+      "w": 390,
+      "h": 960,
+      "title": "7 · Ошибка загрузки",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -362,7 +378,7 @@
     },
     "rmTitle": {
       "kind": "title1",
-      "maxW": 2270,
+      "maxW": 3210,
       "text": "Роадмап · Мои проекты",
       "w": 240,
       "x": 0,
@@ -400,6 +416,8 @@
     "Projects-Multi.dc.html",
     "Projects-Java6.dc.html",
     "Projects-Other.dc.html",
+    "Projects-Loading.dc.html",
+    "Projects-Error.dc.html",
     "ProjectType.dc.html",
     "ProjectType-Empty.dc.html",
     "ProjectType-List.dc.html",

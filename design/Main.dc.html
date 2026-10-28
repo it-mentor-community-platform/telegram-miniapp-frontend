@@ -13,6 +13,7 @@
 <style>
 body{margin:0}
 a{color:inherit}a:hover{color:inherit}
+@keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </helmet>
 <div style="width: 390px; height: 1200px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
@@ -57,10 +58,32 @@ a{color:inherit}a:hover{color:inherit}
 </span>
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
 </div>
+<sc-if value="{{projLoaded}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-direction: column; gap: 12px">
 <dc-import name="RoadmapProgress" label="Java Backend" steps="{{javaSteps}}" compact="{{ true }}" dark="{{dark}}" hint-size="100%,32px"></dc-import>
 <dc-import name="RoadmapProgress" label="Python Backend" steps="{{pythonSteps}}" compact="{{ true }}" dark="{{dark}}" hint-size="100%,32px"></dc-import>
 </div>
+</sc-if>
+<sc-if value="{{projLoading}}" hint-placeholder-val="{{ false }}">
+<div aria-busy="true" aria-label="Загрузка прогресса" style="display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{skelRows}}" as="k" hint-placeholder-count="2">
+<div aria-hidden="true" style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="width: {{k.w}}; height: 13px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<span style="width: 40px; height: 13px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</div>
+<span style="height: 8px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{projError}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 8px; background: {{t.chip}}; font-size: 13px; line-height: 18px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.muted}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span style="flex: 1; min-width: 0; color: {{t.muted}}">Не удалось загрузить прогресс</span>
+<span style="font-weight: 600; color: {{t.primaryText}}; white-space: nowrap">Открыть</span>
+</div>
+</sc-if>
 </a>
 
 <section style="display: flex; flex-direction: column; gap: 8px">
@@ -108,7 +131,7 @@ a{color:inherit}a:hover{color:inherit}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false},&quot;role&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Студент&quot;,&quot;Студент + ментор&quot;,&quot;Админ&quot;],&quot;default&quot;:&quot;Студент&quot;},&quot;devPanel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Скрыта&quot;,&quot;Свёрнута&quot;,&quot;Раскрыта&quot;],&quot;default&quot;:&quot;Раскрыта&quot;},&quot;inTelegram&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:1200}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false},&quot;role&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Студент&quot;,&quot;Студент + ментор&quot;,&quot;Админ&quot;],&quot;default&quot;:&quot;Студент&quot;},&quot;devPanel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Скрыта&quot;,&quot;Свёрнута&quot;,&quot;Раскрыта&quot;],&quot;default&quot;:&quot;Раскрыта&quot;},&quot;inTelegram&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;projects&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Загружено&quot;,&quot;Загрузка&quot;,&quot;Ошибка&quot;],&quot;default&quot;:&quot;Загружено&quot;},&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:1200}}">
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -120,7 +143,7 @@ class Component extends DCLogic {
     const t = dark ? {
       bg: '#09090b', card: '#18181b', border: '#27272a', shadow: 'none',
       text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
-      chip: '#27272a', inputBorder: '#3f3f46', devBorder: '#52525b', btnBg: '#34d399', btnText: '#022c22', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
+      chip: '#27272a', skel: '#27272a', inputBorder: '#3f3f46', devBorder: '#52525b', btnBg: '#34d399', btnText: '#022c22', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
       track: '#3f3f46', bar: '#34d399',
       warnSoft: 'rgba(249, 115, 22, 0.16)', warnText: '#fdba74',
       infoSoft: 'rgba(96, 165, 250, 0.16)', infoText: '#93c5fd',
@@ -128,7 +151,7 @@ class Component extends DCLogic {
     } : {
       bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
       text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
-      chip: '#f1f5f9', inputBorder: '#cbd5e1', devBorder: '#94a3b8', btnBg: '#047857', btnText: '#ffffff', primarySoft: '#ecfdf5', primaryText: '#047857',
+      chip: '#f1f5f9', skel: '#e2e8f0', inputBorder: '#cbd5e1', devBorder: '#94a3b8', btnBg: '#047857', btnText: '#ffffff', primarySoft: '#ecfdf5', primaryText: '#047857',
       track: '#e2e8f0', bar: '#10b981',
       warnSoft: '#fff7ed', warnText: '#c2410c',
       infoSoft: '#eff6ff', infoText: '#1d4ed8',
@@ -142,7 +165,10 @@ class Component extends DCLogic {
     const devPanel = this.props.devPanel ?? 'Раскрыта';
     const inTelegram = this.props.inTelegram ?? true;
     const devOpen = this.state.devOpen ?? (devPanel === 'Раскрыта');
+    const projState = this.props.projects ?? 'Загружено';
     return { t, dark,
+      projLoaded: projState === 'Загружено', projLoading: projState === 'Загрузка', projError: projState === 'Ошибка',
+      skelRows: [{ w: '96px' }, { w: '112px' }],
       showDev: devPanel !== 'Скрыта', devOpen, devExpanded: devOpen ? 'true' : 'false', devRot: devOpen ? 'rotate(180deg)' : 'none',
       statusLabel: inTelegram ? 'Telegram' : 'Браузер',
       statusBg: inTelegram ? t.primarySoft : t.warnSoft, statusFg: inTelegram ? t.primaryText : t.warnText,

@@ -28,7 +28,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 
 | Base screen | State files (scenario) |
 |---|---|
-| `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust) |
+| `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust), `Projects-Loading` (first load, skeletons), `Projects-Error` (load failed, retry) |
 | `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
@@ -36,6 +36,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 on the ID field), `DevLogin-Error` (400 / 500 / network), `DevLogin-Expired` (dummy session ran out) |
 
 Every screen has a `dark` prop (light/dark mode).
+`Main` has no state files; its `projects` prop («Загружено» / «Загрузка» / «Ошибка») switches the «Мои проекты» card between loaded, skeleton and error.
 
 ## Screen map
 
@@ -43,18 +44,38 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 
 | Mockup | Route | Main PrimeVue components |
 |---|---|---|
-| `Main` — home, section launcher | `/` | `Avatar`, `Tag`, `Card`, `ProgressBar` |
+| `Main` — home, section launcher | `/` | `Avatar`, `Tag`, `Card`, `ProgressBar`; «Мои проекты» card: `Skeleton` while loading, muted text line on error |
 | `Repetition` — my topics | `/student/repetition` | `Breadcrumb`, `Card`, `ProgressBar`, `Button` |
 | `Categories` — all topics | `/student/repetition/topics` | `Breadcrumb`, `IconField` + `InputText`, `SelectButton`, `ToggleButton` |
 | `Topic` — one topic, questions and answers | `/student/repetition/topics/:topicId` | `Breadcrumb`, `Tag`, `Button`, `Accordion` |
 | `Review` — review session | `/student/repetition/review` | `ProgressBar`, `Tag`, `Button` |
 | `Stats` — statistics | `/student/repetition/stats` | `Breadcrumb`, `MeterGroup`, `Card` |
-| `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag` |
+| `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag`; `Skeleton` (loading), `Message` `severity="error"` + `Button` «Попробовать снова» (load failed) |
 | `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
 | `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `InputNumber` (`:min="1"`, `:useGrouping="false"`), `InputGroup` + `InputGroupAddon` («@») + `InputText`, `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
 Blocks PrimeVue does not cover are shared components — see [Components](#components).
+
+### Project progress data
+
+`Projects` and `Main`'s «Мои проекты» card read `GET /api/project/projects/my/summary` (students
+only; for other roles the card stays as it is). Loaded once per screen visit.
+
+- **Loading** — only on the very first load; later visits show the last data while it refreshes.
+  `Projects-Loading`: breadcrumbs and title render normally; a skeleton progress card (two
+  RoadmapProgress-shaped bars + the note) and the real «Проекты роадмапа» list — icons and titles
+  are known up front, only each row's «Сдан / Не сдан» line is a `Skeleton` (`ProjectRow`
+  `status="loading"`), so nothing jumps when data arrives. `Main` (`projects="Загрузка"`): two
+  skeleton rows in place of the compact RoadmapProgress bars.
+- **Failed** (any error except 401, which shows `AuthError-Expired`) — `Projects-Error`: error
+  `Message` with «Не удалось загрузить проекты. Проверьте соединение и попробуйте ещё раз.» and
+  «Попробовать снова» in place of the progress card; the project list stays (titles and grey icons,
+  no status line — `ProjectRow` `status="unknown"`) so project pages remain reachable. `Main`
+  (`projects="Ошибка"`): one muted line «Не удалось загрузить прогресс» with an «Открыть» hint —
+  the whole card is the link to `Projects`, where the retry lives.
+- project-service also returns `WEATHER_VIEWER` and `OTHER`; they are not part of the six-project
+  roadmap and are ignored (not listed, not counted).
 
 ### Developer panel (home, test environments only)
 
@@ -164,7 +185,7 @@ follows Aura and dark mode. Props below are the design's props — keep the same
 | `RoadmapProgress` | `label: string`, `steps: boolean[6]`, `compact?: boolean` | One segment per project type, filled when that type has ≥1 implementation in the track's language. Shows "N из 6 проектов" (`compact`: "N из 6"). Parent hides tracks with 0/6. Screen readers: "Java Backend: сдано 3 из 6 проектов". | Main, Projects |
 | `StatTiles` | `items: { value, label, tone: 'warn' \| 'info' \| 'success' \| 'neutral' }[]` (3 items) | Three equal tiles. `warn` = due for review, `info` = new, `success` = learned, `neutral` = plain count. | Main, Repetition, Topic |
 | `NavListRow` | `icon`, `title`, `subtitle`, `badge?`, `badgeTone?: 'success' \| 'neutral'`, `href`, `divider?` | Whole row is a link (router-link), ≥64 px tall. `divider` draws the top border between rows. Badge renders a PrimeVue `Tag`. | Main |
-| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. | Projects |
+| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?`, `status?: 'loaded' \| 'loading' \| 'unknown'` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. `status="loading"`: status line is a `Skeleton`; `"unknown"` (load failed): no status line, grey icon. | Projects |
 | `LanguageTag` | `label: string`, `counted: boolean` | Solid when the language counts toward roadmap progress (Java, Python, Go); dashed outline + aria "не учитывается в прогрессе" otherwise. | Projects |
 | `EmptyState` | `title`, `text`, `icon: 'info' \| 'chat' \| 'none'` | Card used for "nothing here yet" and explanatory notices. | Projects, Implementation |
 | `Breadcrumbs` | `items: { label, href }[]` | Home icon + items; current page is not repeated (the page title follows). Last item truncates with ellipsis. In the app: wrap PrimeVue `Breadcrumb` and build items from route meta. | Every screen below home except the review session |
