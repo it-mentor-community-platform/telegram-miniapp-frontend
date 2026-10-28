@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+@keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </helmet>
 <a href="{{href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 72px; box-sizing: border-box; text-decoration: none; font-family: Inter, system-ui, sans-serif; color: {{t.text}}; background: {{t.card}}; border-top: 1px solid {{sep}}">
@@ -24,6 +25,9 @@ body{margin:0}
 </span>
 <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 15px; font-weight: 600; line-height: 20px">{{title}}</span>
+<sc-if value="{{loading}}" hint-placeholder-val="{{ false }}">
+<span aria-hidden="true" style="display: block; width: 112px; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</sc-if>
 <sc-if value="{{done}}" hint-placeholder-val="{{ true }}">
 <span style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap">
 <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; line-height: 16px; color: {{t.primaryText}}">
@@ -40,24 +44,26 @@ body{margin:0}
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="m9 6 6 6-6 6"></path></svg>
 </a>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"icon":{"editor":"enum","options":["hangman","simulation","exchange","tennis","cloud","planner"],"default":"exchange"},"title":{"editor":null,"tsType":"string"},"langs":{"editor":null,"tsType":"{ name: string; counted: boolean }[]"},"href":{"editor":null,"tsType":"string"},"divider":{"editor":"boolean","default":false},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":72}}'>
+<script type="text/x-dc" data-dc-script data-props='{"icon":{"editor":"enum","options":["hangman","simulation","exchange","tennis","cloud","planner"],"default":"exchange"},"title":{"editor":null,"tsType":"string"},"langs":{"editor":null,"tsType":"{ name: string; counted: boolean }[]"},"href":{"editor":null,"tsType":"string"},"divider":{"editor":"boolean","default":false},"status":{"editor":"enum","options":["loaded","loading","unknown"],"default":"loaded"},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":72}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
     const t = dark ? {
-      card: '#18181b', border: '#27272a', text: '#fafafa', muted: '#a1a1aa', chev: '#71717a', chip: '#27272a',
+      card: '#18181b', skel: '#27272a', border: '#27272a', text: '#fafafa', muted: '#a1a1aa', chev: '#71717a', chip: '#27272a',
       primaryText: '#6ee7b7', btnBg: '#34d399', btnText: '#022c22'
     } : {
-      card: '#ffffff', border: '#e2e8f0', text: '#0f172a', muted: '#64748b', chev: '#94a3b8', chip: '#f1f5f9',
+      card: '#ffffff', skel: '#e2e8f0', border: '#e2e8f0', text: '#0f172a', muted: '#64748b', chev: '#94a3b8', chip: '#f1f5f9',
       primaryText: '#047857', btnBg: '#047857', btnText: '#ffffff'
     };
     const langs = this.props.langs ?? [{ name: 'Java', counted: true }, { name: 'Python', counted: true }];
-    const done = langs.length > 0;
+    const status = this.props.status ?? 'loaded';
+    const loaded = status === 'loaded';
+    const done = loaded && langs.length > 0;
     const icon = this.props.icon ?? 'exchange';
     const is = {};
     ['hangman', 'simulation', 'exchange', 'tennis', 'cloud', 'planner'].forEach((k) => { is[k] = icon === k; });
     return {
-      t, dark, langs, done, notDone: !done, is,
+      t, dark, langs, done, notDone: loaded && !done, loading: status === 'loading', is,
       title: this.props.title ?? 'Обмен валют',
       href: this.props.href ?? '#',
       numBg: done ? t.btnBg : t.chip,
