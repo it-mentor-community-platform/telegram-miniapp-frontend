@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import Avatar from 'primevue/avatar'
 import Button from 'primevue/button'
+import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 import ListSection from '../components/ListSection.vue'
 import NavListRow from '../components/NavListRow.vue'
 import RoadmapProgress from '../components/RoadmapProgress.vue'
 import StatTiles from '../components/StatTiles.vue'
+import { useMyProjects } from '../composables/useMyProjects'
 import { getHomeData } from '../mocks/home'
-import { getMyProjects } from '../mocks/projects'
 import { buildRoadmapTracks } from '../roadmap'
 import { session, type Role } from '../session'
 import DevPanel from './home/DevPanel.vue'
@@ -16,7 +18,20 @@ import SectionCard from './home/SectionCard.vue'
 // App.vue renders routes only for an authenticated session, so the user is always set here.
 const user = session.user!
 const home = getHomeData()
-const tracks = buildRoadmapTracks(getMyProjects())
+const isStudent = user.roles.includes('STUDENT')
+
+// project-service serves the summary to students only; others see the card without progress.
+const {
+  languagesByType: projectLanguages,
+  loading: projectsLoading,
+  failed: projectsFailed,
+  load: loadProjects,
+} = useMyProjects()
+if (isStudent) {
+  loadProjects()
+}
+const tracks = computed(() => (projectLanguages.value ? buildRoadmapTracks(projectLanguages.value) : []))
+const projectsPending = computed(() => isStudent && !projectLanguages.value)
 
 const roleTags: Record<Role, { label: string; severity?: 'success' | 'info'; class?: string }> = {
   STUDENT: { label: 'Студент', severity: 'success' },
@@ -66,7 +81,28 @@ const isAdmin = user.roles.includes('ADMIN')
       subtitle="Прогресс по роадмапу"
       :to="{ name: 'student-projects' }"
     >
-      <div v-if="tracks.length > 0" class="flex flex-col gap-3">
+      <!-- Until the first response: Main's `projects` «Загрузка» / «Ошибка». The card is a link, so
+           the error has no button: the projects page has the retry. -->
+      <template v-if="projectsPending">
+        <div
+          v-if="projectsFailed && !projectsLoading"
+          class="flex min-h-11 items-center gap-2 rounded-lg bg-emphasis px-3 text-meta"
+        >
+          <i class="pi pi-exclamation-circle text-sm text-muted-color" aria-hidden="true" />
+          <span class="min-w-0 flex-1 text-muted-color">Не удалось загрузить прогресс</span>
+          <span class="font-semibold whitespace-nowrap text-primary">Открыть</span>
+        </div>
+        <div v-else class="flex flex-col gap-3" aria-busy="true" aria-label="Загрузка прогресса">
+          <div v-for="width in ['6rem', '7rem']" :key="width" class="flex flex-col gap-2" aria-hidden="true">
+            <div class="flex items-center justify-between">
+              <Skeleton :width="width" height="0.8125rem" />
+              <Skeleton width="2.5rem" height="0.8125rem" />
+            </div>
+            <Skeleton height="0.5rem" />
+          </div>
+        </div>
+      </template>
+      <div v-else-if="tracks.length > 0" class="flex flex-col gap-3">
         <RoadmapProgress
           v-for="track in tracks"
           :key="track.language"

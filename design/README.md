@@ -28,14 +28,15 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 
 | Base screen | State files (scenario) |
 |---|---|
-| `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust) |
-| `ProjectType.dc.html` (Hangman, first submission) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered) |
+| `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust), `Projects-Loading` (first load, skeletons), `Projects-Error` (load failed, retry) |
+| `ProjectType.dc.html` (Hangman, first submission, nothing filled in → «Сдать проект» disabled) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered), `ProjectType-Loading` (first load: form shown, status and list are skeletons), `ProjectType-LoadError` (implementations failed to load: form stays, retry in place of the list), `ProjectType-Submitting` (request in flight), `ProjectType-SubmitError` (server / network error on submit), `ProjectType-InvalidUrl` (GitHub and deploy URLs fail validation), `ProjectType-Submitted` (first implementation just submitted), `ProjectType-SubmittedMore` (another implementation added to a list of 3), `ProjectType-NotFound` (unknown slug) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 | `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
 | `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 on the ID field), `DevLogin-Error` (400 / 500 / network), `DevLogin-Expired` (dummy session ran out) |
 
 Every screen has a `dark` prop (light/dark mode).
+`Main` has no state files; its `projects` prop («Загружено» / «Загрузка» / «Ошибка») switches the «Мои проекты» card between loaded, skeleton and error.
 
 ## Screen map
 
@@ -43,18 +44,79 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 
 | Mockup | Route | Main PrimeVue components |
 |---|---|---|
-| `Main` — home, section launcher | `/` | `Avatar`, `Tag`, `Card`, `ProgressBar` |
+| `Main` — home, section launcher | `/` | `Avatar`, `Tag`, `Card`, `ProgressBar`; «Мои проекты» card: `Skeleton` while loading, muted text line on error |
 | `Repetition` — my topics | `/student/repetition` | `Breadcrumb`, `Card`, `ProgressBar`, `Button` |
 | `Categories` — all topics | `/student/repetition/topics` | `Breadcrumb`, `IconField` + `InputText`, `SelectButton`, `ToggleButton` |
 | `Topic` — one topic, questions and answers | `/student/repetition/topics/:topicId` | `Breadcrumb`, `Tag`, `Button`, `Accordion` |
 | `Review` — review session | `/student/repetition/review` | `ProgressBar`, `Tag`, `Button` |
 | `Stats` — statistics | `/student/repetition/stats` | `Breadcrumb`, `MeterGroup`, `Card` |
-| `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag` |
-| `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message` |
+| `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag`; `Skeleton` (loading), `Message` `severity="error"` + `Button` «Попробовать снова» (load failed) |
+| `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message`; `Skeleton` (loading); `Message` `severity="error"` + `Button` «Попробовать снова» (load failed); `Button` `:loading` + `:disabled` (submit); `Message` `severity="error"` above the button (submit failed); `Message` `severity="error"` `variant="simple"` `size="small"` under a field (validation, duplicate) + `invalid` on `InputText`; `Message` `severity="success"` `closable` (submitted) |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
 | `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `InputNumber` (`:min="1"`, `:useGrouping="false"`), `InputGroup` + `InputGroupAddon` («@») + `InputText`, `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
 Blocks PrimeVue does not cover are shared components — see [Components](#components).
+
+### Project progress data
+
+`Projects` and `Main`'s «Мои проекты» card read `GET /api/project/projects/my/summary` (students
+only; for other roles the card stays as it is). Loaded once per screen visit.
+
+- **Loading** — only on the very first load; later visits show the last data while it refreshes.
+  `Projects-Loading`: breadcrumbs and title render normally; a skeleton progress card (two
+  RoadmapProgress-shaped bars + the note) and the real «Проекты роадмапа» list — icons and titles
+  are known up front, only each row's «Сдан / Не сдан» line is a `Skeleton` (`ProjectRow`
+  `status="loading"`), so nothing jumps when data arrives. `Main` (`projects="Загрузка"`): two
+  skeleton rows in place of the compact RoadmapProgress bars.
+- **Failed** (any error except 401, which shows `AuthError-Expired`) — `Projects-Error`: error
+  `Message` with «Не удалось загрузить проекты. Проверьте соединение и попробуйте ещё раз.» and
+  «Попробовать снова» in place of the progress card; the project list stays (titles and grey icons,
+  no status line — `ProjectRow` `status="unknown"`) so project pages remain reachable. `Main`
+  (`projects="Ошибка"`): one muted line «Не удалось загрузить прогресс» with an «Открыть» hint —
+  the whole card is the link to `Projects`, where the retry lives.
+- project-service also returns `WEATHER_VIEWER` and `OTHER`; they are not part of the six-project
+  roadmap and are ignored (not listed, not counted).
+
+### Project page data
+
+`ProjectType` reads the student's implementations of that project type and submits new ones
+(`POST`, body: language, GitHub URL, optional deploy URL).
+
+- **Loading** — first load only. `ProjectType-Loading`: only the implementations list and the
+  status derived from it need the request; everything else is known from the route and renders
+  normally — breadcrumbs, title, «Проект N из 6», spec links and the submit form, open. The «Сдан
+  на …» status is a `Skeleton`, and a two-row skeleton «Мои реализации» list sits where the list
+  goes. When the list arrives and is non-empty, the form collapses to «Добавить реализацию» — unless
+  the user has already started filling it in.
+- **Load failed** (any error except 401 → `AuthError-Expired`) — `ProjectType-LoadError`: only
+  the implementations list depends on the request, so everything else renders: breadcrumbs, title,
+  «Проект N из 6» (without the «Сдан на …» status, which comes from the list), spec links and the
+  submit form, open. An error `Message` «Не удалось загрузить реализации. Проверьте соединение и
+  попробуйте ещё раз.» + «Попробовать снова» takes the place of «Мои реализации» (same block as
+  `Projects-Error`). Submitting still works — the backend rejects a duplicate repository (409) as usual.
+- **Submit disabled** — «Сдать проект» is disabled until a language is picked (and named, for
+  «Другой») and the GitHub URL is not empty; a muted hint under it says what is missing
+  («Выберите язык и укажите ссылку на репозиторий»). Format is checked on submit, not while typing.
+- **Validation** (client-side, on submit) — `ProjectType-InvalidUrl`: GitHub URL must match
+  `https://github.com/<owner>/<repo>` (allow a trailing `/` or `.git`) → «Укажите ссылку вида
+  https://github.com/username/repo»; deploy URL, if filled, must start with `https://` → «Укажите
+  ссылку, начинающуюся с https://». Inline error under the field (same style as the duplicate
+  error), red border, `aria-invalid`. Errors clear when the field is edited.
+- **Submitting** — `ProjectType-Submitting`: «Сдать проект» shows a spinner (`Button :loading`),
+  all inputs, the language picker and «Отмена» are disabled.
+- **Submit failed** — duplicate repository (409) → inline error on the GitHub field
+  (`ProjectType-Duplicate`). Any other error (500 / network) → `ProjectType-SubmitError`: error
+  `Message` «Не удалось сдать проект. Попробуйте ещё раз.» above the button; entered values stay;
+  pressing the button again retries.
+- **Submitted** — the form closes; a closable success `Message` appears in its place (inline rather
+  than a `Toast`: it stays until dismissed or the page is left, doesn't overlap Telegram's header,
+  and sits where the user was looking). Text: «Проект сдан» (first implementation) or «Реализация
+  добавлена», plus «Реализация на Go засчитана в прогресс Go Backend.» (for languages outside the
+  roadmap: «…В прогресс роадмапов она не попадает.»). The new implementation is inserted at the top
+  of «Мои реализации» with a light-green background that fades out after ~2 s; the header status
+  updates (`ProjectType-Submitted`: «Ещё не сдан» → «Сдан на Java»; `ProjectType-SubmittedMore`:
+  → «Сдан на Java, Python и Go»). Use the response body, no refetch. Invalidate the cached
+  `my/summary` so `Projects` / `Main` show the new progress.
 
 ### Developer panel (home, test environments only)
 
@@ -124,7 +186,11 @@ guard.
 
 - `:projectType` — fixed readable slugs (the six project types are a fixed list):
   `hangman`, `simulation`, `currency-exchange`, `tennis-scoreboard`, `cloud-storage`,
-  `task-scheduler`. Unknown slug → not-found screen.
+  `task-scheduler`. Unknown slug → not-found screen (`ProjectType-NotFound`): resolved
+  client-side from the fixed list, before any request; breadcrumbs (Главная › Мои проекты), a
+  «Проект не найден» message and a «К моим проектам» button. The URL stays as typed (no redirect),
+  so Telegram's back button still works. Reuse the same layout for an unknown `:implementationId`
+  (backend 404).
 - `:topicId`, `:implementationId` — backend IDs.
 - An implementation whose `:projectType` does not match its actual type → redirect to the canonical URL.
 
@@ -164,7 +230,7 @@ follows Aura and dark mode. Props below are the design's props — keep the same
 | `RoadmapProgress` | `label: string`, `steps: boolean[6]`, `compact?: boolean` | One segment per project type, filled when that type has ≥1 implementation in the track's language. Shows "N из 6 проектов" (`compact`: "N из 6"). Parent hides tracks with 0/6. Screen readers: "Java Backend: сдано 3 из 6 проектов". | Main, Projects |
 | `StatTiles` | `items: { value, label, tone: 'warn' \| 'info' \| 'success' \| 'neutral' }[]` (3 items) | Three equal tiles. `warn` = due for review, `info` = new, `success` = learned, `neutral` = plain count. | Main, Repetition, Topic |
 | `NavListRow` | `icon`, `title`, `subtitle`, `badge?`, `badgeTone?: 'success' \| 'neutral'`, `href`, `divider?` | Whole row is a link (router-link), ≥64 px tall. `divider` draws the top border between rows. Badge renders a PrimeVue `Tag`. | Main |
-| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. | Projects |
+| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?`, `status?: 'loaded' \| 'loading' \| 'unknown'` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. `status="loading"`: status line is a `Skeleton`; `"unknown"` (load failed): no status line, grey icon. | Projects |
 | `LanguageTag` | `label: string`, `counted: boolean` | Solid when the language counts toward roadmap progress (Java, Python, Go); dashed outline + aria "не учитывается в прогрессе" otherwise. | Projects |
 | `EmptyState` | `title`, `text`, `icon: 'info' \| 'chat' \| 'none'` | Card used for "nothing here yet" and explanatory notices. | Projects, Implementation |
 | `Breadcrumbs` | `items: { label, href }[]` | Home icon + items; current page is not repeated (the page title follows). Last item truncates with ellipsis. In the app: wrap PrimeVue `Breadcrumb` and build items from route meta. | Every screen below home except the review session |
