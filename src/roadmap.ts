@@ -82,9 +82,27 @@ export function isTracked(language: string) {
   return TRACKED_LANGUAGES.includes(language)
 }
 
+// Languages are free text in project-service, and the bot or importer may have stored "python":
+// a tracked language in any case is spelled as on the roadmap, the rest are kept as typed.
+export function canonicalLanguage(name: string) {
+  const trimmed = name.trim()
+  return TRACKED_LANGUAGES.find((language) => language.toLowerCase() === trimmed.toLowerCase()) ?? trimmed
+}
+
+// Canonical languages without case-insensitive repeats, in the given order; the first spelling wins.
+export function uniqueLanguages(languages: readonly string[]): string[] {
+  const byKey = new Map<string, string>()
+  for (const language of languages.map(canonicalLanguage)) {
+    if (!byKey.has(language.toLowerCase())) {
+      byKey.set(language.toLowerCase(), language)
+    }
+  }
+  return [...byKey.values()]
+}
+
 // Unique languages, tracked ones first in roadmap order, then the rest as given.
 export function sortLanguages(languages: readonly string[]): string[] {
-  const unique = [...new Set(languages)]
+  const unique = uniqueLanguages(languages)
   return [...TRACKED_LANGUAGES.filter((language) => unique.includes(language)), ...unique.filter((language) => !isTracked(language))]
 }
 
@@ -106,12 +124,12 @@ export function buildRoadmapTracks(languagesByType: LanguagesByProjectType): Roa
 // Keeps the six roadmap project types; ones without implementations get an empty list.
 export function toLanguagesByProjectType(summary: ProjectsSummaryDto): LanguagesByProjectType {
   return {
-    HANGMAN: summary.HANGMAN ?? [],
-    SIMULATION: summary.SIMULATION ?? [],
-    CURRENCY_EXCHANGE: summary.CURRENCY_EXCHANGE ?? [],
-    TENNIS_SCOREBOARD: summary.TENNIS_SCOREBOARD ?? [],
-    CLOUD_FILE_STORAGE: summary.CLOUD_FILE_STORAGE ?? [],
-    TASK_TRACKER: summary.TASK_TRACKER ?? [],
+    HANGMAN: uniqueLanguages(summary.HANGMAN ?? []),
+    SIMULATION: uniqueLanguages(summary.SIMULATION ?? []),
+    CURRENCY_EXCHANGE: uniqueLanguages(summary.CURRENCY_EXCHANGE ?? []),
+    TENNIS_SCOREBOARD: uniqueLanguages(summary.TENNIS_SCOREBOARD ?? []),
+    CLOUD_FILE_STORAGE: uniqueLanguages(summary.CLOUD_FILE_STORAGE ?? []),
+    TASK_TRACKER: uniqueLanguages(summary.TASK_TRACKER ?? []),
   }
 }
 
@@ -119,7 +137,7 @@ export function toImplementation(dto: ProjectResponseDto): Implementation {
   return {
     id: dto.id,
     projectType: dto.roadmap_project,
-    language: dto.programming_language,
+    language: canonicalLanguage(dto.programming_language),
     githubUrl: dto.github_repository_url,
     submittedAt: new Date(dto.added_timestamp * 1000),
   }
