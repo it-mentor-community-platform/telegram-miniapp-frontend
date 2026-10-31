@@ -3,11 +3,12 @@ import { computed } from 'vue'
 import Avatar from 'primevue/avatar'
 import Skeleton from 'primevue/skeleton'
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
-import type { ProjectIcon } from '../roadmap'
+import type { ProjectIcon as ProjectIconName } from '../roadmap'
 import LanguageTag from './LanguageTag.vue'
+import ProjectIcon from './ProjectIcon.vue'
 
 const props = defineProps<{
-  icon: ProjectIcon
+  icon: ProjectIconName
   title: string
   langs: { name: string; counted: boolean }[]
   to?: RouteLocationRaw
@@ -18,16 +19,6 @@ const props = defineProps<{
 
 const loaded = computed(() => (props.status ?? 'loaded') === 'loaded')
 const submitted = computed(() => loaded.value && props.langs.length > 0)
-
-// Closest PrimeIcons to the design's per-project icons.
-const icons: Record<ProjectIcon, string> = {
-  hangman: 'pi-question',
-  simulation: 'pi-sparkles',
-  exchange: 'pi-arrow-right-arrow-left',
-  tennis: 'pi-stopwatch',
-  cloud: 'pi-cloud',
-  planner: 'pi-calendar-clock',
-}
 </script>
 
 <template>
@@ -38,11 +29,12 @@ const icons: Record<ProjectIcon, string> = {
     :class="{ 'border-t border-surface': divider, 'focus-ring hover:bg-emphasis': to }"
   >
     <Avatar
-      :icon="`pi ${icons[icon]}`"
       class="shrink-0"
       :class="submitted ? 'bg-primary text-primary-contrast' : 'text-muted-color'"
       aria-hidden="true"
-    />
+    >
+      <ProjectIcon :icon="icon" />
+    </Avatar>
     <span class="flex min-w-0 flex-1 flex-col gap-1.5">
       <span class="text-md font-semibold">{{ title }}</span>
       <Skeleton v-if="status === 'loading'" width="7rem" height="0.875rem" aria-hidden="true" />
