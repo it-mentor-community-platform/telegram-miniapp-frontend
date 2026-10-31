@@ -82,6 +82,10 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
 `ProjectType` reads the student's implementations of that project type and submits new ones
 (`POST`, body: language, GitHub URL, optional deploy URL).
 
+> **Not implemented yet:** project-service doesn't store deploy URLs. Until it does, the app
+> sends only language and GitHub URL, has no «Ссылка на деплой» field and shows no deploy line in
+> «Мои реализации». The mockups keep them as the target design.
+
 - **Loading** — first load only. `ProjectType-Loading`: only the implementations list and the
   status derived from it need the request; everything else is known from the route and renders
   normally — breadcrumbs, title, «Проект N из 6», spec links and the submit form, open. The «Сдан
