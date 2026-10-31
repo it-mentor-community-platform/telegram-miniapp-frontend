@@ -234,7 +234,7 @@ follows Aura and dark mode. Props below are the design's props — keep the same
 | `RoadmapProgress` | `label: string`, `steps: boolean[6]`, `compact?: boolean` | One segment per project type, filled when that type has ≥1 implementation in the track's language. Shows "N из 6 проектов" (`compact`: "N из 6"). Parent hides tracks with 0/6. Screen readers: "Java Backend: сдано 3 из 6 проектов". | Main, Projects |
 | `StatTiles` | `items: { value, label, tone: 'warn' \| 'info' \| 'success' \| 'neutral' }[]` (3 items) | Three equal tiles. `warn` = due for review, `info` = new, `success` = learned, `neutral` = plain count. | Main, Repetition, Topic |
 | `NavListRow` | `icon`, `title`, `subtitle`, `badge?`, `badgeTone?: 'success' \| 'neutral'`, `href`, `divider?` | Whole row is a link (router-link), ≥64 px tall. `divider` draws the top border between rows. Badge renders a PrimeVue `Tag`. | Main |
-| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?`, `status?: 'loaded' \| 'loading' \| 'unknown'` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: map project type → closest PrimeIcon. `status="loading"`: status line is a `Skeleton`; `"unknown"` (load failed): no status line, grey icon. | Projects |
+| `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?`, `status?: 'loaded' \| 'loading' \| 'unknown'` | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: `ProjectIcon`, the mockup SVGs (PrimeIcons has no equivalents). `status="loading"`: status line is a `Skeleton`; `"unknown"` (load failed): no status line, grey icon. | Projects |
 | `LanguageTag` | `label: string`, `counted: boolean` | Solid when the language counts toward roadmap progress (Java, Python, Go); dashed outline + aria "не учитывается в прогрессе" otherwise. | Projects |
 | `EmptyState` | `title`, `text`, `icon: 'info' \| 'chat' \| 'none'` | Card used for "nothing here yet" and explanatory notices. | Projects, Implementation |
 | `Breadcrumbs` | `items: { label, href }[]` | Home icon + items; current page is not repeated (the page title follows). Last item truncates with ellipsis. In the app: wrap PrimeVue `Breadcrumb` and build items from route meta. | Every screen below home except the review session |
@@ -260,7 +260,7 @@ Choices made up front so every screen (and every contributor) builds them the sa
 | Primary actions "Повторить всё", "Сдать проект" | **Open — recommended:** in-page PrimeVue `Button` for now; revisit Telegram `MainButton` once the app shell exists |
 | Back navigation | Telegram `BackButton` + `Breadcrumbs` |
 | Multi-choice from a short fixed list (dummy-login roles) | PrimeVue `SelectButton` with `multiple` — same look as single-choice `SelectButton`, checkmark on selected items |
-| Icons | PrimeIcons only |
+| Icons | PrimeIcons only, except project-type icons (`ProjectIcon`) |
 
 ## Design conventions
 
@@ -273,6 +273,7 @@ Choices made up front so every screen (and every contributor) builds them the sa
 - **Navigation:** breadcrumbs on every screen below home (the home icon links to `/`); the review
   session has none — only a close (X) button. Telegram's BackButton is expected alongside.
 - **Icons:** the mockups use hand-drawn stroke icons; the app should use the closest PrimeIcons.
+  Exception: project-type icons, which have no PrimeIcons equivalent, are ported as SVGs (`ProjectIcon`).
 - **Implementation:** build with PrimeVue components and theme tokens — do not port the mockups'
   inline styles.
 
