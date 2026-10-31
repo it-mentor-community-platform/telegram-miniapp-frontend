@@ -8,7 +8,7 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
 import { ConflictError } from '../../api'
-import { TRACKED_LANGUAGES, type Implementation, type NewImplementation, type ProjectType } from '../../roadmap'
+import { canonicalLanguage, TRACKED_LANGUAGES, type Implementation, type NewImplementation, type ProjectType } from '../../roadmap'
 
 // Submit form of the project page; see design/ProjectType.dc.html and README → "Project page data".
 // No deploy link field until project-service stores deploy links.
@@ -77,7 +77,7 @@ async function onSubmit() {
   submitFailed.value = false
   try {
     const implementation = await props.submit({
-      language: language.value === OTHER ? otherLanguage.value.trim() : language.value!,
+      language: language.value === OTHER ? canonicalLanguage(otherLanguage.value) : language.value!,
       githubUrl: github,
     })
     emit('submitted', implementation)
