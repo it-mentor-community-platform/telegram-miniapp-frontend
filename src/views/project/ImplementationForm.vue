@@ -7,15 +7,16 @@ import InputIcon from 'primevue/inputicon'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
-import { DuplicateRepositoryError, type Implementation, type NewImplementation } from '../../mocks/implementations'
-import { TRACKED_LANGUAGES, type ProjectType } from '../../roadmap'
+import { ConflictError } from '../../api'
+import { TRACKED_LANGUAGES, type Implementation, type NewImplementation, type ProjectType } from '../../roadmap'
 
 // Submit form of the project page; see design/ProjectType.dc.html and README → "Project page data".
+// No deploy link field until project-service stores deploy links.
 const props = defineProps<{
   projectType: ProjectType
   // The first implementation of this project: "Сдать проект" and no cancel button.
   first: boolean
-  submit: (input: Omit<NewImplementation, 'projectType'>) => Promise<Implementation>
+  submit: (input: NewImplementation) => Promise<Implementation>
 }>()
 
 const emit = defineEmits<{
@@ -32,20 +33,17 @@ const languageOptions = [...TRACKED_LANGUAGES, OTHER]
 const language = ref<string | null>(languageOptions[0])
 const otherLanguage = ref('')
 const githubUrl = ref('')
-const deployUrl = ref('')
 
 const githubError = ref<string>()
-const deployError = ref<string>()
 const submitFailed = ref(false)
 const submitting = ref(false)
 
-const ids = { otherLanguage: useId(), github: useId(), deploy: useId(), language: useId() }
+const ids = { otherLanguage: useId(), github: useId(), language: useId() }
 
-// Format is checked on submit; editing a field clears its error.
+// Format is checked on submit; editing the field clears its error.
 watch(githubUrl, () => (githubError.value = undefined))
-watch(deployUrl, () => (deployError.value = undefined))
 
-watch([language, otherLanguage, githubUrl, deployUrl], () => emit('edited'), { once: true })
+watch([language, otherLanguage, githubUrl], () => emit('edited'), { once: true })
 
 const missing = computed(() => {
   const parts: string[] = []
@@ -68,13 +66,10 @@ async function onSubmit() {
     return
   }
   const github = githubUrl.value.trim()
-  const deploy = deployUrl.value.trim()
   githubError.value = GITHUB_REPOSITORY.test(github)
     ? undefined
     : 'Укажите ссылку вида https://github.com/username/repo'
-  deployError.value =
-    !deploy || /^https:\/\/.+/.test(deploy) ? undefined : 'Укажите ссылку, начинающуюся с https://'
-  if (githubError.value || deployError.value) {
+  if (githubError.value) {
     return
   }
 
@@ -84,11 +79,10 @@ async function onSubmit() {
     const implementation = await props.submit({
       language: language.value === OTHER ? otherLanguage.value.trim() : language.value!,
       githubUrl: github,
-      deployUrl: props.projectType.deployable && deploy ? deploy : undefined,
     })
     emit('submitted', implementation)
   } catch (error) {
-    if (error instanceof DuplicateRepositoryError) {
+    if (error instanceof ConflictError) {
       githubError.value =
         'Этот репозиторий уже зарегистрирован как реализация. Одна ссылка на GitHub — одна реализация: укажите другой репозиторий.'
     } else {
@@ -160,30 +154,6 @@ async function onSubmit() {
             {{ githubError }}
           </Message>
           <small v-else class="text-note text-muted-color">Репозиторий должен быть публичным</small>
-        </div>
-
-        <div v-if="projectType.deployable" class="flex flex-col gap-1.5">
-          <label :for="ids.deploy" class="text-meta font-semibold text-(--p-tint-neutral-color)">
-            Ссылка на деплой <span class="font-normal text-muted-color">· необязательно</span>
-          </label>
-          <IconField>
-            <InputIcon class="pi pi-globe" />
-            <InputText
-              :id="ids.deploy"
-              v-model="deployUrl"
-              type="url"
-              inputmode="url"
-              autocomplete="off"
-              placeholder="https://"
-              :invalid="Boolean(deployError)"
-              :disabled="submitting"
-              fluid
-            />
-          </IconField>
-          <Message v-if="deployError" severity="error" size="small" variant="simple" icon="pi pi-exclamation-circle" role="alert">
-            {{ deployError }}
-          </Message>
-          <small v-else class="text-note text-muted-color">Можно добавить или изменить позже</small>
         </div>
 
         <Message v-if="submitFailed" severity="error" icon="pi pi-exclamation-circle" role="alert">

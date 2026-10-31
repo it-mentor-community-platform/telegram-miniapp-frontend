@@ -1,7 +1,7 @@
 // Roadmap facts shared by screens: the fixed project types and the languages that count toward
 // progress (see meta/business-analytics/functionality/student-roadmap-completion.md).
 
-import type { ProjectsSummaryDto, RoadmapProjectDto } from './api'
+import type { ProjectResponseDto, ProjectsSummaryDto, RoadmapProjectDto } from './api'
 
 // Project types are identified by project-service's keys. Its WEATHER_VIEWER and OTHER are not
 // part of the six-project roadmap and are ignored.
@@ -24,6 +24,7 @@ export type ProjectType = {
   title: string
   icon: ProjectIcon
   // Whether an implementation can have a deploy link (web projects from currency exchange on).
+  // Unused until project-service stores deploy links; the form has no deploy field until then.
   deployable: boolean
   // Page of the spec in each roadmap course: <course>/projects/<specPath>/.
   specPath: string
@@ -34,6 +35,17 @@ export type RoadmapTrack = {
   label: string
   steps: boolean[]
 }
+
+// One submitted implementation of a project type by the current student.
+export type Implementation = {
+  id: number
+  projectType: RoadmapProjectDto
+  language: string
+  githubUrl: string
+  submittedAt: Date
+}
+
+export type NewImplementation = Pick<Implementation, 'language' | 'githubUrl'>
 
 // Languages a student has submitted implementations in, per project type.
 export type LanguagesByProjectType = Record<ProjectTypeId, readonly string[]>
@@ -101,4 +113,20 @@ export function toLanguagesByProjectType(summary: ProjectsSummaryDto): Languages
     CLOUD_FILE_STORAGE: summary.CLOUD_FILE_STORAGE ?? [],
     TASK_TRACKER: summary.TASK_TRACKER ?? [],
   }
+}
+
+export function toImplementation(dto: ProjectResponseDto): Implementation {
+  return {
+    id: dto.id,
+    projectType: dto.roadmap_project,
+    language: dto.programming_language,
+    githubUrl: dto.github_repository_url,
+    submittedAt: new Date(dto.added_timestamp * 1000),
+  }
+}
+
+// One form per repository, so a trailing "/" or ".git" doesn't get past project-service's
+// duplicate check (409) as a different link. Case is kept as typed.
+export function canonicalGithubUrl(url: string) {
+  return url.trim().replace(/\/+$/, '').replace(/\.git$/i, '')
 }

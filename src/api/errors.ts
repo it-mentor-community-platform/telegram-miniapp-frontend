@@ -27,6 +27,7 @@ export class BadRequestError extends HttpError {}
 export class UnauthorizedError extends HttpError {}
 export class ForbiddenError extends HttpError {}
 export class NotFoundError extends HttpError {}
+export class ConflictError extends HttpError {}
 export class ServerError extends HttpError {}
 
 // The auth response has no access token, or the token can't be decoded.

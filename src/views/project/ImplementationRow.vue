@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Tag from 'primevue/tag'
-import type { Implementation } from '../../mocks/implementations'
+import type { Implementation } from '../../roadmap'
 
 const props = defineProps<{
   implementation: Implementation
@@ -39,10 +39,6 @@ function withoutProtocol(url: string) {
     <span class="flex min-w-0 items-center gap-1.5 text-sm font-medium">
       <i class="pi pi-link shrink-0 text-xs text-muted-color" aria-hidden="true" />
       <span class="truncate">{{ withoutProtocol(implementation.githubUrl) }}</span>
-    </span>
-    <span v-if="implementation.deployUrl" class="flex min-w-0 items-center gap-1.5 text-meta text-muted-color">
-      <i class="pi pi-globe shrink-0 text-xs" aria-hidden="true" />
-      <span class="truncate">{{ withoutProtocol(implementation.deployUrl) }}</span>
     </span>
   </div>
 </template>

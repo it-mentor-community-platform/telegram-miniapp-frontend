@@ -27,9 +27,24 @@ const environmentLabels: Record<string, string> = {
 }
 const environmentLabel = environmentLabels[import.meta.env.MODE] ?? 'Тестовое окружение'
 
-const userId = ref<number | null>(null)
-const username = ref('')
-const roles = ref<Role[]>([])
+// The last successful values prefill the form, so signing in again after expiry is one click.
+const LAST_LOGIN_KEY = 'dev-login-last'
+type LastLogin = { userId: number; username: string; roles: Role[] }
+
+function readLastLogin(): Partial<LastLogin> {
+  try {
+    return JSON.parse(localStorage.getItem(LAST_LOGIN_KEY) ?? '{}') ?? {}
+  } catch {
+    return {}
+  }
+}
+
+const lastLogin = readLastLogin()
+const userId = ref<number | null>(typeof lastLogin.userId === 'number' ? lastLogin.userId : null)
+const username = ref(typeof lastLogin.username === 'string' ? lastLogin.username : '')
+const roles = ref<Role[]>(
+  Array.isArray(lastLogin.roles) ? lastLogin.roles.filter((role) => knownRoles.includes(role)) : [],
+)
 
 const loading = ref(false)
 const notFoundId = ref<number>()
@@ -53,10 +68,12 @@ async function submit() {
   if (!valid.value || loading.value) {
     return
   }
-  const id = userId.value!
+  const login: LastLogin = { userId: userId.value!, username: username.value.trim(), roles: roles.value }
+  const id = login.userId
   loading.value = true
   try {
-    await authenticateDummy({ user_id: id, roles: roles.value, telegram_username: username.value.trim() })
+    await authenticateDummy({ user_id: id, roles: login.roles, telegram_username: login.username })
+    localStorage.setItem(LAST_LOGIN_KEY, JSON.stringify(login))
   } catch (e) {
     if (e instanceof NotFoundError) {
       notFoundId.value = id

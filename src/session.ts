@@ -3,6 +3,7 @@ import {
   ApiError,
   authenticateByDummy,
   authenticateByTelegram,
+  parseAccessToken,
   setAccessTokenProvider,
   setUnauthorizedHandler,
   type AccessToken,
@@ -39,15 +40,24 @@ export const session = reactive<{ status: SessionStatus; user: CurrentUser | nul
   user: null,
 })
 
-// Kept in memory only: every Mini App launch brings fresh init data to authenticate with.
+// Kept in memory only: every Mini App launch brings fresh init data to authenticate with. The dummy
+// login has nothing to repeat it with, so its token is also kept in the tab's sessionStorage and
+// survives a page reload; per tab, so tabs can be signed in as different users.
 let accessToken: string | undefined
 setAccessTokenProvider(() => accessToken)
+
+const DUMMY_TOKEN_KEY = 'dummy-access-token'
 
 // The init data expires along with the token, so re-authenticating can't help: only a relaunch can.
 // Outside Telegram the session came from the dummy login, which can simply be repeated.
 setUnauthorizedHandler(() => {
   accessToken = undefined
-  session.status = initData ? 'expired' : 'dummy-expired'
+  if (initData) {
+    session.status = 'expired'
+  } else {
+    sessionStorage.removeItem(DUMMY_TOKEN_KEY)
+    session.status = 'dummy-expired'
+  }
 })
 
 let resolveAuthenticated: () => void
@@ -57,7 +67,7 @@ export const whenAuthenticated = new Promise<void>((resolve) => (resolveAuthenti
 
 export async function authenticate() {
   if (!initData) {
-    session.status = dummyAuthEnabled ? 'dummy-login' : 'outside-telegram'
+    session.status = dummyAuthEnabled ? restoreDummySession() : 'outside-telegram'
     return
   }
 
@@ -76,7 +86,30 @@ export async function authenticate() {
 
 // Rejects with the ApiError for the dummy login form to show; the status stays unchanged.
 export async function authenticateDummy(request: DummyAuthRequestDto) {
-  signIn(await authenticateByDummy(request))
+  const token = await authenticateByDummy(request)
+  sessionStorage.setItem(DUMMY_TOKEN_KEY, token.raw)
+  signIn(token)
+}
+
+// Signs in with the dummy token kept from before a reload, if it's still valid; otherwise returns
+// the dummy login status to show.
+function restoreDummySession(): SessionStatus {
+  const raw = sessionStorage.getItem(DUMMY_TOKEN_KEY)
+  if (!raw) {
+    return 'dummy-login'
+  }
+  try {
+    const token = parseAccessToken(raw)
+    if (token.claims.exp * 1000 > Date.now()) {
+      signIn(token)
+      return 'authenticated'
+    }
+    sessionStorage.removeItem(DUMMY_TOKEN_KEY)
+    return 'dummy-expired'
+  } catch {
+    sessionStorage.removeItem(DUMMY_TOKEN_KEY)
+    return 'dummy-login'
+  }
 }
 
 function signIn(token: AccessToken) {

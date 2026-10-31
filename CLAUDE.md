@@ -42,7 +42,8 @@ mockup is which screen and state, the route map and the PrimeVue component map.
 
 - Treat the mockups as the source of truth for layout, copy (Russian), states and behaviour.
 - Implement with PrimeVue components and theme tokens — do not port the mockups' inline styles.
-- Use PrimeIcons instead of the mockups' hand-drawn icons.
+- Use PrimeIcons instead of the mockups' hand-drawn icons. The one exception is project-type icons,
+  which PrimeIcons has no equivalents for: they are the mockup SVGs in `src/components/ProjectIcon.vue`.
 - Every state listed in `design/README.md` should be reachable and is a test case.
 - Routes, route names, project-type slugs, Telegram `startapp` deep-link codes and router mode are
   defined in `design/README.md` → Routes. Student pages live under `/student`; `/mentor` and `/admin`

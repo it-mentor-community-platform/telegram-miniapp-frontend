@@ -2,6 +2,7 @@ import axios, { isAxiosError } from 'axios'
 import type { ErrorResponseDto } from './dto/error'
 import {
   BadRequestError,
+  ConflictError,
   ForbiddenError,
   HttpError,
   NetworkError,
@@ -66,6 +67,7 @@ function toApiError(error: unknown) {
   if (status === 401) return new UnauthorizedError(status, body, options)
   if (status === 403) return new ForbiddenError(status, body, options)
   if (status === 404) return new NotFoundError(status, body, options)
+  if (status === 409) return new ConflictError(status, body, options)
   if (status >= 500) return new ServerError(status, body, options)
   return new HttpError(status, body, options)
 }
