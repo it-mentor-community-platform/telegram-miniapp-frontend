@@ -1,6 +1,6 @@
 // Backend API: DTO types, fetch functions and the errors they reject with.
 export { setAccessTokenProvider, setUnauthorizedHandler } from './client'
-export { authenticateByDummy, authenticateByTelegram, type AccessToken } from './auth'
+export { authenticateByDummy, authenticateByTelegram, parseAccessToken, type AccessToken } from './auth'
 export { createProject, getMyProjectImplementations, getMyProjectsSummary } from './projects'
 export type { DummyAuthRequestDto } from './dto/auth'
 export type {

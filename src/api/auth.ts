@@ -31,6 +31,11 @@ function readAccessToken(response: AxiosResponse): AccessToken {
   if (typeof raw !== 'string' || raw === '') {
     throw new InvalidTokenError(`Response has no ${ACCESS_TOKEN_HEADER} header`)
   }
+  return parseAccessToken(raw)
+}
+
+// Also restores a token kept from an earlier session. Rejects with InvalidTokenError if malformed.
+export function parseAccessToken(raw: string): AccessToken {
   return { raw, claims: decodeClaims(raw) }
 }
 
