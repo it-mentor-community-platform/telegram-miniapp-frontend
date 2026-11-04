@@ -61,6 +61,7 @@ The staging gateway serves them behind basic auth:
 
 - auth-service: `https://staging.platform.zhukovsd.it/api/auth/v3/api-docs`
 - project-service: `https://staging.platform.zhukovsd.it/api/project/v3/api-docs`
+- interval-repetition-service: `https://staging.platform.zhukovsd.it/api/interval-repetition/v3/api-docs`
 
 Fetch with `curl -sf --netrc-file .openapi.netrc.local <url>`. The credentials file is git-ignored
 (see `README.md` → Backend API specs); if it is missing, ask the developer for it. Never commit or
