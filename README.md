@@ -186,6 +186,7 @@ The staging gateway serves the OpenAPI specs behind basic auth:
 
 - auth-service: `https://staging.platform.zhukovsd.it/api/auth/v3/api-docs`
 - project-service: `https://staging.platform.zhukovsd.it/api/project/v3/api-docs`
+- interval-repetition-service: `https://staging.platform.zhukovsd.it/api/interval-repetition/v3/api-docs`
 
 Get the credentials from the team and put them in `.openapi.netrc.local` (git-ignored). Never
 commit them:
