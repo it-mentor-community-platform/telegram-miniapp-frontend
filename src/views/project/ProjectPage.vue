@@ -4,6 +4,7 @@ import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Message from 'primevue/message'
 import Skeleton from 'primevue/skeleton'
+import EmptyState from '../../components/EmptyState.vue'
 import ListSection from '../../components/ListSection.vue'
 import { useProjectImplementations } from '../../composables/useProjectImplementations'
 import { isTracked, joinRussian, PROJECT_TYPES, sortLanguages, specLinks, type Implementation, type ProjectType } from '../../roadmap'
@@ -75,8 +76,10 @@ function onSubmitted(implementation: Implementation) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
-    <header class="flex flex-col gap-1.5">
+  <!-- Wide layouts: the header spans two columns — specs and the form on the left, the
+       implementations on the right. On the phone the columns dissolve into one stack. -->
+  <div class="flex flex-col gap-5 md:grid md:grid-cols-2 md:items-start md:gap-x-6">
+    <header class="flex flex-col gap-1.5 md:col-span-full">
       <h1 class="text-2xl/[1.875rem] font-bold">{{ projectType.title }}</h1>
       <p class="flex min-h-4.5 flex-wrap items-center gap-2 text-meta">
         <span class="font-medium text-muted-color">Проект {{ position }} из {{ PROJECT_TYPES.length }}</span>
@@ -91,98 +94,121 @@ function onSubmitted(implementation: Implementation) {
       </p>
     </header>
 
-    <section class="flex flex-col gap-2" aria-labelledby="project-spec">
-      <h2 id="project-spec" class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase">
-        Техническое задание
-      </h2>
-      <div class="grid grid-cols-3 gap-2">
-        <Button
-          v-for="spec in specs"
-          :key="spec.language"
-          as="a"
-          :href="spec.url"
-          target="_blank"
-          rel="noopener"
-          :label="spec.language"
-          icon="pi pi-external-link"
-          icon-pos="right"
-          severity="secondary"
-          variant="outlined"
-          class="bg-(--p-content-background) text-color hover:bg-emphasis"
-          :pt="{ icon: { class: 'text-xs text-muted-color' } }"
-        />
-      </div>
-    </section>
+    <div class="contents md:flex md:min-w-0 md:flex-col md:gap-5">
+      <section class="flex flex-col gap-2" aria-labelledby="project-spec">
+        <h2 id="project-spec" class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase">
+          Техническое задание
+        </h2>
+        <div class="grid grid-cols-3 gap-2">
+          <Button
+            v-for="spec in specs"
+            :key="spec.language"
+            as="a"
+            :href="spec.url"
+            target="_blank"
+            rel="noopener"
+            :label="spec.language"
+            icon="pi pi-external-link"
+            icon-pos="right"
+            severity="secondary"
+            variant="outlined"
+            class="bg-(--p-content-background) text-color hover:bg-emphasis"
+            :pt="{ icon: { class: 'text-xs text-muted-color' } }"
+          />
+        </div>
+      </section>
 
-    <Message v-if="success" severity="success" closable role="status" @close="success = undefined">
-      <span class="flex flex-col gap-0.5">
-        <span class="font-bold">{{ success.title }}</span>
-        <span class="text-meta text-color">{{ success.text }}</span>
-      </span>
-    </Message>
+      <Message v-if="success" severity="success" closable role="status" @close="success = undefined">
+        <span class="flex flex-col gap-0.5">
+          <span class="font-bold">{{ success.title }}</span>
+          <span class="text-meta text-color">{{ success.text }}</span>
+        </span>
+      </Message>
 
-    <Button
-      v-if="loadState === 'loaded' && submitted && !showForm"
-      label="Добавить реализацию"
-      icon="pi pi-plus"
-      variant="outlined"
-      size="large"
-      @click="openForm"
-    />
+      <Button
+        v-if="loadState === 'loaded' && submitted && !showForm"
+        label="Добавить реализацию"
+        icon="pi pi-plus"
+        variant="outlined"
+        size="large"
+        @click="openForm"
+      />
 
-    <ImplementationForm
-      v-if="showForm"
-      :project-type="projectType"
-      :first="!submitted"
-      :submit="submit"
-      @edited="formEdited = true"
-      @submitted="onSubmitted"
-      @cancel="closeForm"
-    />
-
-    <!-- Only the list depends on the request; the header, specs and form are already shown. -->
-    <div v-if="loadState === 'loading'" class="flex flex-col gap-2" aria-busy="true" aria-label="Загрузка реализаций">
-      <Skeleton width="9.375rem" height="0.875rem" class="mx-1 my-0.5" />
-      <Card class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
-        <template #content>
-          <div
-            v-for="(width, index) in ['88%', '64%']"
-            :key="width"
-            class="flex flex-col gap-2 px-4 py-3.5"
-            :class="{ 'border-t border-surface': index > 0 }"
-          >
-            <span class="flex gap-2">
-              <Skeleton width="3.25rem" height="1.125rem" />
-              <Skeleton width="6rem" height="1.125rem" />
-            </span>
-            <Skeleton :width="width" height="0.875rem" />
-          </div>
-        </template>
-      </Card>
+      <ImplementationForm
+        v-if="showForm"
+        :project-type="projectType"
+        :first="!submitted"
+        :submit="submit"
+        @edited="formEdited = true"
+        @submitted="onSubmitted"
+        @cancel="closeForm"
+      />
     </div>
 
-    <Message v-if="loadState === 'failed'" severity="error" icon="pi pi-exclamation-circle" role="alert">
-      <div class="flex flex-col items-start gap-3">
-        <span>Не удалось загрузить реализации. Проверьте соединение и попробуйте ещё раз.</span>
-        <Button
-          label="Попробовать снова"
-          icon="pi pi-refresh"
-          severity="danger"
-          variant="outlined"
-          size="small"
-          @click="load"
-        />
+    <div class="contents md:flex md:min-w-0 md:flex-col md:gap-5">
+      <!-- Only the list depends on the request; the header, specs and form are already shown. -->
+      <div v-if="loadState === 'loading'" class="flex flex-col gap-2" aria-busy="true" aria-label="Загрузка реализаций">
+        <Skeleton width="9.375rem" height="0.875rem" class="mx-1 my-0.5" />
+        <Card class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
+          <template #content>
+            <div
+              v-for="(width, index) in ['88%', '64%']"
+              :key="width"
+              class="flex flex-col gap-2 px-4 py-3.5"
+              :class="{ 'border-t border-surface': index > 0 }"
+            >
+              <span class="flex gap-2">
+                <Skeleton width="3.25rem" height="1.125rem" />
+                <Skeleton width="6rem" height="1.125rem" />
+              </span>
+              <Skeleton :width="width" height="0.875rem" />
+            </div>
+          </template>
+        </Card>
       </div>
-    </Message>
 
-    <ListSection v-if="submitted" :title="`Мои реализации · ${implementations!.length}`">
-      <ImplementationRow
-        v-for="(implementation, index) in implementations"
-        :key="implementation.id"
-        :implementation="implementation"
-        :divider="index > 0"
-        :highlighted="implementation.id === highlightedId"
-      />
-    </ListSection>
+      <Message v-if="loadState === 'failed'" severity="error" icon="pi pi-exclamation-circle" role="alert">
+        <div class="flex flex-col items-start gap-3">
+          <span>Не удалось загрузить реализации. Проверьте соединение и попробуйте ещё раз.</span>
+          <Button
+            label="Попробовать снова"
+            icon="pi pi-refresh"
+            severity="danger"
+            variant="outlined"
+            size="small"
+            @click="load"
+          />
+        </div>
+      </Message>
+
+      <ListSection v-if="submitted" :title="`Мои реализации · ${implementations!.length}`">
+        <ImplementationRow
+          v-for="(implementation, index) in implementations"
+          :key="implementation.id"
+          :implementation="implementation"
+          :divider="index > 0"
+          :highlighted="implementation.id === highlightedId"
+        />
+      </ListSection>
+
+      <!-- Wide layouts only: keeps the right column from sitting empty before the first submission. -->
+      <section
+        v-if="loadState === 'loaded' && !submitted"
+        class="hidden flex-col gap-2 md:flex"
+        aria-labelledby="project-implementations"
+      >
+        <h2
+          id="project-implementations"
+          class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase"
+        >
+          Мои реализации
+        </h2>
+        <EmptyState
+          icon="none"
+          title="Здесь появятся ваши реализации"
+          text="После сдачи в списке будут язык, дата и ссылка на репозиторий."
+        />
+      </section>
+    </div>
   </div>
 </template>

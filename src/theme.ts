@@ -31,6 +31,13 @@ export const AppPreset = definePreset(Aura, {
           neutral: { background: '{surface.100}', color: '{surface.700}' },
         },
         roadmap: { segment: { background: '{content.border.color}', filledBackground: '{emerald.500}' } },
+        // Pointer hover on linked rows and cards (wide layouts; touch screens don't hover).
+        hover: {
+          row: { background: '{surface.50}' },
+          card: { borderColor: '{surface.300}', shadow: '0 2px 8px rgb(15 23 42 / 0.06)' },
+        },
+        // Standalone cards on the app background, such as the auth screens on wide layouts.
+        raised: { shadow: '0 1px 3px rgb(15 23 42 / 0.06), 0 12px 32px rgb(15 23 42 / 0.06)' },
       },
       dark: {
         primary: {
@@ -49,6 +56,11 @@ export const AppPreset = definePreset(Aura, {
           neutral: { background: '{surface.800}', color: '{surface.300}' },
         },
         roadmap: { segment: { background: '{surface.700}', filledBackground: '{emerald.400}' } },
+        hover: {
+          row: { background: 'color-mix(in srgb, {surface.800} 50%, {surface.900})' },
+          card: { borderColor: '{surface.600}', shadow: 'none' },
+        },
+        raised: { shadow: 'none' },
       },
     },
   },

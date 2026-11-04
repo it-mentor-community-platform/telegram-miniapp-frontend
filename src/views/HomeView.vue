@@ -11,7 +11,8 @@ import StatTiles from '../components/StatTiles.vue'
 import { useMyProjects } from '../composables/useMyProjects'
 import { getHomeData } from '../mocks/home'
 import { buildRoadmapTracks } from '../roadmap'
-import { session, type Role } from '../session'
+import { session } from '../session'
+import { initials as userInitials, roleTags } from '../user'
 import DevPanel from './home/DevPanel.vue'
 import SectionCard from './home/SectionCard.vue'
 
@@ -33,21 +34,16 @@ if (isStudent) {
 const tracks = computed(() => (projectLanguages.value ? buildRoadmapTracks(projectLanguages.value) : []))
 const projectsPending = computed(() => isStudent && !projectLanguages.value)
 
-const roleTags: Record<Role, { label: string; severity?: 'success' | 'info'; class?: string }> = {
-  STUDENT: { label: 'Студент', severity: 'success' },
-  MENTOR: { label: 'Ментор', severity: 'info' },
-  ADMIN: { label: 'Админ', class: 'tint-help' },
-}
-
-const initials = `${user.firstName.charAt(0)}${user.lastName?.charAt(0) ?? ''}`
+const initials = userInitials(user)
 const showDevTools = import.meta.env.VITE_SHOW_DEV_TOOLS === 'true'
 const isMentor = user.roles.includes('MENTOR')
 const isAdmin = user.roles.includes('ADMIN')
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
-    <header class="flex items-center gap-3">
+  <!-- Desktop: the two section cards side by side; header and «Разделы» span both columns. -->
+  <div class="flex flex-col gap-5 lg:grid lg:grid-cols-2 lg:gap-x-6">
+    <header class="flex items-center gap-3 lg:col-span-full">
       <Avatar :label="initials" shape="circle" size="large" class="tint-success shrink-0 text-[1.0625rem] font-semibold" />
       <div class="flex min-w-0 flex-1 flex-col gap-1.5">
         <h1 class="text-lg/[1.375rem] font-semibold">Привет, {{ user.firstName }}</h1>
@@ -113,7 +109,7 @@ const isAdmin = user.roles.includes('ADMIN')
       </div>
     </SectionCard>
 
-    <ListSection title="Разделы">
+    <ListSection title="Разделы" :tiles="2" class="lg:col-span-full">
       <NavListRow
         icon="pi-user"
         title="Профиль"
@@ -150,6 +146,7 @@ const isAdmin = user.roles.includes('ADMIN')
       />
     </ListSection>
 
-    <DevPanel v-if="showDevTools" />
+    <!-- Phone layout only: a regular browser has no Telegram init data to show. -->
+    <DevPanel v-if="showDevTools" class="md:hidden" />
   </div>
 </template>

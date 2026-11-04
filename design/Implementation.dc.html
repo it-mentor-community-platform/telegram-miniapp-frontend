@@ -11,19 +11,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+.hv-row,.hv-card,.hv-btn{transition:background-color .15s,border-color .15s,box-shadow .15s,filter .15s}
+@media (hover:hover){.hv-l.hv-row:hover{background:#f8fafc!important}.hv-d.hv-row:hover{background:#1f1f23!important}.hv-l.hv-card:hover{border-color:#cbd5e1!important;box-shadow:0 2px 8px rgba(15,23,42,.06)!important}.hv-d.hv-card:hover{border-color:#52525b!important}.hv-l.hv-btn:hover{background:#065f46!important}.hv-d.hv-btn:hover{background:#6ee7b7!important}}
 </style>
 </helmet>
-<div style="width: 390px; height: 1040px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<sc-if value="{{L.shell}}" hint-placeholder-val="{{ false }}">
+<dc-import name="AppShell" layout="{{layout}}" active="projects" role="{{L.role}}" height="{{L.frameH}}" dark="{{dark}}" hint-size="248px,100%"></dc-import>
+</sc-if>
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 16px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
-<header style="display: flex; flex-direction: column; gap: 6px">
+<header style="display: flex; flex-direction: column; gap: 6px; grid-column: {{L.full}}">
 <div style="margin: -12px 0 -6px 0">
-<dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+<dc-import name="Breadcrumbs" items="{{crumbs}}" home-href="{{L.home}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
 </div>
 <h1 style="margin: 0; font-size: 24px; font-weight: 700; line-height: 30px">{{d.project}} · {{d.lang}}</h1>
 <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.primaryText}}">
 <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Засчитана в прогресс Java Backend</span>
 </header>
 
+<div style="display: {{L.grp}}; flex-direction: column; gap: 16px; grid-column: {{L.colA}}; grid-row: 2; min-width: 0">
 <section style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
 <dl style="margin: 0; display: flex; flex-direction: column">
 <div style="display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; font-size: 14px; line-height: 20px">
@@ -126,6 +134,8 @@ body{margin:0}
 </section>
 </sc-if>
 
+</div>
+<div style="display: {{L.grp}}; flex-direction: column; gap: 16px; grid-column: {{L.colB}}; grid-row: 2; min-width: 0">
 <section style="display: flex; flex-direction: column; gap: 8px">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">{{reviewsTitle}}</h2>
 <sc-if value="{{hasReviews}}" hint-placeholder-val="{{ true }}">
@@ -149,10 +159,12 @@ body{margin:0}
 <dc-import name="EmptyState" icon="chat" title="Ревью пока нет" text="Ревью необязательно: реализация уже засчитана в прогресс Java Backend. Когда ментор оставит ревью, оно появится здесь." dark="{{dark}}" hint-size="100%,120px"></dc-import>
 </sc-if>
 </section>
-
+</div>
+</div>
+</div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Обмен валют — деплой и ревью","Виселица — без ревью","Обмен валют — без деплоя","Редактирование GitHub","GitHub — ссылка занята","Редактирование деплоя"],"default":"Обмен валют — деплой и ревью"},"$preview":{"width":390,"height":1040}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"scenario":{"editor":"enum","options":["Обмен валют — деплой и ревью","Виселица — без ревью","Обмен валют — без деплоя","Редактирование GitHub","GitHub — ссылка занята","Редактирование деплоя"],"default":"Обмен валют — деплой и ревью"},"$preview":{"width":390,"height":1040}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -190,7 +202,25 @@ class Component extends DCLogic {
       { initials: 'АП', author: 'Алексей Петров', date: '20 марта 2026' },
       { initials: 'МК', author: 'Мария Кузнецова', date: '2 апреля 2026' }
     ].slice(0, c.reviews).map((r, i) => ({ ...r, sep: i === 0 ? 'transparent' : t.border }));
-    return { t, dark, crumbs: [{ label: 'Мои проекты', href: c.d.deployable ? 'Projects-Multi.dc.html' : 'Projects-Java3.dc.html' }, { label: c.d.project, href: c.d.deployable ? 'ProjectType-List.dc.html' : 'ProjectType.dc.html' }], d: c.d, reviews,
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && true, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 800 : 1112) : 1040,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '1040px', rootPad: wide ? '0' : '20px 16px 24px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, { display: wide ? 'grid' : 'flex', cols: 'repeat(2, minmax(0, 1fr))', items: wide ? 'start' : 'stretch', colA: '1', colB: '2' });
+    return { layout, L, dk, tk: dark ? 'd' : 'l', t, dark, crumbs: [{ label: 'Мои проекты', href: dk(c.d.deployable ? 'Projects-Multi.dc.html' : 'Projects-Java3.dc.html') }, { label: c.d.project, href: dk(c.d.deployable ? 'ProjectType-List.dc.html' : 'ProjectType.dc.html') }], d: c.d, reviews,
       projectsHref: c.d.deployable ? 'Projects-Multi.dc.html' : 'Projects-Java3.dc.html',
       typeHref: c.d.deployable ? 'ProjectType-List.dc.html' : 'ProjectType.dc.html',
       hasReviews: reviews.length > 0, noReviews: reviews.length === 0,

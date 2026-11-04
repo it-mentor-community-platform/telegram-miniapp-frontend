@@ -29,6 +29,11 @@ const languagesByType = computed(() => loaded.value ?? toLanguagesByProjectType(
 
 const tracks = computed(() => buildRoadmapTracks(languagesByType.value))
 const completedTracks = computed(() => tracks.value.filter((track) => track.steps.every(Boolean)))
+
+// Wide layouts: tracks side by side (stacked on the phone).
+const trackGridClass = 'flex flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,minmax(13.75rem,1fr))] md:gap-x-8'
+// Desktop with one or two tracks (most students) puts the note beside them.
+const compactRow = computed(() => tracks.value.length <= 2)
 const projects = computed(() =>
   PROJECT_TYPES.map((type) => ({
     ...type,
@@ -58,12 +63,14 @@ const untrackedText = computed(
     <Card v-if="loadStatus === 'loading'" aria-busy="true" aria-label="Загрузка прогресса">
       <template #content>
         <div class="flex flex-col gap-4" aria-hidden="true">
-          <div v-for="width in ['7rem', '8rem']" :key="width" class="flex flex-col gap-2.5">
-            <div class="flex items-center justify-between">
-              <Skeleton :width="width" height="1rem" />
-              <Skeleton width="5.75rem" height="0.875rem" />
+          <div :class="trackGridClass">
+            <div v-for="width in ['7rem', '8rem']" :key="width" class="flex flex-col gap-2.5">
+              <div class="flex items-center justify-between">
+                <Skeleton :width="width" height="1rem" />
+                <Skeleton width="5.75rem" height="0.875rem" />
+              </div>
+              <Skeleton height="0.5rem" />
             </div>
-            <Skeleton height="0.5rem" />
           </div>
           <div class="flex flex-col gap-1.5 border-t border-surface pt-3">
             <Skeleton height="0.75rem" />
@@ -110,16 +117,30 @@ const untrackedText = computed(
                 </span>
               </span>
             </div>
-            <RoadmapProgress
-              v-for="track in tracks"
-              :key="track.language"
-              :label="track.label"
-              :steps="track.steps"
-            />
-            <p class="border-t border-surface pt-3 text-note text-muted-color">
-              В прогрессе учитываются реализации на Java, Python и Go. Несколько реализаций одного
-              проекта на одном языке — один шаг.
-            </p>
+            <!-- Desktop with one or two tracks: a single row — the tracks at a fixed width, the note
+                 beside them after a divider — rather than bars stretched across the card. -->
+            <div class="flex flex-col gap-4" :class="{ 'lg:flex-row lg:items-center lg:gap-8': compactRow }">
+              <div
+                :class="[
+                  trackGridClass,
+                  compactRow && (tracks.length === 1 ? 'lg:w-95 lg:flex-none' : 'lg:w-145 lg:flex-none'),
+                ]"
+              >
+                <RoadmapProgress
+                  v-for="track in tracks"
+                  :key="track.language"
+                  :label="track.label"
+                  :steps="track.steps"
+                />
+              </div>
+              <p
+                class="border-t border-surface pt-3 text-note text-muted-color"
+                :class="{ 'lg:flex-1 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8': compactRow }"
+              >
+                В прогрессе учитываются реализации на Java, Python и Go. Несколько реализаций одного
+                проекта на одном языке — один шаг.
+              </p>
+            </div>
           </div>
         </template>
       </Card>
@@ -138,7 +159,7 @@ const untrackedText = computed(
       />
     </template>
 
-    <ListSection title="Проекты роадмапа">
+    <ListSection title="Проекты роадмапа" :tiles="3">
       <ProjectRow
         v-for="(project, index) in projects"
         :key="project.id"
@@ -146,6 +167,7 @@ const untrackedText = computed(
         :title="project.title"
         :langs="project.langs"
         :divider="index > 0"
+        tile
         :status="loadStatus"
         :to="{ name: 'student-project', params: { projectType: project.slug } }"
       />

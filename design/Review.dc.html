@@ -11,12 +11,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+.hv-row,.hv-card,.hv-btn{transition:background-color .15s,border-color .15s,box-shadow .15s,filter .15s}
+@media (hover:hover){.hv-l.hv-row:hover{background:#f8fafc!important}.hv-d.hv-row:hover{background:#1f1f23!important}.hv-l.hv-card:hover{border-color:#cbd5e1!important;box-shadow:0 2px 8px rgba(15,23,42,.06)!important}.hv-d.hv-card:hover{border-color:#52525b!important}.hv-l.hv-btn:hover{background:#065f46!important}.hv-d.hv-btn:hover{background:#6ee7b7!important}}
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
 <header style="display: flex; align-items: center; gap: 8px; padding: 8px 8px 0">
-<a href="Repetition.dc.html" aria-label="Завершить повторение" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: {{t.text2}}; text-decoration: none">
+<a href="{{L.backHref}}" aria-label="Завершить повторение" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: {{t.text2}}; text-decoration: none">
 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
 </a>
 <span style="flex: 1; text-align: center; font-size: 16px; font-weight: 600">Повторить всё</span>
@@ -34,14 +38,14 @@ body{margin:0}
 
 
 
-<section style="display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 20px; border-top: 1px solid {{t.border}}; background: {{t.card}}">
+<section style="display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 20px; border: {{L.rateBorder}}; border-top: 1px solid {{t.border}}; border-radius: {{L.rateRadius}}; margin: {{L.rateMargin}}; background: {{t.card}}">
 <div style="display: flex; flex-direction: column; gap: 2px; text-align: center">
 <span style="font-size: 15px; font-weight: 600; line-height: 20px">Насколько хорошо вы помните ответ?</span>
 <span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">Оценивайте честно — от этого зависит расписание</span>
 </div>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
 <sc-for list="{{ratings}}" as="r" hint-placeholder-count="4">
-<button type="button" onClick="{{r.rate}}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 58px; border-radius: 10px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text}}; font: inherit; cursor: pointer">
+<button type="button" onClick="{{r.rate}}" class="hv-card hv-{{tk}}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 58px; border-radius: 10px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text}}; font: inherit; cursor: pointer">
 <span style="font-size: 15px; font-weight: 600; line-height: 20px">{{r.label}}</span>
 <span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">{{r.hint}}</span>
 </button>
@@ -105,15 +109,17 @@ body{margin:0}
 </div>
 
 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 4px">
-<a href="Repetition.dc.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 16px; font-weight: 600; text-decoration: none">К моим темам</a>
-<a href="Main.dc.html" style="display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 10px; color: {{t.primaryText}}; font-size: 15px; font-weight: 600; text-decoration: none">На главную</a>
+<a href="{{L.backHref}}" class="hv-btn hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 16px; font-weight: 600; text-decoration: none">К моим темам</a>
+<a href="{{L.home}}" style="display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 10px; color: {{t.primaryText}}; font-size: 15px; font-weight: 600; text-decoration: none">На главную</a>
 </div>
 </main>
 </sc-if>
 
 </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"start":{"editor":"enum","options":["Вопрос","Ответ","Итог"],"default":"Вопрос"},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"start":{"editor":"enum","options":["Вопрос","Ответ","Итог"],"default":"Вопрос"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -163,7 +169,27 @@ class Component extends DCLogic {
     ].map((r) => ({ ...r, rate: next }));
     const counts = [['Отлично', 9], ['С пробелами', 6], ['Отрывочно', 3], ['Не помню', 2]];
     const summary = counts.map(([label, n]) => ({ label, n, w: Math.round((n / 9) * 100) }));
-    return {
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && false, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 800 : 1112) : 844,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '844px', rootPad: wide ? '0' : '0',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, { maxW: '640px', rootH: wide ? (desk ? '736px' : '1064px') : '844px', areaPad: wide ? (desk ? '32px 40px' : '24px') : '0',
+      rateBorder: wide ? '1px solid ' + t.border : 'none', rateRadius: wide ? '12px' : '0', rateMargin: wide ? '8px 16px 0' : '0',
+      backHref: dk('Repetition.dc.html') });
+    return { layout, L, dk, tk: dark ? 'd' : 'l',
       t, cur, ratings, summary,
       num: 17 + i, left: 20 - (17 + i), pct: Math.round(((16 + i) / 20) * 100),
       inSession: !done, done, shown: show, hidden: !show,

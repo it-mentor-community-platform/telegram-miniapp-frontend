@@ -8,6 +8,8 @@ declare module 'vue-router' {
   interface RouteMeta {
     // Label of this route in the breadcrumb trail of its descendants.
     breadcrumb?: string
+    // false: no app shell on tablet/desktop, for focused screens such as the review session.
+    shell?: boolean
   }
 }
 
