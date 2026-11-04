@@ -8,7 +8,14 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
 import { ConflictError } from '../../api'
-import { canonicalLanguage, TRACKED_LANGUAGES, type Implementation, type NewImplementation, type ProjectType } from '../../roadmap'
+import {
+  canonicalLanguage,
+  isGithubRepositoryUrl,
+  TRACKED_LANGUAGES,
+  type Implementation,
+  type NewImplementation,
+  type ProjectType,
+} from '../../roadmap'
 
 // Submit form of the project page; see design/ProjectType.dc.html and README → "Project page data".
 // No deploy link field until project-service stores deploy links.
@@ -59,14 +66,12 @@ const missing = computed(() => {
   return text && text.charAt(0).toUpperCase() + text.slice(1)
 })
 
-const GITHUB_REPOSITORY = /^https:\/\/(www\.)?github\.com\/[\w.-]+\/[\w.-]+\/?$/i
-
 async function onSubmit() {
   if (missing.value || submitting.value) {
     return
   }
   const github = githubUrl.value.trim()
-  githubError.value = GITHUB_REPOSITORY.test(github)
+  githubError.value = isGithubRepositoryUrl(github)
     ? undefined
     : 'Укажите ссылку вида https://github.com/username/repo'
   if (githubError.value) {
