@@ -303,6 +303,9 @@ Choices made up front so every screen (and every contributor) builds them the sa
 - **Look:** PrimeVue 4 Aura — Inter, emerald primary, slate surfaces (zinc in dark mode), 12 px card
   radius. Primary buttons use a darker emerald than Aura's default (`#047857` in light mode) so white
   text meets WCAG AA contrast; in dark mode `#34d399` with dark text.
+- **Brand:** «IT Ментор | Платформа сообщества» — the app/page title. The shell header shows it on two
+  lines (name + «Платформа сообщества») next to the round logo (the community's avatar, embedded in
+  `AppShell.dc.html` as a 96 px JPEG; in the app ship it as a static asset). The tablet rail shows the logo only.
 - **Copy:** Russian. Example data is illustrative, not real.
 - **Navigation:** breadcrumbs on every screen below home (the home icon links to `/`); the review
   session has none — only a close (X) button. Telegram's BackButton is expected alongside; in a
