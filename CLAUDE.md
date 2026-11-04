@@ -9,8 +9,10 @@ See `README.md` for the stack, commands and Telegram Web App integration.
 
 - UI library: **PrimeVue 4** with the **Aura** theme (`@primeuix/themes`) and **PrimeIcons**.
   Stay on PrimeVue 4 — PrimeVue 5 has a different license (see `README.md`).
-- Platform constraints: phone-width layout; light/dark follows `Telegram.WebApp.colorScheme`;
-  respect Telegram safe areas; use Telegram's BackButton for back navigation.
+- Platform constraints: phone-first, adaptive from Tailwind's `md` (tablet: rail) and `lg` (desktop:
+  sidebar), see `design/README.md` → Adaptive layouts; light/dark follows
+  `Telegram.WebApp.colorScheme`; respect Telegram safe areas; use Telegram's BackButton for back
+  navigation.
 - Auth: send Telegram init data to the backend and use the returned JWT. Outside Telegram, use the
   backend's dummy auth (test environments only).
 - Commands: `npm run dev`, `npm run typecheck`, `npm run build`.
@@ -28,7 +30,10 @@ these in order and stop at the first that works:
    padding or tag font. So do new colors, as semantic tokens with light and dark values, such as
    the `tint.*` pairs behind the `tint-*` utilities.
 4. Tailwind utilities in the template. Shared text sizes (`text-page`, `text-md`, `text-meta`,
-   `text-note`) and utilities (`tint-*`, `text-subtle-color`, `focus-ring`) are in `src/styles.css`.
+   `text-note`) and utilities (`tint-*`, `tile`, `text-subtle-color`, `focus-ring`, hover colors
+   `bg-row-hover` / `border-card-hover`) are in `src/styles.css`. Wide layouts are `md:` / `lg:`
+   variants on the same template (phone styles unprefixed) — one view per route, no `matchMedia`
+   or per-breakpoint components.
 5. A scoped `<style>`, only for what the above can't express (e.g. `--tg-*` safe-area math), with
    a comment explaining why.
 

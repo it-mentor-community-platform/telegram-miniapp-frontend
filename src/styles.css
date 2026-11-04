@@ -19,6 +19,28 @@
   --text-meta--line-height: 1.125rem;
   --text-note: 0.75rem;
   --text-note--line-height: 1.0625rem;
+
+  /* App shell: the tablet rail (md) and the desktop sidebar (lg). */
+  --spacing-rail: 5.5rem;
+  --spacing-sidebar: 15.5rem;
+}
+
+/* Theme tokens as Tailwind colors and shadows, so they work with variants (hover:, group-hover:, md:).
+   Values per color scheme live in theme.ts. */
+@theme inline {
+  --color-row-hover: var(--p-hover-row-background);
+  --color-card-hover: var(--p-hover-card-border-color);
+  --shadow-card-hover: var(--p-hover-card-shadow);
+  --shadow-raised: var(--p-raised-shadow);
+}
+
+/* A standalone card look for elements that aren't a PrimeVue Card, such as list rows that become
+   tiles on wide layouts (see ListSection). */
+@utility tile {
+  background: var(--p-card-background);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-card-border-radius);
+  box-shadow: var(--p-card-shadow);
 }
 
 /* Tonal background + foreground pairs; values per color scheme live in theme.ts. */

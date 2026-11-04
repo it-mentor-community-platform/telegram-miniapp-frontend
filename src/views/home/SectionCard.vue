@@ -15,9 +15,10 @@ defineProps<{
   <component
     :is="to ? RouterLink : 'div'"
     :to="to"
-    class="block rounded-xl text-color focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    class="group block rounded-xl text-color focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
   >
-    <Card>
+    <!-- Full height: side by side on desktop, both cards match the taller one. -->
+    <Card class="h-full" :class="{ 'group-hover:border-card-hover group-hover:shadow-card-hover': to }">
       <template #content>
         <div class="flex flex-col gap-4">
           <div class="flex items-center gap-3">

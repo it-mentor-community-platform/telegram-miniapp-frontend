@@ -167,8 +167,8 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 - `DevLogin` details: «Telegram username» has a fixed «@» prefix and is sent without it (a pasted
   leading «@» is stripped). Roles are a multi-select (at least one); the session gets exactly these
   roles, regardless of the user's real roles. «Войти» stays disabled until ID ≥ 1, username and at
-  least one role are set. Secondary «Открыть в Telegram» is the normal way in. On desktop browsers
-  the screen is a centred 390 px column.
+  least one role are set. Secondary «Открыть в Telegram» is the normal way in. On tablet/desktop
+  the screen is a centred 440 px card (see [Adaptive layouts](#adaptive-layouts-tablet-and-desktop)).
 - The old `AuthError` `devHint` prop (dashed developer hint) is superseded by `DevLogin` — don't
   implement it.
 - PrimeVue: `Button`, `Message` is not needed — this is a full-screen state.

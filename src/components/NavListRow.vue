@@ -22,7 +22,7 @@ withDefaults(
     :is="to ? RouterLink : 'div'"
     :to="to"
     class="flex min-h-16 items-center gap-3 px-4 py-3 text-color"
-    :class="{ 'border-t border-surface': divider, 'focus-ring hover:bg-emphasis': to }"
+    :class="{ 'border-t border-surface': divider, 'focus-ring hover:bg-row-hover': to }"
   >
     <Avatar :icon="`pi ${icon}`" class="shrink-0" aria-hidden="true" />
     <span class="flex min-w-0 flex-1 flex-col gap-0.5">
