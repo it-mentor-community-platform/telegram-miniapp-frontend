@@ -13,6 +13,9 @@ const props = defineProps<{
   langs: { name: string; counted: boolean }[]
   to?: RouteLocationRaw
   divider?: boolean
+  // A tile in a ListSection with `tiles`: from md up, a vertical card — icon, title, status, and the
+  // chevron in the top-right corner.
+  tile?: boolean
   // Whether langs is known: 'loading' shows a placeholder status line, 'unknown' (load failed) none.
   status?: 'loaded' | 'loading' | 'unknown'
 }>()
@@ -25,8 +28,12 @@ const submitted = computed(() => loaded.value && props.langs.length > 0)
   <component
     :is="to ? RouterLink : 'div'"
     :to="to"
-    class="flex min-h-18 items-center gap-3 px-4 py-3 text-color"
-    :class="{ 'border-t border-surface': divider, 'focus-ring hover:bg-emphasis': to }"
+    class="relative flex min-h-18 items-center gap-3 px-4 py-3 text-color"
+    :class="[
+      { 'border-t border-surface': divider, 'focus-ring': to },
+      tile && 'md:min-h-33 md:flex-col md:items-start md:p-4',
+      to && (tile ? 'max-md:hover:bg-row-hover md:hover:border-card-hover md:hover:shadow-card-hover' : 'hover:bg-row-hover'),
+    ]"
   >
     <Avatar
       class="shrink-0"
@@ -35,7 +42,7 @@ const submitted = computed(() => loaded.value && props.langs.length > 0)
     >
       <ProjectIcon :icon="icon" />
     </Avatar>
-    <span class="flex min-w-0 flex-1 flex-col gap-1.5">
+    <span class="flex min-w-0 flex-1 flex-col gap-1.5" :class="{ 'md:self-stretch': tile }">
       <span class="text-md font-semibold">{{ title }}</span>
       <Skeleton v-if="status === 'loading'" width="7rem" height="0.875rem" aria-hidden="true" />
       <span v-else-if="submitted" class="flex flex-wrap items-center gap-1.5">
@@ -46,6 +53,10 @@ const submitted = computed(() => loaded.value && props.langs.length > 0)
       </span>
       <span v-else-if="loaded" class="text-xs font-medium text-muted-color">Не сдан</span>
     </span>
-    <i class="pi pi-chevron-right shrink-0 text-sm text-subtle-color" aria-hidden="true" />
+    <i
+      class="pi pi-chevron-right shrink-0 text-sm text-subtle-color"
+      :class="{ 'md:absolute md:top-5 md:right-4': tile }"
+      aria-hidden="true"
+    />
   </component>
 </template>

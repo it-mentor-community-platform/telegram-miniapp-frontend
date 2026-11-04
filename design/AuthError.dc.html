@@ -14,7 +14,9 @@ body{margin:0}
 a{color:inherit}a:hover{color:inherit}
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 24px 24px 32px; display: flex; flex-direction: column; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; gap: {{L.rootGap}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
 <main style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center">
 <span style="width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{iconBg}}; color: {{iconFg}}">
@@ -76,8 +78,10 @@ a{color:inherit}a:hover{color:inherit}
 </div>
 
 </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Вне Telegram","Ошибка входа","Сессия истекла"],"default":"Вне Telegram"},"devHint":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"scenario":{"editor":"enum","options":["Вне Telegram","Ошибка входа","Сессия истекла"],"default":"Вне Telegram"},"devHint":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
@@ -94,7 +98,27 @@ class Component extends DCLogic {
       chip: '#f1f5f9', devBorder: '#94a3b8', primarySoft: '#ecfdf5', primaryText: '#047857',
       warnSoft: '#fff7ed', warnText: '#c2410c', btnBg: '#047857', btnText: '#ffffff'
     };
-    return {
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && false, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 800 : 1112) : 844,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '844px', rootPad: wide ? '0' : '24px 24px 32px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, { maxW: '440px', rootPad: wide ? '32px' : '24px 24px 32px', rootBg: wide ? t.card : t.bg, rootBorder: wide ? '1px solid ' + t.border : 'none',
+      rootRadius: wide ? '16px' : '0', rootShadow: wide && !dark ? '0 1px 3px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.06)' : 'none',
+      rootGap: wide ? '24px' : '0', areaAlign: wide ? 'center' : 'flex-start', areaPad: wide ? '32px' : '0' });
+    return { layout, L, dk, tk: dark ? 'd' : 'l',
       t, failed, expired, outside: !warn,
       showDev: this.props.devHint ?? false,
       iconBg: warn ? t.warnSoft : t.primarySoft,

@@ -12,13 +12,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+.hv-row,.hv-card,.hv-btn{transition:background-color .15s,border-color .15s,box-shadow .15s,filter .15s}
+@media (hover:hover){.hv-l.hv-row:hover{background:#f8fafc!important}.hv-d.hv-row:hover{background:#1f1f23!important}.hv-l.hv-card:hover{border-color:#cbd5e1!important;box-shadow:0 2px 8px rgba(15,23,42,.06)!important}.hv-d.hv-card:hover{border-color:#52525b!important}.hv-l.hv-btn:hover{background:#065f46!important}.hv-d.hv-btn:hover{background:#6ee7b7!important}}
 a{color:inherit}a:hover{color:inherit}
 @keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </helmet>
-<div style="width: 390px; height: 1200px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 20px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<sc-if value="{{L.shell}}" hint-placeholder-val="{{ false }}">
+<dc-import name="AppShell" layout="{{layout}}" active="home" role="{{L.role}}" height="{{L.frameH}}" dark="{{dark}}" hint-size="248px,100%"></dc-import>
+</sc-if>
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 20px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
-<header style="display: flex; align-items: center; gap: 12px">
+<header style="display: flex; align-items: center; gap: 12px; grid-column: {{L.full}}">
 <div style="width: 48px; height: 48px; border-radius: 50%; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; flex-shrink: 0">СЖ</div>
 <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0">
 <div style="font-size: 18px; font-weight: 600; line-height: 22px">Привет, Сергей</div>
@@ -33,7 +40,7 @@ a{color:inherit}a:hover{color:inherit}
 </button>
 </header>
 
-<a href="Repetition.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
+<a href="{{L.repHref}}" class="hv-card hv-{{tk}}" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="width: 44px; height: 44px; border-radius: 10px; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
@@ -47,7 +54,7 @@ a{color:inherit}a:hover{color:inherit}
 <dc-import name="StatTiles" items="{{stats}}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
 </a>
 
-<a href="Projects.dc.html" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
+<a href="{{L.projHref}}" class="hv-card hv-{{tk}}" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; text-decoration: none">
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="width: 44px; height: 44px; border-radius: 10px; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14"></path><path d="M15 6v14"></path></svg>
@@ -86,22 +93,22 @@ a{color:inherit}a:hover{color:inherit}
 </sc-if>
 </a>
 
-<section style="display: flex; flex-direction: column; gap: 8px">
+<section style="display: flex; flex-direction: column; gap: 8px; grid-column: {{L.full}}">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Разделы</h2>
-<nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
-<dc-import name="NavListRow" icon="user" title="Профиль" subtitle="Достижения, проекты и ревью" badge="4 ачивки" href="#" dark="{{dark}}" hint-size="100%,64px"></dc-import>
-<dc-import name="NavListRow" icon="review" title="Ревью" subtitle="Ревью на ваши проекты" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
-<dc-import name="NavListRow" icon="mentor" title="Кабинет ментора" subtitle="Цены на ревью и услуги" badge="{{mentorBadge}}" badge-tone="neutral" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
-<dc-import name="NavListRow" icon="people" title="Участники" subtitle="Поиск по имени, GitHub, Telegram" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
-<dc-import name="NavListRow" icon="chart" title="Рынок труда" subtitle="Вакансии и зарплаты на hh.ru" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<nav style="display: {{L.navDisplay}}; flex-direction: column; grid-template-columns: {{L.navCols}}; gap: {{L.navGap}}; border-radius: 12px; background: {{L.navBg}}; border: {{L.navBorder}}; box-shadow: {{L.navShadow}}; overflow: {{L.navOverflow}}">
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="user" title="Профиль" subtitle="Достижения, проекты и ревью" badge="4 ачивки" href="#" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="review" title="Ревью" subtitle="Ревью на ваши проекты" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="mentor" title="Кабинет ментора" subtitle="Цены на ревью и услуги" badge="{{mentorBadge}}" badge-tone="neutral" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="people" title="Участники" subtitle="Поиск по имени, GitHub, Telegram" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="chart" title="Рынок труда" subtitle="Вакансии и зарплаты на hh.ru" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
 <sc-if value="{{isAdmin}}" hint-placeholder-val="{{ false }}">
-<dc-import name="NavListRow" icon="shield" title="Администрирование" subtitle="Роли пользователей" href="#" divider="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="shield" title="Администрирование" subtitle="Роли пользователей" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
 </sc-if>
 </nav>
 </section>
 
 <sc-if value="{{showDev}}" hint-placeholder-val="{{ true }}">
-<section aria-label="Инструменты разработчика" style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px dashed {{t.devBorder}}; overflow: hidden">
+<section aria-label="Инструменты разработчика" style="grid-column: {{L.full}}; display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px dashed {{t.devBorder}}; overflow: hidden">
 <button type="button" onClick="{{toggleDev}}" aria-expanded="{{devExpanded}}" style="display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 16px; box-sizing: border-box; border: none; background: transparent; color: {{t.text}}; font: inherit; text-align: left; cursor: pointer">
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.text2}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="m8 7-5 5 5 5"></path><path d="m16 7 5 5-5 5"></path><path d="m13.5 4-3 16"></path></svg>
 <span style="flex: 1; min-width: 0; font-size: 14px; font-weight: 600; line-height: 20px">Для разработчиков</span>
@@ -130,8 +137,10 @@ a{color:inherit}a:hover{color:inherit}
 </sc-if>
 
 </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false},&quot;role&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Студент&quot;,&quot;Студент + ментор&quot;,&quot;Админ&quot;],&quot;default&quot;:&quot;Студент&quot;},&quot;devPanel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Скрыта&quot;,&quot;Свёрнута&quot;,&quot;Раскрыта&quot;],&quot;default&quot;:&quot;Раскрыта&quot;},&quot;inTelegram&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;projects&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Загружено&quot;,&quot;Загрузка&quot;,&quot;Ошибка&quot;],&quot;default&quot;:&quot;Загружено&quot;},&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:1200}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false},&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mobile&quot;,&quot;tablet&quot;,&quot;desktop&quot;],&quot;default&quot;:&quot;mobile&quot;},&quot;role&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Студент&quot;,&quot;Студент + ментор&quot;,&quot;Админ&quot;],&quot;default&quot;:&quot;Студент&quot;},&quot;devPanel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Скрыта&quot;,&quot;Свёрнута&quot;,&quot;Раскрыта&quot;],&quot;default&quot;:&quot;Раскрыта&quot;},&quot;inTelegram&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true},&quot;projects&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Загружено&quot;,&quot;Загрузка&quot;,&quot;Ошибка&quot;],&quot;default&quot;:&quot;Загружено&quot;},&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:1200}}">
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -166,10 +175,34 @@ class Component extends DCLogic {
     const inTelegram = this.props.inTelegram ?? true;
     const devOpen = this.state.devOpen ?? (devPanel === 'Раскрыта');
     const projState = this.props.projects ?? 'Загружено';
-    return { t, dark,
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && true, role: role,
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 800 : 1112) : 1200,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '1200px', rootPad: wide ? '0' : '20px 16px 24px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, {
+      display: wide ? 'grid' : 'flex', cols: desk ? 'repeat(2, minmax(0, 1fr))' : 'minmax(0, 1fr)',
+      navDisplay: wide ? 'grid' : 'flex', navCols: 'repeat(2, minmax(0, 1fr))', navGap: wide ? '12px' : '0',
+      navBg: wide ? 'transparent' : t.card, navBorder: wide ? 'none' : '1px solid ' + t.border, navShadow: wide ? 'none' : t.shadow, navOverflow: wide ? 'visible' : 'hidden',
+      tile: wide ? 'flex' : 'contents', div: !wide,
+      repHref: dk('Repetition.dc.html'), projHref: dk('Projects.dc.html')
+    });
+    return { layout, L, dk, tk: dark ? 'd' : 'l', t, dark,
       projLoaded: projState === 'Загружено', projLoading: projState === 'Загрузка', projError: projState === 'Ошибка',
       skelRows: [{ w: '96px' }, { w: '112px' }],
-      showDev: devPanel !== 'Скрыта', devOpen, devExpanded: devOpen ? 'true' : 'false', devRot: devOpen ? 'rotate(180deg)' : 'none',
+      showDev: devPanel !== 'Скрыта' && !wide, devOpen, devExpanded: devOpen ? 'true' : 'false', devRot: devOpen ? 'rotate(180deg)' : 'none',
       statusLabel: inTelegram ? 'Telegram' : 'Браузер',
       statusBg: inTelegram ? t.primarySoft : t.warnSoft, statusFg: inTelegram ? t.primaryText : t.warnText,
       initData: inTelegram ? 'query_id=AAHdF6IQAAAAAN0XohDhrOrc&user=%7B%22id%22%3A123456789%2C%22first_name%22%3A%22%D0%A1%D0%B5%D1%80%D0%B3%D0%B5%D0%B9%22%2C%22username%22%3A%22zhukovsd%22%2C%22language_code%22%3A%22ru%22%7D&auth_date=1792860000&hash=c501b71e775f74ce10e377dea85a7ea24ecd640b223ea86dfe453e0eaed2e2b2' : 'Init data не найдена. Откройте приложение из Telegram или добавьте query-параметры к URL.',

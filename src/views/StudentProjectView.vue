@@ -23,7 +23,7 @@ const projectType = computed(() => projectTypeBySlug(String(route.params.project
 
     <ProjectPage v-if="projectType" :key="projectType.id" :project-type="projectType" />
 
-    <div v-else class="flex flex-1 flex-col items-center justify-center gap-4 pb-20 text-center">
+    <div v-else class="flex flex-1 flex-col items-center justify-center gap-4 pb-20 text-center md:flex-none md:pt-18">
       <Avatar
         icon="pi pi-search"
         shape="circle"
