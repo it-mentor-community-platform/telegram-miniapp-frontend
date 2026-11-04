@@ -1,13 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalizedLoaded } from 'vue-router'
+import { projectTypeBySlug } from './roadmap'
 import { session, whenAuthenticated } from './session'
 import HomeView from './views/HomeView.vue'
 import StudentProjectsView from './views/StudentProjectsView.vue'
+import StudentImplementationView from './views/StudentImplementationView.vue'
 import StudentProjectView from './views/StudentProjectView.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    // Label of this route in the breadcrumb trail of its descendants.
-    breadcrumb?: string
+    // Label of this route in the breadcrumb trail of its descendants; a function for labels that
+    // depend on params (undefined: no crumb).
+    breadcrumb?: string | ((route: RouteLocationNormalizedLoaded) => string | undefined)
     // false: no app shell on tablet/desktop, for focused screens such as the review session.
     shell?: boolean
   }
@@ -29,8 +32,19 @@ export const router = createRouter({
           meta: { breadcrumb: 'Мои проекты' },
           children: [
             { path: '', name: 'student-projects', component: StudentProjectsView },
-            // `:projectType` is the readable slug; an unknown one renders the not-found state.
-            { path: ':projectType', name: 'student-project', component: StudentProjectView },
+            {
+              // `:projectType` is the readable slug; an unknown one renders the not-found state.
+              path: ':projectType',
+              meta: { breadcrumb: (route) => projectTypeBySlug(String(route.params.projectType))?.title },
+              children: [
+                { path: '', name: 'student-project', component: StudentProjectView },
+                {
+                  path: 'implementations/:implementationId',
+                  name: 'student-implementation',
+                  component: StudentImplementationView,
+                },
+              ],
+            },
           ],
         },
       ],

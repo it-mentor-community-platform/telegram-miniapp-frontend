@@ -25,6 +25,9 @@ export type ProjectResponseDto = {
   roadmap_project: RoadmapProjectDto
   // Epoch seconds.
   added_timestamp: number
+  // Only for project types with a deploy; null when not set. In the system analytics spec, not yet
+  // in project-service's OpenAPI (absent from its responses so far).
+  deployment_url?: string | null
 }
 
 // Body of POST /api/project/project, required fields only (the optional `added_timestamp` and
@@ -34,4 +37,12 @@ export type CreateProjectRequestDto = {
   github_repository_url: string
   programming_language: string
   roadmap_project: RoadmapProjectDto
+}
+
+// Body of PATCH /api/project/projects/{id} (system analytics spec, not yet in OpenAPI). The GitHub
+// URL is always sent: a body without it is a 400. `deployment_url`: omitted - unchanged, null -
+// removed.
+export type UpdateProjectRequestDto = {
+  github_repository_url: string
+  deployment_url?: string | null
 }

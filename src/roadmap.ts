@@ -24,7 +24,8 @@ export type ProjectType = {
   title: string
   icon: ProjectIcon
   // Whether an implementation can have a deploy link (web projects from currency exchange on).
-  // Unused until project-service stores deploy links; the form has no deploy field until then.
+  // Used by the implementation page; the submit form has no deploy field until project-service
+  // stores deploy links.
   deployable: boolean
   // Page of the spec in each roadmap course: <course>/projects/<specPath>/.
   specPath: string
@@ -42,6 +43,8 @@ export type Implementation = {
   projectType: RoadmapProjectDto
   language: string
   githubUrl: string
+  // Only for deployable project types, when set.
+  deployUrl?: string
   submittedAt: Date
 }
 
@@ -62,6 +65,11 @@ export const PROJECT_TYPES: ProjectType[] = [
 
 export function projectTypeBySlug(slug: string): ProjectType | undefined {
   return PROJECT_TYPES.find((type) => type.slug === slug)
+}
+
+// Undefined for project-service types outside the roadmap (WEATHER_VIEWER, OTHER).
+export function projectTypeById(id: RoadmapProjectDto): ProjectType | undefined {
+  return PROJECT_TYPES.find((type) => type.id === id)
 }
 
 export const TRACKED_LANGUAGES = ['Java', 'Python', 'Go']
@@ -139,6 +147,7 @@ export function toImplementation(dto: ProjectResponseDto): Implementation {
     projectType: dto.roadmap_project,
     language: canonicalLanguage(dto.programming_language),
     githubUrl: dto.github_repository_url,
+    deployUrl: dto.deployment_url || undefined,
     submittedAt: new Date(dto.added_timestamp * 1000),
   }
 }
@@ -147,4 +156,17 @@ export function toImplementation(dto: ProjectResponseDto): Implementation {
 // duplicate check (409) as a different link. Case is kept as typed.
 export function canonicalGithubUrl(url: string) {
   return url.trim().replace(/\/+$/, '').replace(/\.git$/i, '')
+}
+
+// https://github.com/<owner>/<repo>, optionally with a trailing "/" or ".git" (design/README.md →
+// Project page data → Validation).
+const GITHUB_REPOSITORY = /^https:\/\/(www\.)?github\.com\/[\w.-]+\/[\w.-]+\/?$/i
+
+export function isGithubRepositoryUrl(url: string) {
+  return GITHUB_REPOSITORY.test(url.trim())
+}
+
+// Deploy links: any https:// URL; whether the site responds is not checked.
+export function isHttpsUrl(url: string) {
+  return /^https:\/\/\S+$/i.test(url.trim())
 }

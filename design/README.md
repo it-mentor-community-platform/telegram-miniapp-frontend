@@ -134,6 +134,36 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
   → «Сдан на Java, Python и Go»). Use the response body, no refetch. Invalidate the cached
   `my/summary` so `Projects` / `Main` show the new progress.
 
+### Implementation page data
+
+`Implementation` reads one implementation (`GET /api/project/projects/{id}`) and edits its GitHub
+and deploy links (`PATCH /api/project/projects/{id}`), see
+`meta/system-analytics/services/project-service/index.md`. Every row of «Мои реализации» links here.
+
+> **Mocked:** neither endpoint (nor `deployment_url`) is in project-service yet. `src/mocks/implementations.ts`
+> serves demo implementations (ids from 900001, the mockups' data) and finds any other id among the
+> student's real implementations (`GET /projects/my`). Edits live in memory until a reload. In test
+> environments `?mock=loading | load-error | not-found | save-conflict | save-error` on the page URL
+> forces a corner case; the developer panel on `Main` links to every demo and scenario. Saving the
+> URL of another implementation (e.g. the demo `…/currency-exchange-fastapi`) is a real 409.
+> **Reviews** are not built yet: no reviews block, the right column on wide layouts stays empty.
+
+- **Loading** — skeletons for the title and the details / GitHub cards.
+- **Load failed** (any error except 401 and 404) — error `Message` «Не удалось загрузить реализацию.
+  Проверьте соединение и попробуйте ещё раз.» + «Попробовать снова».
+- **Not found** — 404, a non-numeric id, or a type outside the roadmap: the `ProjectType-NotFound`
+  layout with «Реализация не найдена» and «К моим проектам».
+- **Wrong `:projectType`** in the URL — replaced with the implementation's actual type (query kept).
+- **Header status** — «Засчитана в прогресс Java Backend» for Java / Python / Go; for other
+  languages a muted «Не засчитывается в прогресс роадмапов» (not in the mockups).
+- **GitHub edit** (`Impl-EditGithub`) — prefilled with the current link; format checked on save
+  (same rule and text as the submit form); an unchanged link closes without a request. 409 →
+  `Impl-GithubTaken` text under the field; other errors → «Не удалось сохранить ссылку. Попробуйте
+  ещё раз.»; entered value stays.
+- **Deploy** (deployable types only; `Impl-NoDeploy`, `Impl-EditDeploy`) — must start with
+  `https://`; saving an emptied field removes the link, as does «Удалить ссылку на деплой».
+- The `impl_<id>` deep link is not wired yet: the app has no `startapp` handling.
+
 ### Developer panel (home, test environments only)
 
 The bottom of `Main` has a collapsible **"Для разработчиков"** panel carried over from the starter
