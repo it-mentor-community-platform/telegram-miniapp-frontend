@@ -14,12 +14,40 @@ body{margin:0}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 </style>
 </helmet>
-<div style="width: 390px; height: 1940px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 28px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 28px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
-<header style="display: flex; flex-direction: column; gap: 4px">
+<header style="display: flex; flex-direction: column; gap: 4px; grid-column: {{L.full}}">
 <h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Компоненты</h1>
 <p style="margin: 0; font-size: 13px; line-height: 18px; color: {{t.muted}}">Общие блоки, которых нет в PrimeVue. Каждый — отдельный файл; экраны импортируют их. В коде — один Vue-компонент на блок.</p>
 </header>
+
+<sc-if value="{{L.wide}}" hint-placeholder-val="{{ false }}">
+<section style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 20px; padding: 20px; border-radius: 12px; border: 1px dashed {{t.dash}}">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Широкие варианты · планшет и десктоп</span><span style="font-size: 12px; color: {{t.muted}}">Остальные компоненты растягиваются по ширине своей ячейки. Отдельный вариант есть только у ProjectRow — карточка для сетки проектов.</span></div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">ProjectRow · variant="card"</span><span style="font-size: 12px; color: {{t.muted}}">Сетка 3 колонки на десктопе, 2 на планшете. Вся карточка — ссылка; шеврон в правом верхнем углу.</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<dc-import name="ProjectRow" icon="hangman" title="Виселица" langs="{{pr1}}" variant="card" dark="{{dark}}" hint-size="100%,132px"></dc-import>
+<dc-import name="ProjectRow" icon="simulation" title="Симуляция" langs="{{pr2}}" variant="card" dark="{{dark}}" hint-size="100%,132px"></dc-import>
+<dc-import name="ProjectRow" icon="cloud" title="Облачное хранилище" langs="{{pr0}}" variant="card" status="loading" dark="{{dark}}" hint-size="100%,132px"></dc-import>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">RoadmapProgress · несколько треков в ряд</span><span style="font-size: 12px; color: {{t.muted}}">Тот же компонент в сетке repeat(auto-fit, minmax(220px, 1fr)): три трека в ряд на десктопе.</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 32px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
+<dc-import name="RoadmapProgress" label="Java Backend" steps="{{s3}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+<dc-import name="RoadmapProgress" label="Python Backend" steps="{{s6}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+<dc-import name="RoadmapProgress" label="Go Backend" steps="{{s1}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+</div>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">StatTiles · во всю ширину</span><span style="font-size: 12px; color: {{t.muted}}">Три плитки делят ширину поровну; варианта не нужно.</span></div>
+<dc-import name="StatTiles" items="{{tilesA}}" dark="{{dark}}" hint-size="100%,64px"></dc-import>
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">Hover · только для мыши</span><span style="font-size: 12px; color: {{t.muted}}">Строки — фон светлее, карточки — граница темнее и тень. Внутри @media (hover: hover): на тач-экранах не залипает. Вся информация видна и без наведения.</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start">
+<dc-import name="ProjectRow" icon="hangman" title="Виселица" langs="{{pr1}}" variant="card" hover="{{ true }}" dark="{{dark}}" hint-size="100%,132px"></dc-import>
+<div style="border-radius: 12px; border: 1px solid {{t.border}}; overflow: hidden"><dc-import name="ProjectRow" icon="simulation" title="Симуляция" langs="{{pr2}}" hover="{{ true }}" dark="{{dark}}" hint-size="100%,72px"></dc-import></div>
+<div style="border-radius: 12px; border: 1px solid {{t.border}}; overflow: hidden"><dc-import name="NavListRow" icon="review" title="Ревью" subtitle="Ревью на ваши проекты" hover="{{ true }}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
+</div>
+</section>
+</sc-if>
 
 <section style="display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">RoadmapProgress</span><span style="font-size: 12px; color: {{t.muted}}">6 сегментов — какие проекты сданы. Трек с 0/6 не показывается.</span></div>
@@ -86,15 +114,35 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 </section>
 
 </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1940}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"$preview":{"width":390,"height":1940}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
     const t = dark
-      ? { bg: '#09090b', card: '#18181b', border: '#27272a', text: '#fafafa', muted: '#a1a1aa' }
-      : { bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', text: '#0f172a', muted: '#64748b' };
-    return {
+      ? { bg: '#09090b', card: '#18181b', border: '#27272a', dash: '#52525b', text: '#fafafa', muted: '#a1a1aa' }
+      : { bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', dash: '#94a3b8', text: '#0f172a', muted: '#64748b' };
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && false, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 2200 : 3080) : 1940,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '1940px', rootPad: wide ? '0' : '20px 16px 24px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, { maxW: '1200px', display: desk ? 'grid' : 'flex', cols: 'repeat(2, minmax(0, 1fr))', items: desk ? 'start' : 'stretch', colGap: '40px', areaPad: wide ? '40px' : '0' });
+    return { layout, L, s1: [true, false, false, false, false, false],
       t, dark,
       s0: [false, false, false, false, false, false],
       s3: [true, false, true, true, false, false],

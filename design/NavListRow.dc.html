@@ -11,9 +11,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+.hv-row{transition:background-color .15s}
+@media (hover:hover){.hv-l.hv-row:hover{background:#f8fafc!important}.hv-d.hv-row:hover{background:#1f1f23!important}}
 </style>
 </helmet>
-<a href="{{href}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; font-family: Inter, system-ui, sans-serif; color: {{t.text}}; background: {{t.card}}; border-top: 1px solid {{sep}}">
+<a href="{{href}}" class="hv-row hv-{{tk}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 64px; box-sizing: border-box; text-decoration: none; font-family: Inter, system-ui, sans-serif; color: {{t.text}}; background: {{bg}}; border-top: 1px solid {{sep}}">
 <span style="width: 40px; height: 40px; border-radius: 10px; background: {{t.chip}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
 <sc-if value="{{is.user}}" hint-placeholder-val="{{ true }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></sc-if>
 <sc-if value="{{is.review}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><path d="m8 10 3 3 5-5"></path></svg></sc-if>
@@ -29,7 +31,7 @@ body{margin:0}
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.chev}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="m9 6 6 6-6 6"></path></svg>
 </a>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"icon":{"editor":"enum","options":["user","review","mentor","people","chart","shield"],"default":"user"},"title":{"editor":null,"tsType":"string"},"subtitle":{"editor":null,"tsType":"string"},"badge":{"editor":null,"tsType":"string"},"badgeTone":{"editor":"enum","options":["success","neutral"],"default":"success"},"href":{"editor":null,"tsType":"string"},"divider":{"editor":"boolean","default":false},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":64}}'>
+<script type="text/x-dc" data-dc-script data-props='{"icon":{"editor":"enum","options":["user","review","mentor","people","chart","shield"],"default":"user"},"title":{"editor":null,"tsType":"string"},"subtitle":{"editor":null,"tsType":"string"},"badge":{"editor":null,"tsType":"string"},"badgeTone":{"editor":"enum","options":["success","neutral"],"default":"success"},"href":{"editor":null,"tsType":"string"},"divider":{"editor":"boolean","default":false},"hover":{"editor":"boolean","default":false},"dark":{"editor":"boolean","default":false},"$preview":{"width":358,"height":64}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
@@ -46,7 +48,8 @@ class Component extends DCLogic {
     const is = {};
     ['user', 'review', 'mentor', 'people', 'chart', 'shield'].forEach((k) => { is[k] = icon === k; });
     return {
-      t, is, badge,
+      t, is, badge, tk: dark ? 'd' : 'l',
+      bg: (this.props.hover ?? false) ? (dark ? '#1f1f23' : '#f8fafc') : t.card,
       title: this.props.title ?? 'Профиль',
       subtitle: this.props.subtitle ?? 'Достижения, проекты и ревью',
       href: this.props.href ?? '#',

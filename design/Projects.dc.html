@@ -15,15 +15,21 @@ a{color:inherit}a:hover{color:inherit}
 @keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </helmet>
-<div style="width: 390px; height: 960px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<sc-if value="{{L.shell}}" hint-placeholder-val="{{ false }}">
+<dc-import name="AppShell" layout="{{layout}}" active="projects" role="{{L.role}}" height="{{L.frameH}}" dark="{{dark}}" hint-size="248px,100%"></dc-import>
+</sc-if>
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 16px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
 <div style="margin: -12px 0 -10px 0">
-<dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+<dc-import name="Breadcrumbs" items="{{crumbs}}" home-href="{{L.home}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
 </div>
 <h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Мои проекты</h1>
 
 <sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
 <section aria-busy="true" aria-label="Загрузка прогресса" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<div style="display: {{L.tracks}}; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 32px">
 <sc-for list="{{skelTracks}}" as="k" hint-placeholder-count="2">
 <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; justify-content: space-between; align-items: center">
@@ -33,6 +39,7 @@ a{color:inherit}a:hover{color:inherit}
 <span style="height: 8px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
 </div>
 </sc-for>
+</div>
 <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid {{t.border}}">
 <span style="width: 100%; height: 12px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
 <span style="width: 70%; height: 12px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
@@ -66,10 +73,14 @@ a{color:inherit}a:hover{color:inherit}
 </span>
 </div>
 </sc-if>
+<div style="display: {{L.trackRow}}; align-items: center; gap: 32px">
+<div style="flex: {{L.tracksFlex}}; display: {{L.tracks}}; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 32px">
 <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="1">
 <dc-import name="RoadmapProgress" label="{{tr.name}}" steps="{{tr.flags}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
 </sc-for>
-<p style="margin: 0; padding-top: 12px; border-top: 1px solid {{t.border}}; font-size: 12px; line-height: 17px; color: {{t.muted}}">{{trackNote}}</p>
+</div>
+<p style="flex: 1; margin: 0; padding-top: {{L.notePt}}; padding-left: {{L.notePl}}; border-top: {{L.noteBt}}; border-left: {{L.noteBl}}; font-size: 12px; line-height: 17px; color: {{t.muted}}">{{trackNote}}</p>
+</div>
 </section>
 </sc-if>
 
@@ -83,9 +94,9 @@ a{color:inherit}a:hover{color:inherit}
 
 <section style="display: flex; flex-direction: column; gap: 8px">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Проекты роадмапа</h2>
-<nav style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<nav style="display: {{L.navDisplay}}; flex-direction: column; grid-template-columns: {{L.navCols}}; gap: {{L.navGap}}; border-radius: 12px; background: {{L.navBg}}; border: {{L.navBorder}}; box-shadow: {{L.navShadow}}; overflow: {{L.navOverflow}}">
 <sc-for list="{{projects}}" as="p" hint-placeholder-count="6">
-<dc-import name="ProjectRow" icon="{{p.icon}}" title="{{p.name}}" langs="{{p.langs}}" href="{{p.href}}" divider="{{p.divider}}" status="{{rowStatus}}" dark="{{dark}}" hint-size="100%,72px"></dc-import>
+<dc-import name="ProjectRow" icon="{{p.icon}}" title="{{p.name}}" langs="{{p.langs}}" href="{{p.href}}" divider="{{p.divider}}" status="{{rowStatus}}" variant="{{L.rowVariant}}" dark="{{dark}}" hint-size="100%,72px"></dc-import>
 </sc-for>
 </nav>
 <sc-if value="{{hasUntracked}}" hint-placeholder-val="{{ false }}">
@@ -97,8 +108,10 @@ a{color:inherit}a:hover{color:inherit}
 </section>
 
 </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"scenario":{"editor":"enum","options":["Пусто","Java 3/6","Несколько языков","Java 6/6","Только другие языки","Загрузка","Ошибка"],"default":"Пусто"},"$preview":{"width":390,"height":960}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"scenario":{"editor":"enum","options":["Пусто","Java 3/6","Java и Python","Несколько языков","Java 6/6","Только другие языки","Загрузка","Ошибка"],"default":"Пусто"},"$preview":{"width":390,"height":960}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
@@ -114,9 +127,32 @@ class Component extends DCLogic {
       chip: '#f1f5f9', primarySoft: '#ecfdf5', primaryText: '#047857',
       track: '#e2e8f0', bar: '#10b981', btnBg: '#047857', btnText: '#ffffff'
     };
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && true, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 800 : 1112) : 960,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '960px', rootPad: wide ? '0' : '20px 16px 24px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, {
+      tracks: wide ? 'grid' : 'contents', rowVariant: wide ? 'card' : 'row',
+      navDisplay: wide ? 'grid' : 'flex', navCols: desk ? 'repeat(3, minmax(0, 1fr))' : 'repeat(2, minmax(0, 1fr))', navGap: wide ? '12px' : '0',
+      navBg: wide ? 'transparent' : t.card, navBorder: wide ? 'none' : '1px solid ' + t.border, navShadow: wide ? 'none' : t.shadow, navOverflow: wide ? 'visible' : 'hidden'
+    });
     const data = {
       'Пусто': [[], [], [], [], [], []],
       'Java 3/6': [['Java'], [], ['Java'], ['Java'], [], []],
+      'Java и Python': [['Java', 'Python'], ['Java'], ['Java', 'Python'], ['Java'], [], []],
       'Несколько языков': [['Java', 'Python', 'Go'], ['Java', 'C#'], ['Java', 'Python'], [], [], []],
       'Java 6/6': [['Java'], ['Java'], ['Java'], ['Java'], ['Java'], ['Java']],
       'Только другие языки': [['C#'], [], ['Rust'], [], [], []]
@@ -137,9 +173,9 @@ class Component extends DCLogic {
       else if (done) href = 'ProjectType-List.dc.html';
       else href = deployable[i] ? 'ProjectType-Empty.dc.html' : 'ProjectType.dc.html';
       return {
-        icon: icons[i], name, href,
+        icon: icons[i], name, href: dk(href),
         langs: langs.map((l) => ({ name: l, counted: tracked.includes(l) })),
-        divider: i > 0
+        divider: i > 0 && !wide
       };
     });
     const tracks = tracked.map((lang) => {
@@ -152,8 +188,11 @@ class Component extends DCLogic {
       };
     }).filter((tr) => tr.done > 0);
     const any = langsBy.some((ls) => ls.length > 0);
+    const single = desk && tracks.length <= 2;
+    Object.assign(L, { trackRow: single ? 'flex' : 'contents', tracksFlex: single ? (tracks.length === 1 ? '0 0 380px' : '0 0 580px') : '0 1 auto',
+      notePt: single ? '0' : '12px', notePl: single ? '32px' : '0', noteBt: single ? 'none' : '1px solid ' + t.border, noteBl: single ? '1px solid ' + t.border : 'none' });
     const hasUntracked = langsBy.some((ls) => ls.some((l) => !tracked.includes(l)));
-    return { t, dark, crumbs: [], projects, tracks,
+    return { layout, L, dk, tk: dark ? 'd' : 'l', t, dark, crumbs: [], projects, tracks,
       isLoading, isError,
       rowStatus: isLoading ? 'loading' : isError ? 'unknown' : 'loaded',
       skelTracks: [{ w: '112px' }, { w: '128px' }],

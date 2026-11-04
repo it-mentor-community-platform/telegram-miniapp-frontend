@@ -405,6 +405,221 @@
       "h": 844,
       "title": "13 · Проект не найден",
       "is_interactive": true
+    },
+    "Main-Desktop.dc.html": {
+      "x": 0,
+      "y": 11700,
+      "w": 1280,
+      "h": 800,
+      "title": "Главная · десктоп",
+      "is_interactive": true
+    },
+    "Main-Tablet.dc.html": {
+      "x": 1360,
+      "y": 11700,
+      "w": 834,
+      "h": 1112,
+      "title": "Главная · планшет",
+      "is_interactive": true
+    },
+    "AuthError-Desktop.dc.html": {
+      "x": 2274,
+      "y": 11700,
+      "w": 1280,
+      "h": 800,
+      "title": "Вход · вне Telegram · десктоп",
+      "is_interactive": true
+    },
+    "DevLogin-Desktop.dc.html": {
+      "x": 3634,
+      "y": 11700,
+      "w": 1280,
+      "h": 900,
+      "title": "Dev-вход · пустая форма · десктоп",
+      "is_interactive": true
+    },
+    "Repetition-Desktop.dc.html": {
+      "x": 0,
+      "y": 13372,
+      "w": 1280,
+      "h": 800,
+      "title": "Повторение — мои темы · десктоп",
+      "is_interactive": true
+    },
+    "Repetition-Tablet.dc.html": {
+      "x": 1360,
+      "y": 13372,
+      "w": 834,
+      "h": 1112,
+      "title": "Повторение — мои темы · планшет",
+      "is_interactive": true
+    },
+    "Categories-Desktop.dc.html": {
+      "x": 2274,
+      "y": 13372,
+      "w": 1280,
+      "h": 840,
+      "title": "Все темы · десктоп",
+      "is_interactive": true
+    },
+    "Topic-Desktop.dc.html": {
+      "x": 3634,
+      "y": 13372,
+      "w": 1280,
+      "h": 1000,
+      "title": "Тема · десктоп",
+      "is_interactive": true
+    },
+    "Stats-Desktop.dc.html": {
+      "x": 4994,
+      "y": 13372,
+      "w": 1280,
+      "h": 940,
+      "title": "Статистика · десктоп",
+      "is_interactive": true
+    },
+    "Review-Desktop.dc.html": {
+      "x": 6354,
+      "y": 13372,
+      "w": 1280,
+      "h": 800,
+      "title": "Повторение — вопрос · десктоп",
+      "is_interactive": true
+    },
+    "Review-Done-Desktop.dc.html": {
+      "x": 7714,
+      "y": 13372,
+      "w": 1280,
+      "h": 800,
+      "title": "Повторение — итог · десктоп",
+      "is_interactive": true
+    },
+    "Projects-Desktop.dc.html": {
+      "x": 0,
+      "y": 15044,
+      "w": 1280,
+      "h": 800,
+      "title": "1 · Ничего не сдано · десктоп",
+      "is_interactive": true
+    },
+    "Projects-Multi-Desktop.dc.html": {
+      "x": 1360,
+      "y": 15044,
+      "w": 1280,
+      "h": 800,
+      "title": "3 · Несколько языков + C# · десктоп",
+      "is_interactive": true
+    },
+    "Projects-Loading-Desktop.dc.html": {
+      "x": 2720,
+      "y": 15044,
+      "w": 1280,
+      "h": 800,
+      "title": "6 · Загрузка · десктоп",
+      "is_interactive": true
+    },
+    "Projects-Tablet.dc.html": {
+      "x": 4080,
+      "y": 15044,
+      "w": 834,
+      "h": 1112,
+      "title": "Мои проекты · несколько языков · планшет",
+      "is_interactive": true
+    },
+    "ProjectType-Desktop.dc.html": {
+      "x": 0,
+      "y": 16716,
+      "w": 1280,
+      "h": 840,
+      "title": "1 · Виселица — первая сдача · десктоп",
+      "is_interactive": true
+    },
+    "ProjectType-List-Desktop.dc.html": {
+      "x": 1360,
+      "y": 16716,
+      "w": 1280,
+      "h": 840,
+      "title": "3 · Обмен валют — 3 реализации · десктоп",
+      "is_interactive": true
+    },
+    "ProjectType-Loading-Desktop.dc.html": {
+      "x": 2720,
+      "y": 16716,
+      "w": 1280,
+      "h": 840,
+      "title": "6 · Загрузка · десктоп",
+      "is_interactive": true
+    },
+    "ProjectType-Submitted-Desktop.dc.html": {
+      "x": 4080,
+      "y": 16716,
+      "w": 1280,
+      "h": 840,
+      "title": "11 · Сдан впервые · десктоп",
+      "is_interactive": true
+    },
+    "ProjectType-NotFound-Desktop.dc.html": {
+      "x": 5440,
+      "y": 16716,
+      "w": 1280,
+      "h": 800,
+      "title": "13 · Проект не найден · десктоп",
+      "is_interactive": true
+    },
+    "ProjectType-Tablet.dc.html": {
+      "x": 6800,
+      "y": 16716,
+      "w": 834,
+      "h": 1112,
+      "title": "Страница проекта · 3 реализации · планшет",
+      "is_interactive": true
+    },
+    "Implementation-Desktop.dc.html": {
+      "x": 0,
+      "y": 18388,
+      "w": 1280,
+      "h": 800,
+      "title": "1 · Обмен валют — деплой и 2 ревью · десктоп",
+      "is_interactive": true
+    },
+    "Impl-Hangman-Desktop.dc.html": {
+      "x": 1360,
+      "y": 18388,
+      "w": 1280,
+      "h": 800,
+      "title": "2 · Виселица — без ревью · десктоп",
+      "is_interactive": true
+    },
+    "AppShell.dc.html": {
+      "x": 0,
+      "y": 19748,
+      "w": 248,
+      "h": 800,
+      "title": "AppShell · десктоп"
+    },
+    "Components-Desktop.dc.html": {
+      "x": 328,
+      "y": 19748,
+      "w": 1280,
+      "h": 2200,
+      "title": "Каталог компонентов · десктоп",
+      "is_interactive": true
+    },
+    "Projects-Java3-Desktop.dc.html": {
+      "x": 4994,
+      "y": 15044,
+      "w": 1280,
+      "h": 800,
+      "title": "2 · Java 3/6 (один трек) · десктоп",
+      "is_interactive": true
+    },
+    "Projects-TwoTracks-Desktop.dc.html": {
+      "x": 6354,
+      "y": 15044,
+      "w": 1280,
+      "h": 800,
+      "title": "2b · Java и Python (два трека) · десктоп",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -463,6 +678,54 @@
       "w": 240,
       "x": 0,
       "y": 1480
+    },
+    "dtHome": {
+      "kind": "title1",
+      "maxW": 4914,
+      "text": "Desktop · Главная и вход",
+      "w": 240,
+      "x": 0,
+      "y": 11440
+    },
+    "dtRep": {
+      "kind": "title1",
+      "maxW": 8994,
+      "text": "Desktop · Интервальное повторение",
+      "w": 240,
+      "x": 0,
+      "y": 13112
+    },
+    "dtProj": {
+      "kind": "title1",
+      "maxW": 7634,
+      "text": "Desktop · Мои проекты",
+      "w": 240,
+      "x": 0,
+      "y": 14784
+    },
+    "dtType": {
+      "kind": "title1",
+      "maxW": 7634,
+      "text": "Desktop · Страница проекта",
+      "w": 240,
+      "x": 0,
+      "y": 16456
+    },
+    "dtImpl": {
+      "kind": "title1",
+      "maxW": 2640,
+      "text": "Desktop · Страница реализации",
+      "w": 240,
+      "x": 0,
+      "y": 18128
+    },
+    "dtCmp": {
+      "kind": "title1",
+      "maxW": 1608,
+      "text": "Desktop · Компоненты",
+      "w": 240,
+      "x": 0,
+      "y": 19488
     }
   },
   "order": [
@@ -517,7 +780,34 @@
     "LanguageTag.dc.html",
     "EmptyState.dc.html",
     "ActivityHeatmap.dc.html",
-    "ProjectRow.dc.html"
+    "ProjectRow.dc.html",
+    "Main-Desktop.dc.html",
+    "Main-Tablet.dc.html",
+    "AuthError-Desktop.dc.html",
+    "DevLogin-Desktop.dc.html",
+    "Repetition-Desktop.dc.html",
+    "Repetition-Tablet.dc.html",
+    "Categories-Desktop.dc.html",
+    "Topic-Desktop.dc.html",
+    "Stats-Desktop.dc.html",
+    "Review-Desktop.dc.html",
+    "Review-Done-Desktop.dc.html",
+    "Projects-Desktop.dc.html",
+    "Projects-Java3-Desktop.dc.html",
+    "Projects-TwoTracks-Desktop.dc.html",
+    "Projects-Multi-Desktop.dc.html",
+    "Projects-Loading-Desktop.dc.html",
+    "Projects-Tablet.dc.html",
+    "ProjectType-Desktop.dc.html",
+    "ProjectType-List-Desktop.dc.html",
+    "ProjectType-Loading-Desktop.dc.html",
+    "ProjectType-Submitted-Desktop.dc.html",
+    "ProjectType-NotFound-Desktop.dc.html",
+    "ProjectType-Tablet.dc.html",
+    "Implementation-Desktop.dc.html",
+    "Impl-Hangman-Desktop.dc.html",
+    "AppShell.dc.html",
+    "Components-Desktop.dc.html"
   ],
   "pages": [],
   "title": "IT Ментор — Telegram Mini App"

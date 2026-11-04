@@ -11,15 +11,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
 <style>
 body{margin:0}
+.hv-row,.hv-card,.hv-btn{transition:background-color .15s,border-color .15s,box-shadow .15s,filter .15s}
+@media (hover:hover){.hv-l.hv-row:hover{background:#f8fafc!important}.hv-d.hv-row:hover{background:#1f1f23!important}.hv-l.hv-card:hover{border-color:#cbd5e1!important;box-shadow:0 2px 8px rgba(15,23,42,.06)!important}.hv-d.hv-card:hover{border-color:#52525b!important}.hv-l.hv-btn:hover{background:#065f46!important}.hv-d.hv-btn:hover{background:#6ee7b7!important}}
 a{color:inherit}a:hover{color:inherit}
 </style>
 </helmet>
-<div style="width: 390px; height: 1120px; box-sizing: border-box; padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 16px; background: {{t.bg}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<sc-if value="{{L.shell}}" hint-placeholder-val="{{ false }}">
+<dc-import name="AppShell" layout="{{layout}}" active="repetition" role="{{L.role}}" height="{{L.frameH}}" dark="{{dark}}" hint-size="248px,100%"></dc-import>
+</sc-if>
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 16px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
-<div style="margin: -12px 0 -10px 0">
-<dc-import name="Breadcrumbs" items="{{crumbs}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+<div style="margin: -12px 0 -10px 0; grid-column: {{L.full}}">
+<dc-import name="Breadcrumbs" items="{{crumbs}}" home-href="{{L.home}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
 </div>
-<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Статистика</h1>
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px; grid-column: {{L.full}}">Статистика</h1>
 
 <section style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
 <div style="display: flex; align-items: baseline; justify-content: space-between">
@@ -67,13 +74,15 @@ a{color:inherit}a:hover{color:inherit}
 </div>
 </section>
 
+<div style="display: {{L.blk}}; grid-column: {{L.full}}">
 <dc-import name="ActivityHeatmap" dark="{{dark}}" hint-size="100%,230px"></dc-import>
+</div>
 
-<section style="display: flex; flex-direction: column; gap: 8px">
+<section style="display: flex; flex-direction: column; gap: 8px; grid-column: {{L.full}}">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">По темам</h2>
 <div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
 <sc-for list="{{topics}}" as="c" hint-placeholder-count="5">
-<a href="Topic.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; text-decoration: none; border-top: 1px solid {{c.sep}}">
+<a href="{{c.href}}" class="hv-row hv-{{tk}}" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; text-decoration: none; border-top: 1px solid {{c.sep}}">
 <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
 <span style="font-size: 15px; font-weight: 600; line-height: 20px">{{c.name}}</span>
 <span style="font-size: 13px; line-height: 18px; color: {{t.muted}}">{{c.learned}} из {{c.total}} выучено</span>
@@ -89,8 +98,10 @@ a{color:inherit}a:hover{color:inherit}
 </section>
 
 </div>
+</div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1120}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"$preview":{"width":390,"height":1120}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
@@ -105,14 +116,32 @@ class Component extends DCLogic {
       sLearned: '#047857', sProgress: '#34d399', sNew: '#e2e8f0', newRing: '#cbd5e1',
       heat: ['#f1f5f9', '#a7f3d0', '#34d399', '#059669', '#065f46']
     };
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && true, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 940 : 1112) : 1120,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : '1120px', rootPad: wide ? '0' : '20px 16px 24px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    Object.assign(L, { display: wide ? 'grid' : 'flex', cols: 'repeat(2, minmax(0, 1fr))' });
     const topics = [
       { name: 'Коллекции', total: 42, learned: 22, fresh: 4 },
       { name: 'Core', total: 38, learned: 26, fresh: 0 },
       { name: 'ООП', total: 31, learned: 22, fresh: 4 },
       { name: 'Многопоточность', total: 36, learned: 17, fresh: 0 },
       { name: 'Брокеры сообщений', total: 24, learned: 21, fresh: 0 }
-    ].map((c, i) => ({ ...c, prog: c.total - c.learned - c.fresh, sep: i === 0 ? 'transparent' : t.border }));
-    return { t, dark, crumbs: [{ label: 'Повторение', href: 'Repetition.dc.html' }], topics };
+    ].map((c, i) => ({ ...c, href: dk('Topic.dc.html'), prog: c.total - c.learned - c.fresh, sep: i === 0 ? 'transparent' : t.border }));
+    return { layout, L, dk, tk: dark ? 'd' : 'l', t, dark, crumbs: [{ label: 'Повторение', href: dk('Repetition.dc.html') }], topics };
   }
 }
 </script>
