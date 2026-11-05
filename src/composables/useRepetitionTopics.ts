@@ -60,6 +60,7 @@ function load(): Promise<void> {
   const currentGeneration = generation
   loading.value = true
   loadError.value = undefined
+  const previousErrors = actionErrors.value
   const request = (async () => {
     try {
       // A selection may change during a fetch. Refetch instead of applying a stale snapshot.
@@ -71,6 +72,13 @@ function load(): Promise<void> {
         if (currentGeneration !== generation) return
       } while (fetchedRevision !== revision)
       specializations.value = data
+      // A successful refresh reconciles conflicts/not-found errors. Keep errors from actions
+      // that failed after this refresh started so they are not silently dismissed.
+      const remainingErrors = new Map(actionErrors.value)
+      for (const [id, error] of previousErrors) {
+        if (remainingErrors.get(id) === error) remainingErrors.delete(id)
+      }
+      actionErrors.value = remainingErrors
     } catch (error) {
       if (currentGeneration === generation) loadError.value = error
     } finally {
