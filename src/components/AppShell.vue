@@ -14,7 +14,7 @@ const user = session.user!
 // but disabled, like its card on the home page.
 const items: { label: string; short: string; icon: string; to?: RouteLocationRaw }[] = [
   { label: 'Главная', short: 'Главная', icon: 'pi-home', to: { name: 'home' } },
-  { label: 'Вопросы к собеседованиям', short: 'Вопросы', icon: 'pi-sync' },
+  { label: 'Вопросы к собеседованиям', short: 'Вопросы', icon: 'pi-sync', to: user.roles.includes('STUDENT') ? { name: 'student-repetition-topics' } : undefined },
   { label: 'Мои проекты', short: 'Проекты', icon: 'pi-map', to: { name: 'student-projects' } },
 ]
 

@@ -5,6 +5,7 @@ import HomeView from './views/HomeView.vue'
 import StudentProjectsView from './views/StudentProjectsView.vue'
 import StudentImplementationView from './views/StudentImplementationView.vue'
 import StudentProjectView from './views/StudentProjectView.vue'
+import StudentRepetitionTopicsView from './views/StudentRepetitionTopicsView.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -26,6 +27,11 @@ export const router = createRouter({
       redirect: { name: 'home' },
       beforeEnter: () => (session.user?.roles.includes('STUDENT') ? true : { name: 'home' }),
       children: [
+        {
+          path: 'repetition/topics',
+          name: 'student-repetition-topics',
+          component: StudentRepetitionTopicsView,
+        },
         {
           // Unnamed parent: its breadcrumb links to the list, its empty-path child.
           path: 'projects',

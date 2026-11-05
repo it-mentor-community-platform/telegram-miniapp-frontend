@@ -46,6 +46,13 @@ Project pages (`/student/projects/<project>`) list and submit implementations th
 project-service. Deploy links are not stored by the backend yet, so the submit form has no deploy
 field.
 
+The repetition topic catalog (`/student/repetition/topics`, students only) loads specializations
+and topics from interval-repetition-service. Search and specialization filtering run locally;
+adding and removing topics persist through the API. Until the repetition dashboard is built,
+the home card and sidebar open this catalog directly. Topic detail pages are not linked yet.
+The learned percentage is a placeholder (0%) in `src/mocks/repetition.ts`; topic counts and
+selection states are real API data.
+
 ## Environments
 
 Each environment is a Vite mode with its own committed `.env.<mode>` file:
