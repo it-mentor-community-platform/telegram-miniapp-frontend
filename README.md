@@ -46,12 +46,18 @@ Project pages (`/student/projects/<project>`) list and submit implementations th
 project-service. Deploy links are not stored by the backend yet, so the submit form has no deploy
 field.
 
-The repetition topic catalog (`/student/repetition/topics`, students only) loads specializations
-and topics from interval-repetition-service. Search and specialization filtering run locally;
-adding and removing topics persist through the API. Until the repetition dashboard is built,
-the home card and sidebar open this catalog directly. Topic detail pages are not linked yet.
-The learned percentage is a placeholder (0%) in `src/mocks/repetition.ts`; topic counts and
-selection states are real API data.
+The repetition dashboard (`/student/repetition`, students only) is the section's entry point
+from home and the sidebar. It shows selected topics and real new/due question counts. A successful
+load with no selected topics opens initial selection at `/student/repetition/topics/select`.
+Choices are kept only in the page's memory and discarded on exit/reload; Continue is disabled
+until at least one topic is chosen and saves the IDs in one batch before opening the dashboard.
+Failed saves preserve the draft. Loading failures do not trigger initial selection.
+
+The regular catalog (`/student/repetition/topics`) persists each add/remove action immediately;
+search and specialization filtering run locally. Its breadcrumbs lead back to the dashboard.
+Topic details, review sessions and statistics navigation are not implemented yet; review/statistics
+buttons are disabled. Learned progress is a placeholder (0%) in `src/mocks/repetition.ts`;
+topic counts and selection states are real API data.
 
 ## Environments
 
