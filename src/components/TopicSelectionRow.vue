@@ -4,14 +4,15 @@ import ToggleButton from 'primevue/togglebutton'
 import Message from 'primevue/message'
 import Button from 'primevue/button'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   name: string
   questionCount: number
   selected: boolean
   learnedPercent: number
   pending: boolean
   error?: string
-}>()
+  showProgress?: boolean
+}>(), { showProgress: true })
 const emit = defineEmits<{ select: [selected: boolean]; refresh: [] }>()
 const errorId = useId()
 const questionLabel = computed(() => {
@@ -28,7 +29,7 @@ const questionLabel = computed(() => {
       <div class="flex min-w-0 flex-1 flex-col gap-0.5">
         <span class="text-md font-semibold wrap-anywhere">{{ name }}</span>
         <span class="text-meta text-muted-color">
-          {{ questionLabel }}<template v-if="selected"> · выучено {{ learnedPercent }}%</template>
+          {{ questionLabel }}<template v-if="selected && showProgress"> · выучено {{ learnedPercent }}%</template>
         </span>
       </div>
       <ToggleButton
