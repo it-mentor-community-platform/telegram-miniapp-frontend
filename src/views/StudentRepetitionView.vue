@@ -85,7 +85,7 @@ void refresh()
             <template #content>
               <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-3">
-                  <div class="flex min-w-0 flex-1 flex-col gap-1">
+                  <RouterLink :to="{ name: 'student-repetition-topic', params: { topicId: topic.id } }" class="focus-ring flex min-w-0 flex-1 flex-col gap-1 rounded-border text-color hover:text-primary">
                     <div class="flex flex-wrap items-center gap-2">
                       <h3 class="text-base font-semibold wrap-anywhere">{{ topic.name }}</h3>
                       <Tag :value="topic.specialization" severity="secondary" class="text-note" />
@@ -95,7 +95,7 @@ void refresh()
                       <span class="font-semibold text-(--p-tint-info-color)">{{ topic.new_questions }}</span> новых · {{ topic.all_questions }} всего
                     </p>
                     <p v-else class="text-meta text-muted-color">Всё повторено</p>
-                  </div>
+                  </RouterLink>
                   <Button v-if="topic.new_questions + topic.questions_ready_to_repeat > 0" icon="pi pi-play" rounded disabled :aria-label="`Повторить тему ${topic.name}`" />
                   <span v-else class="tint-success flex size-11 shrink-0 items-center justify-center rounded-full" role="img" aria-label="Всё повторено"><i class="pi pi-check" aria-hidden="true" /></span>
                 </div>

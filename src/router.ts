@@ -7,6 +7,7 @@ import StudentImplementationView from './views/StudentImplementationView.vue'
 import StudentProjectView from './views/StudentProjectView.vue'
 import StudentRepetitionTopicsView from './views/StudentRepetitionTopicsView.vue'
 import StudentRepetitionView from './views/StudentRepetitionView.vue'
+import StudentRepetitionTopicView from './views/StudentRepetitionTopicView.vue'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -34,7 +35,14 @@ export const router = createRouter({
           meta: { breadcrumb: 'Повторение' },
           children: [
             { path: '', name: 'student-repetition', component: StudentRepetitionView },
-            { path: 'topics', name: 'student-repetition-topics', component: StudentRepetitionTopicsView },
+            {
+              path: 'topics',
+              meta: { breadcrumb: 'Все темы' },
+              children: [
+                { path: '', name: 'student-repetition-topics', component: StudentRepetitionTopicsView },
+                { path: ':topicId', name: 'student-repetition-topic', component: StudentRepetitionTopicView },
+              ],
+            },
             {
               path: 'topics/select', name: 'student-repetition-select',
               component: StudentRepetitionTopicsView, props: { onboarding: true },
