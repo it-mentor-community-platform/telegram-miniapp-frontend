@@ -67,7 +67,7 @@ const isAdmin = user.roles.includes('ADMIN')
       />
     </header>
 
-    <SectionCard icon="pi-sync" title="Вопросы к собеседованиям" subtitle="Интервальное повторение" :to="isStudent ? { name: 'student-repetition-topics' } : undefined">
+    <SectionCard icon="pi-sync" title="Вопросы к собеседованиям" subtitle="Интервальное повторение" :to="isStudent ? { name: 'student-repetition' } : undefined">
       <StatTiles :items="home.repetitionStats" />
     </SectionCard>
 

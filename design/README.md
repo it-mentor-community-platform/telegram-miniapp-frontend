@@ -219,6 +219,7 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 | `/` | `home` | Главная | — |
 | `/student/repetition` | `student-repetition` | Повторение | 🏠 |
 | `/student/repetition/topics` | `student-repetition-topics` | Все темы | 🏠 › Повторение |
+| `/student/repetition/topics/select` | `student-repetition-select` | Initial topic selection (`Categories`, onboarding) | 🏠 |
 | `/student/repetition/topics/:topicId` | `student-repetition-topic` | Тема | 🏠 › Повторение › Все темы |
 | `/student/repetition/review` | `student-repetition-review` | Review session (`?topic=:topicId` = one topic; none = all) | none (close button only) |
 | `/student/repetition/stats` | `student-repetition-stats` | Статистика | 🏠 › Повторение |

@@ -28,6 +28,7 @@ export function breadcrumbTrail(route: RouteLocationNormalizedLoaded): Breadcrum
 
 // Where "back" leads from this route: the last breadcrumb, or home.
 export function parentLocation(route: RouteLocationNormalizedLoaded): RouteLocationRaw {
+  if (route.meta.backToHome) return { name: 'home' }
   return breadcrumbTrail(route).at(-1)?.to ?? { name: 'home' }
 }
 

@@ -141,5 +141,22 @@ export function useRepetitionTopics() {
     actionErrors: readonly(actionErrors),
     load,
     setSelected,
+    addSelectedCategories,
   }
+}
+
+// Initial selection is a single batch, confirmed before updating the shared catalog.
+// The page owns the unsaved draft, submission state and error; a different session ignores success.
+async function addSelectedCategories(categoryIds: number[]): Promise<boolean> {
+  const currentGeneration = generation
+  const saved = await saveSelectedCategories({ categoryIds: [...new Set(categoryIds)] })
+  if (currentGeneration !== generation) return false
+  revision++
+  const savedIds = new Set(saved.map((category) => category.id))
+  for (const specialization of specializations.value ?? []) {
+    for (const category of specialization.categories) {
+      if (savedIds.has(category.id)) category.selected = true
+    }
+  }
+  return true
 }
