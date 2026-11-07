@@ -134,6 +134,25 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
   → «Сдан на Java, Python и Go»). Use the response body, no refetch. Invalidate the cached
   `my/summary` so `Projects` / `Main` show the new progress.
 
+### Topic page data
+
+`Topic` reads `GET /api/interval-repetition/categories/{categoryId}` for question/answer text and
+new/due/total counts. Selection comes from the shared specializations catalog, not the detail DTO.
+The page remains readable if selection loading fails, with a separate retry for subscription state.
+Add/remove uses the same actions as the regular catalog; removing the last topic keeps this page
+open. The next dashboard entry starts initial selection as usual.
+
+- Invalid/non-positive/unsafe IDs and backend 404 show a topic not-found state without changing the URL.
+- Loading uses skeletons; other detail errors have a retry. Route changes discard old detail data
+  and ignore late responses.
+- PrimeVue Accordion opens one answer at a time. Eight questions are shown initially; the bottom
+  button reveals all remaining questions locally, without refetching.
+- Individual question statuses/dates are absent from the API: `src/mocks/repetition.ts` returns
+  the neutral placeholder «Статус недоступен». Learned count remains 0; new/due counts are real.
+- The Java handbook link follows the mockup; other specializations have no reference link until
+  an explicit source mapping is available. Review remains disabled until its flow is implemented.
+- Dashboard and regular-catalog names link to the detail route; initial selection has no links.
+
 ### Implementation page data
 
 `Implementation` reads one implementation (`GET /api/project/projects/{id}`) and edits its GitHub

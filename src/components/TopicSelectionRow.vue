@@ -3,6 +3,7 @@ import { computed, useId } from 'vue'
 import ToggleButton from 'primevue/togglebutton'
 import Message from 'primevue/message'
 import Button from 'primevue/button'
+import { RouterLink, type RouteLocationRaw } from 'vue-router'
 
 const props = withDefaults(defineProps<{
   name: string
@@ -12,6 +13,7 @@ const props = withDefaults(defineProps<{
   pending: boolean
   error?: string
   showProgress?: boolean
+  to?: RouteLocationRaw
 }>(), { showProgress: true })
 const emit = defineEmits<{ select: [selected: boolean]; refresh: [] }>()
 const errorId = useId()
@@ -26,12 +28,12 @@ const questionLabel = computed(() => {
 <template>
   <div class="flex min-w-0 flex-col justify-center gap-2 px-4 py-3">
     <div class="flex min-h-10 items-center gap-3">
-      <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+      <component :is="to ? RouterLink : 'div'" :to="to" class="flex min-w-0 flex-1 flex-col gap-0.5 rounded-border text-color" :class="{ 'focus-ring hover:text-primary': to }">
         <span class="text-md font-semibold wrap-anywhere">{{ name }}</span>
         <span class="text-meta text-muted-color">
           {{ questionLabel }}<template v-if="selected && showProgress"> · выучено {{ learnedPercent }}%</template>
         </span>
-      </div>
+      </component>
       <ToggleButton
         :model-value="selected"
         readonly

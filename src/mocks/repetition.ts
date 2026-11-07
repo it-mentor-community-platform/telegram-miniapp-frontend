@@ -3,3 +3,8 @@
 export function getTopicLearnedPercent(): number {
   return 0
 }
+
+// Per-question progress and review dates are not exposed by the service yet.
+export function getQuestionStatus(): string {
+  return 'Статус недоступен'
+}

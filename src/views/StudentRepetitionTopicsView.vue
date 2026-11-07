@@ -191,6 +191,7 @@ void refresh()
                 <TopicSelectionRow
                   :name="category.name" :question-count="category.all_questions" :selected="isSelected(category.id, category.selected)"
                   :show-progress="!onboarding"
+                  :to="onboarding ? undefined : { name: 'student-repetition-topic', params: { topicId: category.id } }"
                   :learned-percent="getTopicLearnedPercent()" :pending="onboarding ? saving : pendingIds.has(category.id)"
                   :error="onboarding ? undefined : actionError(category.id)" @select="selectTopic(category.id, $event)" @refresh="refresh"
                 />

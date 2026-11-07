@@ -55,9 +55,12 @@ Failed saves preserve the draft. Loading failures do not trigger initial selecti
 
 The regular catalog (`/student/repetition/topics`) persists each add/remove action immediately;
 search and specialization filtering run locally. Its breadcrumbs lead back to the dashboard.
-Topic details, review sessions and statistics navigation are not implemented yet; review/statistics
-buttons are disabled. Learned progress is a placeholder (0%) in `src/mocks/repetition.ts`;
-topic counts and selection states are real API data.
+Topic names in the dashboard and regular catalog open `/student/repetition/topics/<topicId>`.
+The topic page loads questions/answers from the API, expands one answer at a time, initially shows
+eight questions and can reveal the rest. Add/remove actions share the catalog's selection state.
+Initial selection has no topic links. Review sessions and statistics navigation are not implemented
+yet; review/statistics buttons are disabled. Learned progress (0%) and individual question statuses
+(unavailable) are placeholders in `src/mocks/repetition.ts`; counts and selections are real API data.
 
 ## Environments
 
