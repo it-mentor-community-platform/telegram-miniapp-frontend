@@ -58,9 +58,19 @@ search and specialization filtering run locally. Its breadcrumbs lead back to th
 Topic names in the dashboard and regular catalog open `/student/repetition/topics/<topicId>`.
 The topic page loads questions/answers from the API, expands one answer at a time, initially shows
 eight questions and can reveal the rest. Add/remove actions share the catalog's selection state.
-Initial selection has no topic links. Review sessions and statistics navigation are not implemented
-yet; review/statistics buttons are disabled. Learned progress (0%) and individual question statuses
-(unavailable) are placeholders in `src/mocks/repetition.ts`; counts and selections are real API data.
+Initial selection has no topic links. Review buttons open `/student/repetition/review` (all selected
+topics) or `?topic=<id>` (one topic). The session reveals an answer before accepting a rating:
+«Не помню» = 0, «Отрывочно» = 2, «С пробелами» = 3, «Отлично» = 5. Each confirmed POST is followed
+by fetching the next question; 204 ends the session. A failed next-question request retries only GET.
+Network/server errors on POST have an uncertain result: the session never resends that assessment,
+but offers a queue check. If the same question returns it stays blocked; if the queue advances,
+the unresolved attempt is reported separately from confirmed ratings. Exit/reload discards session
+totals, not server-saved answers. The dashboard refreshes its counters after reviews.
+
+Statistics navigation is not implemented yet. Learned progress (0%), individual question statuses,
+rating intervals, streaks and next-review forecasts are placeholders in `src/mocks/repetition.ts`;
+session summaries, question counts and selections use real data. The review page has no sidebar
+or breadcrumbs; closing it and Telegram BackButton return to My Topics.
 
 ## Environments
 

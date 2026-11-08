@@ -36,6 +36,11 @@ export const router = createRouter({
           children: [
             { path: '', name: 'student-repetition', component: StudentRepetitionView },
             {
+              path: 'review', name: 'student-repetition-review',
+              component: () => import('./views/StudentRepetitionReviewView.vue'),
+              meta: { shell: false },
+            },
+            {
               path: 'topics',
               meta: { breadcrumb: 'Все темы' },
               children: [

@@ -150,8 +150,29 @@ open. The next dashboard entry starts initial selection as usual.
 - Individual question statuses/dates are absent from the API: `src/mocks/repetition.ts` returns
   the neutral placeholder «Статус недоступен». Learned count remains 0; new/due counts are real.
 - The Java handbook link follows the mockup; other specializations have no reference link until
-  an explicit source mapping is available. Review remains disabled until its flow is implemented.
+  an explicit source mapping is available. The repeat action opens the topic-specific review queue
+  and is disabled when no questions are available or a subscription change is pending.
 - Dashboard and regular-catalog names link to the detail route; initial selection has no links.
+
+### Review session data
+
+`/student/repetition/review` fetches from the selected-categories queue; `?topic=<id>` uses the
+single-category queue. Invalid/repeated/empty topic parameters show a not-found state rather than
+falling back to all topics. 204 is completion (including an empty queue at entry).
+
+- Self-ratings are fixed at «Не помню» → 0, «Отрывочно» → 2, «С пробелами» → 3, «Отлично» → 5.
+  Only revealed answers can be rated; controls lock during saving/loading.
+- `questions_left` excludes the current question. Progress is derived from confirmed/unconfirmed
+  processed questions and the current server queue; the queue can change in another tab.
+- Confirmed POST updates local summary and shared counters; failures of the next GET retry GET only.
+  POST has no idempotency key: network/5xx failures lock reassessment and offer a read-only queue
+  check. The same question stays locked; queue movement is counted as unconfirmed, never as a
+  confirmed rating. A rejected 4xx allows an explicit retry or reloading the question.
+- Summary counts/ratings come from this session only. Reloading/closing clears local totals;
+  already saved schedules remain on the server. Closing and Telegram BackButton lead to My Topics.
+- Intervals, streaks and forecasts have neutral placeholders; per-question new/repeat markers
+  cannot be derived from the DTO and are not fabricated. Names/handbook links use catalog metadata.
+- No shell or breadcrumbs; centered 640px column. Statistics remains a future screen.
 
 ### Implementation page data
 
@@ -421,7 +442,8 @@ recovered from there.
 
 ## Open questions
 
-- Mapping of the 4 self-rating buttons to SM-2 grades (0–5); intervals shown on the buttons are examples.
+- Mapping is settled: «Не помню» = 0, «Отрывочно» = 2, «С пробелами» = 3, «Отлично» = 5.
+  The API still does not provide intervals for the rating buttons.
 - How many successful repetitions make a question "learned" (`[N]` placeholder on `Stats`).
 - Whether "Повторить всё" / "Сдать проект" become Telegram's MainButton instead of in-page buttons
   (see Component decisions).

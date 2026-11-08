@@ -8,3 +8,11 @@ export function getTopicLearnedPercent(): number {
 export function getQuestionStatus(): string {
   return 'Статус недоступен'
 }
+
+export function getReviewPlaceholders() {
+  return {
+    interval: 'Интервал рассчитает сервис',
+    streak: 'Данные о серии повторений пока недоступны',
+    forecast: 'Прогноз следующего повторения пока недоступен',
+  }
+}

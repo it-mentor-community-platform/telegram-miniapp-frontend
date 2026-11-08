@@ -50,7 +50,7 @@ void refresh()
     <header class="flex flex-wrap items-center gap-3">
       <h1 class="text-page font-bold">Повторение</h1>
       <Button :as="RouterLink" :to="{ name: 'student-repetition-topics' }" label="Все темы" icon="pi pi-plus" severity="secondary" variant="outlined" class="ml-auto" />
-      <Button :label="repeatLabel" icon="pi pi-play" disabled class="hidden md:inline-flex" />
+      <Button :as="available ? RouterLink : 'BUTTON'" :to="available ? { name: 'student-repetition-review' } : undefined" :label="repeatLabel" icon="pi pi-play" :disabled="!available" class="hidden md:inline-flex" />
     </header>
 
     <Message v-if="loadError" severity="error" icon="pi pi-exclamation-circle" role="alert">
@@ -96,7 +96,7 @@ void refresh()
                     </p>
                     <p v-else class="text-meta text-muted-color">Всё повторено</p>
                   </RouterLink>
-                  <Button v-if="topic.new_questions + topic.questions_ready_to_repeat > 0" icon="pi pi-play" rounded disabled :aria-label="`Повторить тему ${topic.name}`" />
+                  <Button v-if="topic.new_questions + topic.questions_ready_to_repeat > 0" :as="RouterLink" :to="{ name: 'student-repetition-review', query: { topic: topic.id } }" icon="pi pi-play" rounded :aria-label="`Повторить тему ${topic.name}`" />
                   <span v-else class="tint-success flex size-11 shrink-0 items-center justify-center rounded-full" role="img" aria-label="Всё повторено"><i class="pi pi-check" aria-hidden="true" /></span>
                 </div>
                 <div class="flex flex-col gap-1.5">
@@ -108,7 +108,7 @@ void refresh()
           </Card>
         </div>
       </section>
-      <Button :label="repeatLabel" icon="pi pi-play" disabled class="md:hidden" />
+      <Button :as="available ? RouterLink : 'BUTTON'" :to="available ? { name: 'student-repetition-review' } : undefined" :label="repeatLabel" icon="pi pi-play" :disabled="!available" class="md:hidden" />
     </template>
   </div>
 </template>

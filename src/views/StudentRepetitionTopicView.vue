@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
@@ -123,7 +123,7 @@ watch(topicId, (id) => {
                   <template v-else-if="selected">
                     <StatTiles :items="stats" />
                     <div class="flex flex-col gap-1">
-                      <Button :label="`Повторить тему · ${questionCount(available)}`" icon="pi pi-play" disabled />
+                      <Button :as="available && !pending ? RouterLink : 'BUTTON'" :to="available && !pending ? { name: 'student-repetition-review', query: { topic: topic.id } } : undefined" :label="`Повторить тему · ${questionCount(available)}`" icon="pi pi-play" :disabled="!available || pending" />
                       <Button label="Убрать с повторения" severity="secondary" text :loading="pending" @click="changeSelection" />
                     </div>
                   </template>
