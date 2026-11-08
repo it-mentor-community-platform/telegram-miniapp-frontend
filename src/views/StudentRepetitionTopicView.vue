@@ -111,8 +111,8 @@ watch(topicId, (id) => {
             </a>
           </div>
         </header>
-        <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_24.5rem] lg:gap-6">
-          <aside class="flex min-w-0 flex-col gap-3 lg:col-start-2 lg:row-start-1" aria-label="Повторение темы">
+        <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_24.5rem] lg:gap-x-6 lg:gap-y-2">
+          <aside class="flex min-w-0 flex-col gap-3 lg:col-start-2 lg:row-start-2" aria-label="Повторение темы">
             <Card>
               <template #content>
                 <div class="flex flex-col gap-4">
@@ -139,10 +139,10 @@ watch(topicId, (id) => {
             </Card>
           </aside>
 
-          <section class="flex min-w-0 flex-col gap-2 lg:col-start-1 lg:row-start-1" aria-labelledby="topic-questions-title">
-            <h2 id="topic-questions-title" class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase">Вопросы</h2>
-            <EmptyState v-if="!topic.questions.length" title="Вопросов пока нет" text="Когда в теме появятся вопросы, они будут доступны здесь." icon="info" />
-            <Card v-else class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
+          <section class="flex min-w-0 flex-col gap-2 lg:contents" aria-labelledby="topic-questions-title">
+            <h2 id="topic-questions-title" class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase lg:col-start-1 lg:row-start-1">Вопросы</h2>
+            <EmptyState v-if="!topic.questions.length" class="lg:col-start-1 lg:row-start-2" title="Вопросов пока нет" text="Когда в теме появятся вопросы, они будут доступны здесь." icon="info" />
+            <Card v-else class="overflow-hidden lg:col-start-1 lg:row-start-2" :pt="{ body: { class: 'p-0' } }">
               <template #content>
                 <Accordion :key="topic.id" v-model:value="opened">
                   <AccordionPanel v-for="question in questions" :key="question.id" :value="String(question.id)">
