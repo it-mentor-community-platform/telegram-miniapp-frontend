@@ -140,9 +140,17 @@ export function useRepetitionTopics() {
     pendingIds: readonly(pendingIds),
     actionErrors: readonly(actionErrors),
     load,
+    refresh,
     setSelected,
     addSelectedCategories,
   }
+}
+
+// A confirmed review changes counts even when a catalog request is already in flight.
+// Advancing the revision makes that request refetch instead of applying its pre-review snapshot.
+function refresh(): Promise<void> {
+  revision++
+  return load()
 }
 
 // Initial selection is a single batch, confirmed before updating the shared catalog.
