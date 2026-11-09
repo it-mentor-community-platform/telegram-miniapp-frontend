@@ -620,6 +620,86 @@
       "h": 800,
       "title": "2b · Java и Python (два трека) · десктоп",
       "is_interactive": true
+    },
+    "Categories-Error.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Все темы · Ошибка загрузки",
+      "w": 390,
+      "x": 4700,
+      "y": 2980
+    },
+    "Categories-Loading.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Все темы · Загрузка",
+      "w": 390,
+      "x": 4230,
+      "y": 2980
+    },
+    "Repetition-Error.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение · Ошибка загрузки",
+      "w": 390,
+      "x": 3760,
+      "y": 2980
+    },
+    "Repetition-Loading.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение · Загрузка",
+      "w": 390,
+      "x": 3290,
+      "y": 2980
+    },
+    "Review-Error.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение — вопрос · Ошибка загрузки",
+      "w": 390,
+      "x": 6580,
+      "y": 2980
+    },
+    "Review-Loading.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Повторение — вопрос · Загрузка",
+      "w": 390,
+      "x": 6110,
+      "y": 2980
+    },
+    "Stats-Error.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Статистика · Ошибка загрузки",
+      "w": 390,
+      "x": 7520,
+      "y": 2980
+    },
+    "Stats-Loading.dc.html": {
+      "h": 1060,
+      "is_interactive": true,
+      "title": "Статистика · Загрузка",
+      "w": 390,
+      "x": 7050,
+      "y": 2980
+    },
+    "Topic-Error.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Тема · Ошибка загрузки",
+      "w": 390,
+      "x": 5640,
+      "y": 2980
+    },
+    "Topic-Loading.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Тема · Загрузка",
+      "w": 390,
+      "x": 5170,
+      "y": 2980
     }
   },
   "createdOnFiles": {
@@ -746,6 +826,16 @@
     "Review-Answer.dc.html",
     "Review-Done.dc.html",
     "Stats.dc.html",
+    "Repetition-Loading.dc.html",
+    "Repetition-Error.dc.html",
+    "Categories-Loading.dc.html",
+    "Categories-Error.dc.html",
+    "Topic-Loading.dc.html",
+    "Topic-Error.dc.html",
+    "Review-Loading.dc.html",
+    "Review-Error.dc.html",
+    "Stats-Loading.dc.html",
+    "Stats-Error.dc.html",
     "Projects.dc.html",
     "Projects-Java3.dc.html",
     "Projects-Multi.dc.html",
