@@ -72,6 +72,22 @@ rating intervals, streaks and next-review forecasts are placeholders in `src/moc
 session summaries, question counts and selections use real data. The review page has no sidebar
 or breadcrumbs; closing it and Telegram BackButton return to My Topics.
 
+## Markdown answers
+
+Topic answers and review answers share `MarkdownAnswer`. It renders Markdown headings, lists,
+quotes, tables, links and code blocks with theme tokens. Raw HTML is displayed as text; unsafe URL
+schemes are blocked. Code remains plain monospace text (including Mermaid), without highlighting.
+Tables and code blocks scroll horizontally inside the answer.
+
+Hugo `{{< figure src=... title=... >}}` works outside code, with quoted or unquoted attributes.
+Java image paths resolve against `https://zhukovsd.github.io/java-backend-interview-prep/`;
+relative Python assets resolve against the public repository's `master/assets/` directory.
+Relative document links use the corresponding published handbook. Unknown relative paths do not
+resolve against the frontend. Images use lazy loading; failed images show their alternative text.
+Only `src`, `title`, `alt` and `caption` are supported for figures; unknown shortcodes remain text.
+
+Run rendering and safety checks with `npm run test:markdown`.
+
 ## Environments
 
 Each environment is a Vite mode with its own committed `.env.<mode>` file:

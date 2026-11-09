@@ -136,6 +136,13 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
 
 ### Topic page data
 
+Topic and review answers use the shared `MarkdownAnswer` renderer: Markdown tables, lists, code,
+links and Hugo figures are supported. HTML is disabled. Headings start at h3 within the answer.
+Images fit the available width; tables/code scroll internally and remain keyboard-focusable.
+Java figure assets come from the published handbook; Python relative assets from its public
+repository. Unknown/failed image sources have a text fallback. Mermaid stays a code block until
+diagram rendering is implemented. See the main README's Markdown answers section for URL rules.
+
 `Topic` reads `GET /api/interval-repetition/categories/{categoryId}` for question/answer text and
 new/due/total counts. Selection comes from the shared specializations catalog, not the detail DTO.
 The page remains readable if selection loading fails, with a separate retry for subscription state.

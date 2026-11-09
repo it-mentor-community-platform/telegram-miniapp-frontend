@@ -9,6 +9,7 @@ import ProgressBar from 'primevue/progressbar'
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 import NotFoundState from '../components/NotFoundState.vue'
+import MarkdownAnswer from '../components/MarkdownAnswer.vue'
 import { useRepetitionReview, type ReviewScope } from '../composables/useRepetitionReview'
 import { useRepetitionTopics } from '../composables/useRepetitionTopics'
 import { REVIEW_RATINGS } from '../repetition'
@@ -102,7 +103,7 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
             <template #content>
               <div class="flex flex-col gap-3">
                 <h3 class="text-note font-semibold tracking-wide text-muted-color uppercase">Ответ из методички</h3>
-                <p class="text-md leading-relaxed whitespace-pre-wrap wrap-anywhere">{{ question.answer }}</p>
+                <MarkdownAnswer :text="question.answer" :specialization="category?.specialization" />
                 <div class="flex flex-wrap items-center justify-between gap-2">
                   <a v-if="referenceUrl" :href="referenceUrl" target="_blank" rel="noopener noreferrer" class="focus-ring inline-flex min-h-11 items-center gap-1 self-start rounded-border text-sm font-medium text-primary">Открыть в методичке <i class="pi pi-external-link text-xs" aria-hidden="true" /></a>
                   <Button label="Скрыть ответ" severity="secondary" text :disabled="phase !== 'question'" class="ml-auto" @click="hide" />
