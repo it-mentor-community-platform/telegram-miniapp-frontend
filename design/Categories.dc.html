@@ -14,6 +14,7 @@ body{margin:0}
 a{color:inherit}a:hover{color:inherit}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 input::placeholder{color:#94a3b8}
+@keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </helmet>
 <div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
@@ -45,6 +46,7 @@ input::placeholder{color:#94a3b8}
 </div>
 </div>
 
+<sc-if value="{{ok}}" hint-placeholder-val="{{ true }}">
 <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
 <section style="display: flex; flex-direction: column; gap: 8px">
 <h2 style="margin: 0; padding: 0 4px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em"><span>{{g.title}}</span><span style="text-transform: none; letter-spacing: 0; font-weight: 500">{{g.meta}}</span></h2>
@@ -70,6 +72,36 @@ input::placeholder{color:#94a3b8}
 </div>
 </section>
 </sc-for>
+</sc-if>
+
+<sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{skelGroups}}" as="g" hint-placeholder-count="2">
+<section aria-busy="true" aria-label="Загрузка тем" style="display: flex; flex-direction: column; gap: 8px">
+<span aria-hidden="true" style="display: flex; justify-content: space-between; padding: 2px 4px"><span style="display: block; width: {{g.w}}; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span><span style="display: block; width: 90px; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span></span>
+<div aria-hidden="true" style="display: {{L.listDisplay}}; flex-direction: column; grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{g.items}}" as="k" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; min-height: 64px; box-sizing: border-box; border-top: 1px solid {{k.sep}}; box-shadow: inset 1px 0 0 {{k.sepL}}">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 7px"><span style="display: block; width: {{k.w}}; height: 15px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span><span style="display: block; width: {{k.w2}}; height: 12px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span></span>
+<span style="display: block; width: 104px; height: 36px; border-radius: 8px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite; flex-shrink: 0"></span>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{isError}}" hint-placeholder-val="{{ false }}">
+<section role="alert" style="display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border-radius: 12px; background: {{t.errSoft}}; border: 1px solid {{t.errBorder}}">
+<div style="display: flex; gap: 10px; align-items: flex-start; color: {{t.errText}}; font-size: 14px; line-height: 20px">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Не удалось загрузить список тем. Проверьте соединение и попробуйте ещё раз.</span>
+</div>
+<button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid {{t.errBorder}}; background: {{t.card}}; color: {{t.errText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
+Попробовать снова
+</button>
+</section>
+</sc-if>
 
 <sc-if value="{{onboarding}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 20px; background: {{t.bg}}; border-top: 1px solid {{t.border}}">
@@ -81,7 +113,7 @@ input::placeholder{color:#94a3b8}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"onboarding":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1240}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"scenario":{"editor":"enum","options":["Данные","Загрузка","Ошибка"],"default":"Данные"},"onboarding":{"editor":"boolean","default":false},"$preview":{"width":390,"height":1240}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -89,14 +121,15 @@ class Component extends DCLogic {
   }
   renderVals() {
     const dark = this.props.dark ?? false;
+    const scenario = this.props.scenario ?? 'Данные'; const ok = scenario === 'Данные', isLoading = scenario === 'Загрузка', isError = scenario === 'Ошибка';
     const onboarding = this.props.onboarding ?? false;
     const t = dark ? {
-      bg: '#09090b', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none',
+      bg: '#09090b', skel: '#27272a', errSoft: 'rgba(248, 113, 113, 0.14)', errText: '#fca5a5', errBorder: 'rgba(248, 113, 113, 0.35)', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none',
       text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', chev: '#71717a',
       chip: '#27272a', seg: '#3f3f46', primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7',
       btnBg: '#34d399', btnText: '#022c22'
     } : {
-      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      bg: '#f8fafc', skel: '#e2e8f0', errSoft: '#fef2f2', errText: '#b91c1c', errBorder: '#fecaca', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
       text: '#0f172a', text2: '#334155', muted: '#64748b', chev: '#94a3b8',
       chip: '#f1f5f9', seg: '#ffffff', primarySoft: '#ecfdf5', primaryText: '#047857',
       btnBg: '#047857', btnText: '#ffffff'
@@ -109,10 +142,10 @@ class Component extends DCLogic {
     const L = {
       wide, desk, mobileOnly: !wide, shell: wide && true, role: 'Студент',
       frameW: desk ? 1280 : wide ? 834 : 390,
-      frameH: wide ? (desk ? 840 : 1112) : 1240,
+      frameH: wide ? (desk ? 840 : 1112) : (ok ? 1240 : 844),
       areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
       colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
-      rootH: wide ? 'auto' : '1240px', rootPad: wide ? '0' : '20px 16px 104px',
+      rootH: wide ? 'auto' : (ok ? '1240px' : '844px'), rootPad: wide ? '0' : '20px 16px 104px',
       display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
       rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
       full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
@@ -178,7 +211,8 @@ class Component extends DCLogic {
       pick: () => this.setState({ filter: key })
     }));
     const selectedCount = Object.values(sel).filter(Boolean).length;
-    return { layout, L, dk, tk: dark ? 'd' : 'l', topicHref: dk('Topic.dc.html'), topicBack: dk('Repetition.dc.html'), t, dark, crumbs: [{ label: 'Повторение', href: dk('Repetition.dc.html') }], groups, filters, onboarding, selectedCount };
+    return { layout, L, dk, tk: dark ? 'd' : 'l', topicHref: dk('Topic.dc.html'), topicBack: dk('Repetition.dc.html'), t, dark, crumbs: [{ label: 'Повторение', href: dk('Repetition.dc.html') }], groups, filters, onboarding, selectedCount, ok, isLoading, isError,
+      skelGroups: [['130px', 5], ['150px', 3]].map(([w, n]) => ({ w, items: Array.from({ length: n }, (_, i) => ({ w: ['40%', '55%', '35%', '60%'][i % 4], w2: ['30%', '45%', '38%', '28%'][i % 4], sep: (wide ? i < 2 : i === 0) ? 'transparent' : t.border, sepL: wide && i % 2 === 1 ? t.border : 'transparent' })) })) };
   }
 }
 </script>
