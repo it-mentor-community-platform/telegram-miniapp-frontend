@@ -33,7 +33,7 @@ const category = computed(() => {
   return undefined
 })
 const title = computed(() => scope.value.valid && scope.value.topicId !== undefined ? category.value?.name ?? 'Повторить тему' : 'Повторить всё')
-const canRate = computed(() => revealed.value && ['question', 'save-error'].includes(phase.value))
+const canRate = computed(() => Boolean(question.value) && ['question', 'save-error'].includes(phase.value))
 const placeholders = getReviewPlaceholders()
 const isEmpty = computed(() => answers.value.length === 0 && unconfirmed.value === 0)
 const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value?.specialization ?? '')
@@ -91,6 +91,15 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
       </Message>
       <div v-if="phase === 'loading'" class="flex flex-col gap-4" role="status" aria-label="Загрузка вопроса" aria-busy="true"><Skeleton width="8rem" height="1.5rem" /><Skeleton height="5rem" /><Skeleton width="9rem" height="2.75rem" /></div>
       <template v-else-if="question">
+        <Card>
+          <template #content>
+            <div class="flex flex-col gap-3">
+              <div class="text-center"><h3 class="text-md font-semibold">Насколько хорошо вы помните ответ?</h3><p class="mt-1 text-meta text-muted-color">Оценивайте честно — от этого зависит расписание</p></div>
+              <span v-if="phase === 'saving'" class="text-center text-meta text-muted-color" role="status"><i class="pi pi-spinner pi-spin mr-2" aria-hidden="true" />Сохраняем оценку…</span>
+              <div class="grid grid-cols-2 gap-2"><Button v-for="rating in REVIEW_RATINGS" :key="rating.quality" severity="secondary" variant="outlined" class="min-h-15" :disabled="!canRate" :loading="phase === 'saving'" @click="rate(rating.quality)"><span class="flex flex-col gap-0.5"><span class="font-semibold">{{ rating.label }}</span><span class="text-note text-muted-color">{{ placeholders.interval }}</span></span></Button></div>
+            </div>
+          </template>
+        </Card>
         <section class="flex flex-col gap-4" aria-label="Текущий вопрос">
           <div class="flex flex-wrap gap-2"><Tag :value="category?.name ?? `Тема ${question.categoryId}`" severity="secondary" /></div>
           <h2 class="text-page leading-snug font-bold wrap-anywhere">{{ question.title }}</h2>
@@ -111,15 +120,6 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
             </template>
           </Card>
         </section>
-        <Card v-if="revealed" class="mt-auto">
-          <template #content>
-            <div class="flex flex-col gap-3">
-              <div class="text-center"><h3 class="text-md font-semibold">Насколько хорошо вы помните ответ?</h3><p class="mt-1 text-meta text-muted-color">Оценивайте честно — от этого зависит расписание</p></div>
-              <span v-if="phase === 'saving'" class="text-center text-meta text-muted-color" role="status"><i class="pi pi-spinner pi-spin mr-2" aria-hidden="true" />Сохраняем оценку…</span>
-              <div class="grid grid-cols-2 gap-2"><Button v-for="rating in REVIEW_RATINGS" :key="rating.quality" severity="secondary" variant="outlined" class="min-h-15" :disabled="!canRate" :loading="phase === 'saving'" @click="rate(rating.quality)"><span class="flex flex-col gap-0.5"><span class="font-semibold">{{ rating.label }}</span><span class="text-note text-muted-color">{{ placeholders.interval }}</span></span></Button></div>
-            </div>
-          </template>
-        </Card>
       </template>
     </template>
   </div>

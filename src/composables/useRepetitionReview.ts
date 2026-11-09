@@ -87,7 +87,7 @@ export function useRepetitionReview(scope: Readonly<Ref<ReviewScope>>) {
   }
 
   async function rate(quality: ReviewQuality) {
-    if (busy || !revealed.value || !question.value || !['question', 'save-error'].includes(phase.value)) return
+    if (busy || !question.value || !['question', 'save-error'].includes(phase.value)) return
     if (!REVIEW_RATINGS.some((rating) => rating.quality === quality)) return
     busy = true
     const currentGeneration = generation

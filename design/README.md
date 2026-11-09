@@ -161,7 +161,8 @@ single-category queue. Invalid/repeated/empty topic parameters show a not-found 
 falling back to all topics. 204 is completion (including an empty queue at entry).
 
 - Self-ratings are fixed at «Не помню» → 0, «Отрывочно» → 2, «С пробелами» → 3, «Отлично» → 5.
-  Only revealed answers can be rated; controls lock during saving/loading.
+  Ratings are always shown above the question, below progress, and do not require revealing the
+  answer; controls lock during saving/loading and unresolved submission errors.
 - `questions_left` excludes the current question. Progress is derived from confirmed/unconfirmed
   processed questions and the current server queue; the queue can change in another tab.
 - Confirmed POST updates local summary and shared counters; failures of the next GET retry GET only.
