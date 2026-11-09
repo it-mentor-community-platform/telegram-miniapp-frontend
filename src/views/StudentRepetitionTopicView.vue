@@ -15,6 +15,7 @@ import Breadcrumbs from '../components/Breadcrumbs.vue'
 import EmptyState from '../components/EmptyState.vue'
 import NotFoundState from '../components/NotFoundState.vue'
 import StatTiles from '../components/StatTiles.vue'
+import MarkdownAnswer from '../components/MarkdownAnswer.vue'
 import { useBreadcrumbs } from '../composables/useBreadcrumbs'
 import { useRepetitionTopic } from '../composables/useRepetitionTopic'
 import { useRepetitionTopics } from '../composables/useRepetitionTopics'
@@ -156,7 +157,7 @@ watch(topicId, (id) => {
                       </span>
                     </AccordionHeader>
                     <AccordionContent>
-                      <p class="pl-5 text-sm leading-relaxed whitespace-pre-wrap wrap-anywhere">{{ question.answer }}</p>
+                      <MarkdownAnswer :text="question.answer" :specialization="topic.specialization" class="pl-5" />
                     </AccordionContent>
                   </AccordionPanel>
                 </Accordion>
