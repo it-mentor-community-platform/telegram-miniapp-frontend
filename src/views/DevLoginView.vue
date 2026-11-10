@@ -10,7 +10,7 @@ import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
 import Tag from 'primevue/tag'
-import { ApiError, HttpError, NotFoundError } from '../api'
+import { ApiError, BadRequestError, HttpError, NotFoundError, type DummyAuthUserLookupDto } from '../api'
 import { authenticateDummy, knownRoles, type Role } from '../session'
 import { telegramAppUrl } from '../telegram'
 
@@ -27,9 +27,48 @@ const environmentLabels: Record<string, string> = {
 }
 const environmentLabel = environmentLabels[import.meta.env.MODE] ?? 'Тестовое окружение'
 
+// The user is looked up by exactly one of these; each maps to its by-dummy request field.
+type Method = 'id' | 'telegram' | 'github'
+const methodOptions: { value: Method; label: string }[] = [
+  { value: 'id', label: 'Telegram ID' },
+  { value: 'telegram', label: 'Telegram' },
+  { value: 'github', label: 'GitHub' },
+]
+const methods = methodOptions.map((option) => option.value)
+
+type LinkMethod = Exclude<Method, 'id'>
+
+// Only the username is typed after a fixed prefix; the link is built from it when sending.
+const linkPrefixes: Record<LinkMethod, string> = { telegram: 't.me/', github: 'github.com/' }
+const linkLabels: Record<LinkMethod, string> = { telegram: 'Username в Telegram', github: 'Username на GitHub' }
+const hints: Record<Method, string> = {
+  id: 'Числовой ID аккаунта Telegram (telegram_user_id), не ID из базы',
+  telegram: 'Username из профиля участника. Можно вставить ссылку или @username',
+  github: 'Username из профиля участника. Можно вставить ссылку целиком',
+}
+const formatErrors: Record<LinkMethod, string> = {
+  telegram: 'Только username — латинские буквы, цифры и _',
+  github: 'Только username — латинские буквы, цифры и дефис',
+}
+
+// A pasted link or @username is cut down to the username as it's entered.
+const LINK_PREFIXES: Record<LinkMethod, RegExp> = {
+  telegram: /^\s*(?:@|(?:https?:\/\/)?t\.me\/)/,
+  github: /^\s*(?:https?:\/\/)?(?:www\.)?github\.com\//,
+}
+// profile-service has the final say on the format; this only catches obvious typos before sending.
+const USERNAMES: Record<LinkMethod, RegExp> = {
+  telegram: /^[A-Za-z0-9_]{4,32}$/,
+  github: /^[A-Za-z0-9-]+$/,
+}
+
+function toUsername(method: LinkMethod, value: string): string {
+  return value.replace(LINK_PREFIXES[method], '').trim()
+}
+
 // The last successful values prefill the form, so signing in again after expiry is one click.
 const LAST_LOGIN_KEY = 'dev-login-last'
-type LastLogin = { userId: number; username: string; roles: Role[] }
+type LastLogin = { method: Method; value: string; roles: Role[] }
 
 function readLastLogin(): Partial<LastLogin> {
   try {
@@ -40,43 +79,75 @@ function readLastLogin(): Partial<LastLogin> {
 }
 
 const lastLogin = readLastLogin()
-const userId = ref<number | null>(typeof lastLogin.userId === 'number' ? lastLogin.userId : null)
-const username = ref(typeof lastLogin.username === 'string' ? lastLogin.username : '')
+const lastMethod = methods.includes(lastLogin.method as Method) ? (lastLogin.method as Method) : undefined
+const method = ref<Method>(lastMethod ?? 'telegram')
+const telegramId = ref<number | null>(lastMethod === 'id' && /^[1-9][0-9]*$/.test(String(lastLogin.value)) ? Number(lastLogin.value) : null)
+const usernames = ref<Record<LinkMethod, string>>({
+  telegram: lastMethod === 'telegram' && typeof lastLogin.value === 'string' ? toUsername('telegram', lastLogin.value) : '',
+  github: lastMethod === 'github' && typeof lastLogin.value === 'string' ? toUsername('github', lastLogin.value) : '',
+})
+
+function setUsername(method: LinkMethod, value: string | undefined) {
+  usernames.value[method] = toUsername(method, value ?? '')
+}
 const roles = ref<Role[]>(
   Array.isArray(lastLogin.roles) ? lastLogin.roles.filter((role) => knownRoles.includes(role)) : [],
 )
 
 const loading = ref(false)
-const notFoundId = ref<number>()
+const fieldError = ref<string>()
 const error = ref<string>()
 
-const valid = computed(
-  () => (userId.value ?? 0) >= 1 && username.value.trim() !== '' && roles.value.length > 0,
+const filled = computed(
+  () =>
+    (method.value === 'id' ? (telegramId.value ?? 0) >= 1 : usernames.value[method.value] !== '') &&
+    roles.value.length > 0,
 )
 
 // Errors describe the values that were sent; editing any field dismisses them.
-watch([userId, username, roles], () => {
-  notFoundId.value = undefined
+watch([method, telegramId, usernames, roles], () => {
+  fieldError.value = undefined
   error.value = undefined
-})
+}, { deep: true })
 
-function setUsername(value: string | undefined) {
-  username.value = (value ?? '').replace(/^@/, '')
+// The lookup field for the request, or undefined when the username has the wrong format.
+function userLookup(): { lookup: DummyAuthUserLookupDto; value: string; shown: string } | undefined {
+  if (method.value === 'id') {
+    const id = telegramId.value!
+    return { lookup: { telegram_user_id: id }, value: String(id), shown: `Telegram ID ${id}` }
+  }
+  const username = usernames.value[method.value].replace(/\/$/, '')
+  if (!USERNAMES[method.value].test(username)) {
+    return undefined
+  }
+  const shown = linkPrefixes[method.value] + username
+  const link = `https://${shown}`
+  const lookup = method.value === 'telegram' ? { telegram_url: link } : { github_profile_url: link }
+  return { lookup, value: username, shown }
 }
 
 async function submit() {
-  if (!valid.value || loading.value) {
+  if (!filled.value || loading.value) {
     return
   }
-  const login: LastLogin = { userId: userId.value!, username: username.value.trim(), roles: roles.value }
-  const id = login.userId
+  const user = userLookup()
+  if (!user) {
+    fieldError.value = formatErrors[method.value as LinkMethod]
+    return
+  }
+  const login: LastLogin = { method: method.value, value: user.value, roles: roles.value }
   loading.value = true
   try {
-    await authenticateDummy({ user_id: id, roles: login.roles, telegram_username: login.username })
+    await authenticateDummy({ ...user.lookup, roles: login.roles })
     localStorage.setItem(LAST_LOGIN_KEY, JSON.stringify(login))
   } catch (e) {
     if (e instanceof NotFoundError) {
-      notFoundId.value = id
+      fieldError.value =
+        method.value === 'id' ? `Пользователь с ${user.shown} не найден` : `Профиль со ссылкой ${user.shown} не найден`
+    } else if (e instanceof BadRequestError && method.value !== 'id') {
+      // profile-service rejected the link format (its message is technical, so ours is shown);
+      // roles come from a fixed list and are always known.
+      fieldError.value = formatErrors[method.value]
     } else {
       if (!(e instanceof ApiError)) {
         console.error('Unexpected dummy authentication error', e)
@@ -118,49 +189,62 @@ async function submit() {
         <template #content>
           <form id="dev-login" class="flex flex-col gap-3.5" novalidate @submit.prevent="submit">
             <div class="flex flex-col gap-1.5">
-              <label for="dev-login-user-id" class="text-meta font-semibold text-(--p-tint-neutral-color)">
-                ID пользователя
-              </label>
+              <span id="dev-login-user" class="text-meta font-semibold text-(--p-tint-neutral-color)">Пользователь</span>
+              <SelectButton
+                v-model="method"
+                :options="methodOptions"
+                option-label="label"
+                option-value="value"
+                :allow-empty="false"
+                :disabled="loading"
+                aria-labelledby="dev-login-user"
+                :pt="{ pcToggleButton: { content: { class: 'px-2' } } }"
+                fluid
+              >
+                <!-- Mockup's 13 px semibold labels and narrower padding keep «Telegram ID» on one line in a third of the card. -->
+                <template #option="{ option }">
+                  <span class="text-meta font-semibold whitespace-nowrap">{{ option.label }}</span>
+                </template>
+              </SelectButton>
               <InputNumber
-                v-model="userId"
-                input-id="dev-login-user-id"
+                v-if="method === 'id'"
+                v-model="telegramId"
+                input-id="dev-login-value"
                 :min="1"
                 :use-grouping="false"
-                placeholder="Например, 1"
-                :invalid="notFoundId !== undefined"
+                placeholder="Например, 123456789"
+                aria-label="Telegram ID пользователя"
+                :invalid="fieldError !== undefined"
                 :disabled="loading"
+                class="mt-0.5"
                 fluid
               />
+              <InputGroup v-else class="mt-0.5">
+                <InputGroupAddon aria-hidden="true">{{ linkPrefixes[method] }}</InputGroupAddon>
+                <InputText
+                  id="dev-login-value"
+                  :model-value="usernames[method]"
+                  placeholder="username"
+                  :aria-label="linkLabels[method]"
+                  autocomplete="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  :invalid="fieldError !== undefined"
+                  :disabled="loading"
+                  @update:model-value="setUsername(method, $event)"
+                />
+              </InputGroup>
               <Message
-                v-if="notFoundId !== undefined"
+                v-if="fieldError"
                 severity="error"
                 size="small"
                 variant="simple"
                 icon="pi pi-exclamation-circle"
                 role="alert"
               >
-                Пользователь с ID {{ notFoundId }} не найден
+                {{ fieldError }}
               </Message>
-              <small class="text-note text-muted-color">ID из таблицы users в auth-service — не Telegram ID</small>
-            </div>
-
-            <div class="flex flex-col gap-1.5">
-              <label for="dev-login-username" class="text-meta font-semibold text-(--p-tint-neutral-color)">
-                Telegram username
-              </label>
-              <InputGroup>
-                <InputGroupAddon aria-hidden="true">@</InputGroupAddon>
-                <InputText
-                  id="dev-login-username"
-                  :model-value="username"
-                  placeholder="username"
-                  autocomplete="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  :disabled="loading"
-                  @update:model-value="setUsername"
-                />
-              </InputGroup>
+              <small class="text-note text-muted-color">{{ hints[method] }}</small>
             </div>
 
             <div class="flex flex-col gap-1.5">
@@ -198,7 +282,7 @@ async function submit() {
         form="dev-login"
         :label="loading ? 'Входим…' : 'Войти'"
         :loading="loading"
-        :disabled="!valid"
+        :disabled="!filled"
         size="large"
       />
       <Button as="a" :href="telegramAppUrl" label="Открыть в Telegram" text />

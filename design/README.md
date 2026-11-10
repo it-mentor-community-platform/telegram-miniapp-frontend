@@ -35,7 +35,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 | `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
-| `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 on the ID field), `DevLogin-Error` (400 / 500 / network), `DevLogin-Expired` (dummy session ran out) |
+| `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 under the user field), `DevLogin-InvalidUrl` (username in the wrong format), `DevLogin-Error` (500 / network), `DevLogin-Expired` (dummy session ran out) |
 
 Every screen has a `dark` prop (light/dark mode) and a `layout` prop — `'mobile'` (default, the
 390 px phone frame), `'tablet'` (834 px) or `'desktop'` (1280 px). State files pass `layout` through,
@@ -60,7 +60,7 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 | `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag`; `Skeleton` (loading), `Message` `severity="error"` + `Button` «Попробовать снова» (load failed) |
 | `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message`; `Skeleton` (loading); `Message` `severity="error"` + `Button` «Попробовать снова» (load failed); `Button` `:loading` + `:disabled` (submit); `Message` `severity="error"` above the button (submit failed); `Message` `severity="error"` `variant="simple"` `size="small"` under a field (validation, duplicate) + `invalid` on `InputText`; `Message` `severity="success"` `closable` (submitted) |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
-| `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `InputNumber` (`:min="1"`, `:useGrouping="false"`), `InputGroup` + `InputGroupAddon` («@») + `InputText`, `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
+| `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `SelectButton` (user lookup: Telegram ID / Telegram / GitHub), `InputNumber` (`:min="1"`, `:useGrouping="false"`) or `InputGroup` + `InputGroupAddon` («t.me/», «github.com/») + `InputText` (username), `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
 | `AppShell` — tablet/desktop navigation | every route except auth screens and the review session | `<aside>` with PrimeVue `Menu` (router-link items, `aria-current`); tablet rail: same model rendered as icon + label items; user block: `Avatar` + `Tag` per role |
 
@@ -233,7 +233,7 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 | Opened outside Telegram | `window.Telegram.WebApp.initData` is empty (regular browser, link opened outside the Mini App) | `AuthError` — explains the app only works inside Telegram; primary "Открыть в Telegram", secondary "Нет Telegram? Установить" |
 | Login failed | Backend rejects the init data (invalid / expired) or the auth request fails | `AuthError-Failed` — "Попробовать снова" retries the auth request; secondary link to the community chat |
 | Session expired | Any API call returns 401 after a successful login (token older than 30 min) | `AuthError-Expired` — asks to close and reopen the app; primary «Закрыть приложение», secondary link to the community chat |
-| Dummy login (test env, browser) | init data is empty **and** the environment is local stack or staging | `DevLogin` — replaces `AuthError`. Form: user ID, Telegram username, roles → `POST /api/auth/by-dummy` `{ user_id, roles, telegram_username }`. States: `DevLogin-Filled`, `-Loading`, `-NotFound` (404 → «Пользователь с ID 42 не найден» on the ID field), `-Error` (400 / 500 / network → server text or «Сервер недоступен. Попробуйте ещё раз.» above the button), `-Expired` (a dummy session hit 401 → back to this form with «Сессия истекла — войдите снова»). |
+| Dummy login (test env, browser) | init data is empty **and** the environment is local stack or staging | `DevLogin` — replaces `AuthError`. Form: the user (by Telegram ID, Telegram link or GitHub link) and roles → `POST /api/auth/by-dummy` with `roles` and exactly one of `telegram_user_id`, `telegram_url`, `github_profile_url` (see `meta/system-analytics/services/auth-service/index.md`). States: `DevLogin-Filled`, `-Loading`, `-NotFound` (404 → «Пользователь с Telegram ID 123 не найден» / «Профиль со ссылкой t.me/… не найден» under the field), `-InvalidUrl` (username fails the client check or profile-service's 400 → «Только username — латинские буквы, цифры и дефис» under the field), `-Error` (500 / network → server text or «Сервер недоступен. Попробуйте ещё раз.» above the button), `-Expired` (a dummy session hit 401 → back to this form with «Сессия истекла — войдите снова»). |
 
 - "Открыть в Telegram" links to the bot's main Mini App (`https://t.me/<bot>?startapp`). The bot is
   per environment (`VITE_TELEGRAM_BOT_USERNAME`). Planned: a `startapp` code for the current path
@@ -241,10 +241,15 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 - **Production** always shows `AuthError` outside Telegram; `DevLogin` must not exist in prod
   builds. **Inside Telegram** nothing changes in any environment: init data is present, so the
   normal Telegram login runs and `DevLogin` never appears.
-- `DevLogin` details: «Telegram username» has a fixed «@» prefix and is sent without it (a pasted
-  leading «@» is stripped). Roles are a multi-select (at least one); the session gets exactly these
-  roles, regardless of the user's real roles. «Войти» stays disabled until ID ≥ 1, username and at
-  least one role are set. Secondary «Открыть в Telegram» is the normal way in. On tablet/desktop
+- `DevLogin` details: «Пользователь» is a single-choice `SelectButton` (Telegram ID / Telegram /
+  GitHub, default Telegram) above one input that matches the choice; each choice keeps its own value.
+  Telegram and GitHub take only the username after a fixed addon («t.me/», «github.com/»,
+  `InputGroup` + `InputGroupAddon`); the app sends `https://t.me/<username>` /
+  `https://github.com/<username>`. A pasted full link or `@username` is cut down to the username as
+  it's entered. A username with other characters (e.g. a pasted repository path) is flagged under the
+  field without a request: «Только username — латинские буквы, цифры и …». Roles are a multi-select (at least one); the session gets
+  exactly these roles, regardless of the user's real roles. «Войти» stays disabled until the field
+  and at least one role are set. The last successful values prefill the form. Secondary «Открыть в Telegram» is the normal way in. On tablet/desktop
   the screen is a centred 440 px card (see [Adaptive layouts](#adaptive-layouts-tablet-and-desktop)).
 - The old `AuthError` `devHint` prop (dashed developer hint) is superseded by `DevLogin` — don't
   implement it.
