@@ -101,10 +101,10 @@ Each environment is a Vite mode with its own committed `.env.<mode>` file:
 Override a value locally in `.env.<mode>.local` (git-ignored).
 
 With developer tools on (local-stack, staging), opening the app in a regular browser shows a dummy
-login form instead of "Откройте приложение в Telegram": enter an auth-service user id (`Users.id`,
-not the Telegram id), a username and roles, and the app signs in via `POST /api/auth/by-dummy`.
-Nothing is remembered: after a reload or when the 30-minute token expires, sign in again. Prod builds
-don't contain the form.
+login form instead of "Откройте приложение в Telegram": pick the user by Telegram id or by the
+Telegram / GitHub username from their profile (the app builds the link), choose roles, and the app signs in via
+`POST /api/auth/by-dummy`. The last values prefill the form, so after the 30-minute token expires
+signing in again is one click. Prod builds don't contain the form.
 
 `npm run dev` runs in `local-stack` mode over https and proxies `/api` to `VITE_API_BASE_URL`, so the
 app calls its own origin. A built `local-stack` image calls `http://localhost:8080` directly, which

@@ -30,7 +30,7 @@ export type {
   ReviewQuality,
   ReviewAttemptDto,
 } from './dto/interval-repetition'
-export type { DummyAuthRequestDto } from './dto/auth'
+export type { DummyAuthRequestDto, DummyAuthUserLookupDto } from './dto/auth'
 export type {
   CreateProjectRequestDto,
   ProjectResponseDto,

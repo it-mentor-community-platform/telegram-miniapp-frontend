@@ -19,8 +19,9 @@ export async function authenticateByTelegram(initData: string): Promise<AccessTo
   return readAccessToken(response)
 }
 
-// Test environments only: issues a token for any existing user with the given roles.
-// Rejects with NotFoundError for an unknown user id, BadRequestError for unknown roles.
+// Test environments only: issues a token for any existing user with the given roles. The user is
+// found by Telegram id or by a Telegram / GitHub link from their profile. Rejects with
+// NotFoundError for an unknown user, BadRequestError for a malformed link or unknown roles.
 export async function authenticateByDummy(request: DummyAuthRequestDto): Promise<AccessToken> {
   const response = await client.post<void>('/api/auth/by-dummy', request)
   return readAccessToken(response)
