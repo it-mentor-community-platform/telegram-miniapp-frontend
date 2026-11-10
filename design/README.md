@@ -35,7 +35,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 | `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
-| `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 on the ID field), `DevLogin-Error` (400 / 500 / network), `DevLogin-Expired` (dummy session ran out) |
+| `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 under the user field), `DevLogin-InvalidUrl` (username in the wrong format), `DevLogin-Error` (500 / network), `DevLogin-Expired` (dummy session ran out) |
 
 Every screen has a `dark` prop (light/dark mode) and a `layout` prop — `'mobile'` (default, the
 390 px phone frame), `'tablet'` (834 px) or `'desktop'` (1280 px). State files pass `layout` through,
@@ -60,7 +60,7 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 | `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag`; `Skeleton` (loading), `Message` `severity="error"` + `Button` «Попробовать снова» (load failed) |
 | `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message`; `Skeleton` (loading); `Message` `severity="error"` + `Button` «Попробовать снова» (load failed); `Button` `:loading` + `:disabled` (submit); `Message` `severity="error"` above the button (submit failed); `Message` `severity="error"` `variant="simple"` `size="small"` under a field (validation, duplicate) + `invalid` on `InputText`; `Message` `severity="success"` `closable` (submitted) |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
-| `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `InputNumber` (`:min="1"`, `:useGrouping="false"`), `InputGroup` + `InputGroupAddon` («@») + `InputText`, `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
+| `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `SelectButton` (user lookup: Telegram ID / Telegram / GitHub), `InputNumber` (`:min="1"`, `:useGrouping="false"`) or `InputGroup` + `InputGroupAddon` («t.me/», «github.com/») + `InputText` (username), `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
 | `AppShell` — tablet/desktop navigation | every route except auth screens and the review session | `<aside>` with PrimeVue `Menu` (router-link items, `aria-current`); tablet rail: same model rendered as icon + label items; user block: `Avatar` + `Tag` per role |
 
@@ -134,6 +134,83 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
   → «Сдан на Java, Python и Go»). Use the response body, no refetch. Invalidate the cached
   `my/summary` so `Projects` / `Main` show the new progress.
 
+### Topic page data
+
+Topic and review answers use the shared `MarkdownAnswer` renderer: Markdown tables, lists, code,
+links and Hugo figures are supported. HTML is disabled. Headings start at h3 within the answer.
+Images fit the available width; tables/code scroll internally and remain keyboard-focusable.
+Java figure assets come from the published handbook; Python relative assets from its public
+repository. Unknown/failed image sources have a text fallback. Mermaid stays a code block until
+diagram rendering is implemented. See the main README's Markdown answers section for URL rules.
+
+`Topic` reads `GET /api/interval-repetition/categories/{categoryId}` for question/answer text and
+new/due/total counts. Selection comes from the shared specializations catalog, not the detail DTO.
+The page remains readable if selection loading fails, with a separate retry for subscription state.
+Add/remove uses the same actions as the regular catalog; removing the last topic keeps this page
+open. The next dashboard entry starts initial selection as usual.
+
+- Invalid/non-positive/unsafe IDs and backend 404 show a topic not-found state without changing the URL.
+- Loading uses skeletons; other detail errors have a retry. Route changes discard old detail data
+  and ignore late responses.
+- PrimeVue Accordion opens one answer at a time. Eight questions are shown initially; the bottom
+  button reveals all remaining questions locally, without refetching.
+- Individual question statuses/dates are absent from the API: `src/mocks/repetition.ts` returns
+  the neutral placeholder «Статус недоступен». Learned count remains 0; new/due counts are real.
+- The Java handbook link follows the mockup; other specializations have no reference link until
+  an explicit source mapping is available. The repeat action opens the topic-specific review queue
+  and is disabled when no questions are available or a subscription change is pending.
+- Dashboard and regular-catalog names link to the detail route; initial selection has no links.
+
+### Review session data
+
+`/student/repetition/review` fetches from the selected-categories queue; `?topic=<id>` uses the
+single-category queue. Invalid/repeated/empty topic parameters show a not-found state rather than
+falling back to all topics. 204 is completion (including an empty queue at entry).
+
+- Self-ratings are fixed at «Не помню» → 0, «Отрывочно» → 2, «С пробелами» → 3, «Отлично» → 5.
+  Only revealed answers can be rated; controls lock during saving/loading.
+- `questions_left` excludes the current question. Progress is derived from confirmed/unconfirmed
+  processed questions and the current server queue; the queue can change in another tab.
+- Confirmed POST updates local summary and shared counters; failures of the next GET retry GET only.
+  POST has no idempotency key: network/5xx failures lock reassessment and offer a read-only queue
+  check. The same question stays locked; queue movement is counted as unconfirmed, never as a
+  confirmed rating. A rejected 4xx allows an explicit retry or reloading the question.
+- Summary counts/ratings come from this session only. Reloading/closing clears local totals;
+  already saved schedules remain on the server. Closing and Telegram BackButton lead to My Topics.
+- Intervals, streaks and forecasts have neutral placeholders; per-question new/repeat markers
+  cannot be derived from the DTO and are not fabricated. Names/handbook links use catalog metadata.
+- No shell or breadcrumbs; centered 640px column. Statistics remains a future screen.
+
+### Implementation page data
+
+`Implementation` reads one implementation (`GET /api/project/projects/{id}`) and edits its GitHub
+and deploy links (`PATCH /api/project/projects/{id}`), see
+`meta/system-analytics/services/project-service/index.md`. Every row of «Мои реализации» links here.
+
+> **Mocked:** neither endpoint (nor `deployment_url`) is in project-service yet. `src/mocks/implementations.ts`
+> serves demo implementations (ids from 900001, the mockups' data) and finds any other id among the
+> student's real implementations (`GET /projects/my`). Edits live in memory until a reload. In test
+> environments `?mock=loading | load-error | not-found | save-conflict | save-error` on the page URL
+> forces a corner case; the developer panel on `Main` links to every demo and scenario. Saving the
+> URL of another implementation (e.g. the demo `…/currency-exchange-fastapi`) is a real 409.
+> **Reviews** are not built yet: no reviews block, the right column on wide layouts stays empty.
+
+- **Loading** — skeletons for the title and the details / GitHub cards.
+- **Load failed** (any error except 401 and 404) — error `Message` «Не удалось загрузить реализацию.
+  Проверьте соединение и попробуйте ещё раз.» + «Попробовать снова».
+- **Not found** — 404, a non-numeric id, or a type outside the roadmap: the `ProjectType-NotFound`
+  layout with «Реализация не найдена» and «К моим проектам».
+- **Wrong `:projectType`** in the URL — replaced with the implementation's actual type (query kept).
+- **Header status** — «Засчитана в прогресс Java Backend» for Java / Python / Go; for other
+  languages a muted «Не засчитывается в прогресс роадмапов» (not in the mockups).
+- **GitHub edit** (`Impl-EditGithub`) — prefilled with the current link; format checked on save
+  (same rule and text as the submit form); an unchanged link closes without a request. 409 →
+  `Impl-GithubTaken` text under the field; other errors → «Не удалось сохранить ссылку. Попробуйте
+  ещё раз.»; entered value stays.
+- **Deploy** (deployable types only; `Impl-NoDeploy`, `Impl-EditDeploy`) — must start with
+  `https://`; saving an emptied field removes the link, as does «Удалить ссылку на деплой».
+- The `impl_<id>` deep link is not wired yet: the app has no `startapp` handling.
+
 ### Developer panel (home, test environments only)
 
 The bottom of `Main` has a collapsible **"Для разработчиков"** panel carried over from the starter
@@ -156,7 +233,7 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 | Opened outside Telegram | `window.Telegram.WebApp.initData` is empty (regular browser, link opened outside the Mini App) | `AuthError` — explains the app only works inside Telegram; primary "Открыть в Telegram", secondary "Нет Telegram? Установить" |
 | Login failed | Backend rejects the init data (invalid / expired) or the auth request fails | `AuthError-Failed` — "Попробовать снова" retries the auth request; secondary link to the community chat |
 | Session expired | Any API call returns 401 after a successful login (token older than 30 min) | `AuthError-Expired` — asks to close and reopen the app; primary «Закрыть приложение», secondary link to the community chat |
-| Dummy login (test env, browser) | init data is empty **and** the environment is local stack or staging | `DevLogin` — replaces `AuthError`. Form: user ID, Telegram username, roles → `POST /api/auth/by-dummy` `{ user_id, roles, telegram_username }`. States: `DevLogin-Filled`, `-Loading`, `-NotFound` (404 → «Пользователь с ID 42 не найден» on the ID field), `-Error` (400 / 500 / network → server text or «Сервер недоступен. Попробуйте ещё раз.» above the button), `-Expired` (a dummy session hit 401 → back to this form with «Сессия истекла — войдите снова»). |
+| Dummy login (test env, browser) | init data is empty **and** the environment is local stack or staging | `DevLogin` — replaces `AuthError`. Form: the user (by Telegram ID, Telegram link or GitHub link) and roles → `POST /api/auth/by-dummy` with `roles` and exactly one of `telegram_user_id`, `telegram_url`, `github_profile_url` (see `meta/system-analytics/services/auth-service/index.md`). States: `DevLogin-Filled`, `-Loading`, `-NotFound` (404 → «Пользователь с Telegram ID 123 не найден» / «Профиль со ссылкой t.me/… не найден» under the field), `-InvalidUrl` (username fails the client check or profile-service's 400 → «Только username — латинские буквы, цифры и дефис» under the field), `-Error` (500 / network → server text or «Сервер недоступен. Попробуйте ещё раз.» above the button), `-Expired` (a dummy session hit 401 → back to this form with «Сессия истекла — войдите снова»). |
 
 - "Открыть в Telegram" links to the bot's main Mini App (`https://t.me/<bot>?startapp`). The bot is
   per environment (`VITE_TELEGRAM_BOT_USERNAME`). Planned: a `startapp` code for the current path
@@ -164,10 +241,15 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 - **Production** always shows `AuthError` outside Telegram; `DevLogin` must not exist in prod
   builds. **Inside Telegram** nothing changes in any environment: init data is present, so the
   normal Telegram login runs and `DevLogin` never appears.
-- `DevLogin` details: «Telegram username» has a fixed «@» prefix and is sent without it (a pasted
-  leading «@» is stripped). Roles are a multi-select (at least one); the session gets exactly these
-  roles, regardless of the user's real roles. «Войти» stays disabled until ID ≥ 1, username and at
-  least one role are set. Secondary «Открыть в Telegram» is the normal way in. On tablet/desktop
+- `DevLogin` details: «Пользователь» is a single-choice `SelectButton` (Telegram ID / Telegram /
+  GitHub, default Telegram) above one input that matches the choice; each choice keeps its own value.
+  Telegram and GitHub take only the username after a fixed addon («t.me/», «github.com/»,
+  `InputGroup` + `InputGroupAddon`); the app sends `https://t.me/<username>` /
+  `https://github.com/<username>`. A pasted full link or `@username` is cut down to the username as
+  it's entered. A username with other characters (e.g. a pasted repository path) is flagged under the
+  field without a request: «Только username — латинские буквы, цифры и …». Roles are a multi-select (at least one); the session gets
+  exactly these roles, regardless of the user's real roles. «Войти» stays disabled until the field
+  and at least one role are set. The last successful values prefill the form. Secondary «Открыть в Telegram» is the normal way in. On tablet/desktop
   the screen is a centred 440 px card (see [Adaptive layouts](#adaptive-layouts-tablet-and-desktop)).
 - The old `AuthError` `devHint` prop (dashed developer hint) is superseded by `DevLogin` — don't
   implement it.
@@ -189,6 +271,7 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 | `/` | `home` | Главная | — |
 | `/student/repetition` | `student-repetition` | Повторение | 🏠 |
 | `/student/repetition/topics` | `student-repetition-topics` | Все темы | 🏠 › Повторение |
+| `/student/repetition/topics/select` | `student-repetition-select` | Initial topic selection (`Categories`, onboarding) | 🏠 |
 | `/student/repetition/topics/:topicId` | `student-repetition-topic` | Тема | 🏠 › Повторение › Все темы |
 | `/student/repetition/review` | `student-repetition-review` | Review session (`?topic=:topicId` = one topic; none = all) | none (close button only) |
 | `/student/repetition/stats` | `student-repetition-stats` | Статистика | 🏠 › Повторение |
@@ -303,6 +386,9 @@ Choices made up front so every screen (and every contributor) builds them the sa
 - **Look:** PrimeVue 4 Aura — Inter, emerald primary, slate surfaces (zinc in dark mode), 12 px card
   radius. Primary buttons use a darker emerald than Aura's default (`#047857` in light mode) so white
   text meets WCAG AA contrast; in dark mode `#34d399` with dark text.
+- **Brand:** «IT Ментор | Платформа сообщества» — the app/page title. The shell header shows it on two
+  lines (name + «Платформа сообщества») next to the round logo (the community's avatar, embedded in
+  `AppShell.dc.html` as a 96 px JPEG; in the app ship it as a static asset). The tablet rail shows the logo only.
 - **Copy:** Russian. Example data is illustrative, not real.
 - **Navigation:** breadcrumbs on every screen below home (the home icon links to `/`); the review
   session has none — only a close (X) button. Telegram's BackButton is expected alongside; in a
@@ -368,7 +454,8 @@ recovered from there.
 
 ## Open questions
 
-- Mapping of the 4 self-rating buttons to SM-2 grades (0–5); intervals shown on the buttons are examples.
+- Mapping is settled: «Не помню» = 0, «Отрывочно» = 2, «С пробелами» = 3, «Отлично» = 5.
+  The API still does not provide intervals for the rating buttons.
 - How many successful repetitions make a question "learned" (`[N]` placeholder on `Stats`).
 - Whether "Повторить всё" / "Сдать проект" become Telegram's MainButton instead of in-page buttons
   (see Component decisions).

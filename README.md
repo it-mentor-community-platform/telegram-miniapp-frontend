@@ -46,6 +46,48 @@ Project pages (`/student/projects/<project>`) list and submit implementations th
 project-service. Deploy links are not stored by the backend yet, so the submit form has no deploy
 field.
 
+The repetition dashboard (`/student/repetition`, students only) is the section's entry point
+from home and the sidebar. It shows selected topics and real new/due question counts. A successful
+load with no selected topics opens initial selection at `/student/repetition/topics/select`.
+Choices are kept only in the page's memory and discarded on exit/reload; Continue is disabled
+until at least one topic is chosen and saves the IDs in one batch before opening the dashboard.
+Failed saves preserve the draft. Loading failures do not trigger initial selection.
+
+The regular catalog (`/student/repetition/topics`) persists each add/remove action immediately;
+search and specialization filtering run locally. Its breadcrumbs lead back to the dashboard.
+Topic names in the dashboard and regular catalog open `/student/repetition/topics/<topicId>`.
+The topic page loads questions/answers from the API, expands one answer at a time, initially shows
+eight questions and can reveal the rest. Add/remove actions share the catalog's selection state.
+Initial selection has no topic links. Review buttons open `/student/repetition/review` (all selected
+topics) or `?topic=<id>` (one topic). The session reveals an answer before accepting a rating:
+«Не помню» = 0, «Отрывочно» = 2, «С пробелами» = 3, «Отлично» = 5. Each confirmed POST is followed
+by fetching the next question; 204 ends the session. A failed next-question request retries only GET.
+Network/server errors on POST have an uncertain result: the session never resends that assessment,
+but offers a queue check. If the same question returns it stays blocked; if the queue advances,
+the unresolved attempt is reported separately from confirmed ratings. Exit/reload discards session
+totals, not server-saved answers. The dashboard refreshes its counters after reviews.
+
+Statistics navigation is not implemented yet. Learned progress (0%), individual question statuses,
+rating intervals, streaks and next-review forecasts are placeholders in `src/mocks/repetition.ts`;
+session summaries, question counts and selections use real data. The review page has no sidebar
+or breadcrumbs; closing it and Telegram BackButton return to My Topics.
+
+## Markdown answers
+
+Topic answers and review answers share `MarkdownAnswer`. It renders Markdown headings, lists,
+quotes, tables, links and code blocks with theme tokens. Raw HTML is displayed as text; unsafe URL
+schemes are blocked. Code remains plain monospace text (including Mermaid), without highlighting.
+Tables and code blocks scroll horizontally inside the answer.
+
+Hugo `{{< figure src=... title=... >}}` works outside code, with quoted or unquoted attributes.
+Java image paths resolve against `https://zhukovsd.github.io/java-backend-interview-prep/`;
+relative Python assets resolve against the public repository's `master/assets/` directory.
+Relative document links use the corresponding published handbook. Unknown relative paths do not
+resolve against the frontend. Images use lazy loading; failed images show their alternative text.
+Only `src`, `title`, `alt` and `caption` are supported for figures; unknown shortcodes remain text.
+
+Run rendering and safety checks with `npm run test:markdown`.
+
 ## Environments
 
 Each environment is a Vite mode with its own committed `.env.<mode>` file:
@@ -59,10 +101,10 @@ Each environment is a Vite mode with its own committed `.env.<mode>` file:
 Override a value locally in `.env.<mode>.local` (git-ignored).
 
 With developer tools on (local-stack, staging), opening the app in a regular browser shows a dummy
-login form instead of "Откройте приложение в Telegram": enter an auth-service user id (`Users.id`,
-not the Telegram id), a username and roles, and the app signs in via `POST /api/auth/by-dummy`.
-Nothing is remembered: after a reload or when the 30-minute token expires, sign in again. Prod builds
-don't contain the form.
+login form instead of "Откройте приложение в Telegram": pick the user by Telegram id or by the
+Telegram / GitHub username from their profile (the app builds the link), choose roles, and the app signs in via
+`POST /api/auth/by-dummy`. The last values prefill the form, so after the 30-minute token expires
+signing in again is one click. Prod builds don't contain the form.
 
 `npm run dev` runs in `local-stack` mode over https and proxies `/api` to `VITE_API_BASE_URL`, so the
 app calls its own origin. A built `local-stack` image calls `http://localhost:8080` directly, which
@@ -186,6 +228,7 @@ The staging gateway serves the OpenAPI specs behind basic auth:
 
 - auth-service: `https://staging.platform.zhukovsd.it/api/auth/v3/api-docs`
 - project-service: `https://staging.platform.zhukovsd.it/api/project/v3/api-docs`
+- interval-repetition-service: `https://staging.platform.zhukovsd.it/api/interval-repetition/v3/api-docs`
 
 Get the credentials from the team and put them in `.openapi.netrc.local` (git-ignored). Never
 commit them:

@@ -2,6 +2,8 @@
 import Avatar from 'primevue/avatar'
 import Tag from 'primevue/tag'
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
+// TODO: replace with a higher-resolution original; the design only embeds a 96×96 JPEG.
+import logoUrl from '../assets/logo.jpg'
 import { session } from '../session'
 import { fullName, initials, roleTags } from '../user'
 
@@ -12,7 +14,7 @@ const user = session.user!
 // but disabled, like its card on the home page.
 const items: { label: string; short: string; icon: string; to?: RouteLocationRaw }[] = [
   { label: 'Главная', short: 'Главная', icon: 'pi-home', to: { name: 'home' } },
-  { label: 'Вопросы к собеседованиям', short: 'Вопросы', icon: 'pi-sync' },
+  { label: 'Вопросы к собеседованиям', short: 'Вопросы', icon: 'pi-sync', to: user.roles.includes('STUDENT') ? { name: 'student-repetition' } : undefined },
   { label: 'Мои проекты', short: 'Проекты', icon: 'pi-map', to: { name: 'student-projects' } },
 ]
 
@@ -28,16 +30,20 @@ const itemClass =
   >
     <RouterLink
       :to="{ name: 'home' }"
-      aria-label="IT Ментор — на главную"
-      class="focus-ring flex h-10 items-center justify-center gap-2.5 rounded-lg text-color lg:justify-start"
+      aria-label="IT Ментор | Платформа сообщества — на главную"
+      class="focus-ring flex min-h-10 items-center justify-center gap-2.5 rounded-lg text-color lg:justify-start"
     >
-      <span
-        class="flex size-9 shrink-0 items-center justify-center rounded-[0.625rem] bg-primary text-sm font-bold tracking-[-0.02em] text-primary-contrast"
-        aria-hidden="true"
-      >
-        IT
+      <img
+        :src="logoUrl"
+        alt=""
+        width="40"
+        height="40"
+        class="size-10 shrink-0 rounded-full object-cover ring-1 ring-(--p-content-border-color)"
+      />
+      <span class="hidden min-w-0 flex-col gap-px lg:flex" aria-hidden="true">
+        <span class="text-base/5 font-bold">IT Ментор</span>
+        <span class="text-note/4 font-medium text-muted-color">Платформа сообщества</span>
       </span>
-      <span class="hidden text-base/5 font-bold lg:inline" aria-hidden="true">IT Ментор</span>
     </RouterLink>
 
     <nav aria-label="Разделы приложения" class="flex flex-col gap-1">

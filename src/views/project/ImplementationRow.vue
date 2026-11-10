@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import Tag from 'primevue/tag'
-import type { Implementation } from '../../roadmap'
+import { RouterLink } from 'vue-router'
+import { projectTypeById, type Implementation } from '../../roadmap'
 
 const props = defineProps<{
   implementation: Implementation
@@ -21,24 +22,34 @@ const submittedOn = computed(() => {
   return `${date.getDate()} ${shortMonths[date.getMonth()]} ${date.getFullYear()}`
 })
 
+// Rows are listed per roadmap project type, so the type always has a slug.
+const slug = computed(() => projectTypeById(props.implementation.projectType)!.slug)
+
 function withoutProtocol(url: string) {
   return url.replace(/^https?:\/\//, '')
 }
 </script>
 
 <template>
-  <!-- Not a link yet: the implementation page isn't built. -->
-  <div
-    class="flex flex-col gap-1.5 px-4 py-3.5 transition-colors duration-1000"
+  <RouterLink
+    :to="{ name: 'student-implementation', params: { projectType: slug, implementationId: implementation.id } }"
+    class="focus-ring flex items-center gap-3 px-4 py-3.5 text-color transition-colors duration-1000 hover:bg-row-hover"
     :class="{ 'border-t border-surface': divider, 'bg-(--p-tint-success-background)': highlighted }"
   >
-    <span class="flex items-center gap-2">
-      <Tag :value="implementation.language" class="tint-neutral" />
-      <span class="text-meta text-muted-color">сдан {{ submittedOn }}</span>
+    <span class="flex min-w-0 flex-1 flex-col gap-1.5">
+      <span class="flex items-center gap-2">
+        <Tag :value="implementation.language" class="tint-neutral" />
+        <span class="text-meta text-muted-color">сдан {{ submittedOn }}</span>
+      </span>
+      <span class="flex min-w-0 items-center gap-1.5 text-sm font-medium">
+        <i class="pi pi-link shrink-0 text-xs text-muted-color" aria-hidden="true" />
+        <span class="truncate">{{ withoutProtocol(implementation.githubUrl) }}</span>
+      </span>
+      <span v-if="implementation.deployUrl" class="flex min-w-0 items-center gap-1.5 text-meta text-muted-color">
+        <i class="pi pi-globe shrink-0 text-xs" aria-hidden="true" />
+        <span class="truncate">{{ withoutProtocol(implementation.deployUrl) }}</span>
+      </span>
     </span>
-    <span class="flex min-w-0 items-center gap-1.5 text-sm font-medium">
-      <i class="pi pi-link shrink-0 text-xs text-muted-color" aria-hidden="true" />
-      <span class="truncate">{{ withoutProtocol(implementation.githubUrl) }}</span>
-    </span>
-  </div>
+    <i class="pi pi-chevron-right shrink-0 text-sm text-subtle-color" aria-hidden="true" />
+  </RouterLink>
 </template>
