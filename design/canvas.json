@@ -700,6 +700,14 @@
       "w": 390,
       "x": 5170,
       "y": 2980
+    },
+    "DevLogin-InvalidUrl.dc.html": {
+      "x": 2820,
+      "y": 1740,
+      "w": 390,
+      "h": 844,
+      "title": "Dev-вход · неверный username",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -818,6 +826,7 @@
     "DevLogin-Loading.dc.html",
     "DevLogin-NotFound.dc.html",
     "DevLogin-Error.dc.html",
+    "DevLogin-InvalidUrl.dc.html",
     "DevLogin-Expired.dc.html",
     "Repetition.dc.html",
     "Categories.dc.html",

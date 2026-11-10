@@ -39,25 +39,30 @@ a{color:inherit}a:hover{color:inherit}
 
 <form style="display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}">
 
-<label style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">ID пользователя</span>
-<input type="number" min="1" step="1" inputmode="numeric" placeholder="Например, 1" value="{{id}}" onInput="{{onId}}" disabled="{{loading}}" aria-invalid="{{idInvalid}}" style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{idBorder}}; background: {{inputBg}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
-<sc-if value="{{notFound}}" hint-placeholder-val="{{ false }}">
-<span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
-<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
-<span>Пользователь с ID 42 не найден</span>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span id="dev-login-user" style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Пользователь</span>
+<div role="radiogroup" aria-labelledby="dev-login-user" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 10px; background: {{t.chip}}">
+<sc-for list="{{methodOptions}}" as="m" hint-placeholder-count="3">
+<button type="button" role="radio" onClick="{{m.pick}}" aria-checked="{{m.pressed}}" disabled="{{loading}}" style="height: 36px; border: none; border-radius: 7px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; background: {{m.bg}}; color: {{m.fg}}; box-shadow: {{m.sh}}">{{m.label}}</button>
+</sc-for>
+</div>
+<sc-if value="{{isId}}" hint-placeholder-val="{{ false }}">
+<input type="text" inputmode="numeric" autocomplete="off" aria-label="Telegram ID пользователя" placeholder="Например, 123456789" value="{{value}}" onInput="{{onValue}}" disabled="{{loading}}" aria-invalid="{{valueInvalid}}" style="height: 44px; margin-top: 2px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{valueBorder}}; background: {{inputBg}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
+</sc-if>
+<sc-if value="{{isLink}}" hint-placeholder-val="{{ true }}">
+<span style="display: flex; height: 44px; margin-top: 2px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{valueBorder}}; background: {{inputBg}}; overflow: hidden">
+<span aria-hidden="true" style="display: flex; align-items: center; padding: 0 10px 0 12px; background: {{t.chip}}; border-right: 1px solid {{t.inputBorder}}; color: {{t.muted}}; font-size: 15px; white-space: nowrap">{{prefix}}</span>
+<input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="{{inputAria}}" placeholder="username" value="{{value}}" onInput="{{onValue}}" disabled="{{loading}}" aria-invalid="{{valueInvalid}}" style="flex: 1; min-width: 0; padding: 0 12px; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
 </span>
 </sc-if>
-<span style="font-size: 12px; line-height: 17px; color: {{t.muted}}">ID из таблицы users в auth-service — не Telegram ID</span>
-</label>
-
-<label style="display: flex; flex-direction: column; gap: 6px">
-<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Telegram username</span>
-<span style="display: flex; height: 44px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{inputBg}}; overflow: hidden">
-<span aria-hidden="true" style="display: flex; align-items: center; padding: 0 12px; background: {{t.chip}}; border-right: 1px solid {{t.inputBorder}}; color: {{t.muted}}; font-size: 15px">@</span>
-<input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="username" value="{{username}}" onInput="{{onUsername}}" disabled="{{loading}}" style="flex: 1; min-width: 0; padding: 0 12px; border: none; outline: none; background: transparent; color: {{t.text}}; font: inherit; font-size: 15px">
+<sc-if value="{{fieldError}}" hint-placeholder-val="{{ false }}">
+<span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
+<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>{{fieldErrorText}}</span>
 </span>
-</label>
+</sc-if>
+<span style="font-size: 12px; line-height: 17px; color: {{t.muted}}">{{hint}}</span>
+</div>
 
 <div role="group" aria-label="Роли" style="display: flex; flex-direction: column; gap: 6px">
 <span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Роли</span>
@@ -93,11 +98,11 @@ a{color:inherit}a:hover{color:inherit}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"scenario":{"editor":"enum","options":["Пустая форма","Заполнена","Загрузка","Не найден","Ошибка","Сессия истекла"],"default":"Пустая форма"},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"scenario":{"editor":"enum","options":["Пустая форма","Заполнена","Загрузка","Не найден","Неверная ссылка","Ошибка","Сессия истекла"],"default":"Пустая форма"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { id: null, username: null, roles: null, loading: null };
+    this.state = { method: null, values: null, roles: null, loading: null, checked: null };
   }
   renderVals() {
     const dark = this.props.dark ?? false;
@@ -113,22 +118,51 @@ class Component extends DCLogic {
       warnSoft: '#fff7ed', warnText: '#c2410c', infoSoft: '#eff6ff', infoText: '#1d4ed8',
       errSoft: '#fef2f2', errText: '#b91c1c', errBorder: '#ef4444', btnBg: '#047857', btnText: '#ffffff'
     };
+    // POST /api/auth/by-dummy takes exactly one of telegram_user_id, telegram_url, github_profile_url.
+    const methods = {
+      id: { label: 'Telegram ID', aria: 'Telegram ID пользователя',
+        hint: 'Числовой ID аккаунта Telegram (telegram_user_id), не ID из базы' },
+      tg: { label: 'Telegram', prefix: 't.me/', aria: 'Username в Telegram',
+        hint: 'Username из профиля участника. Можно вставить ссылку или @username' },
+      gh: { label: 'GitHub', prefix: 'github.com/', aria: 'Username на GitHub',
+        hint: 'Username из профиля участника. Можно вставить ссылку целиком' }
+    };
     const presets = {
-      'Пустая форма': { id: '', username: '', roles: [] },
-      'Заполнена': { id: '1', username: 'zhukovsd', roles: ['STUDENT'] },
-      'Загрузка': { id: '1', username: 'zhukovsd', roles: ['STUDENT'], loading: true },
-      'Не найден': { id: '42', username: 'zhukovsd', roles: ['STUDENT'], notFound: true },
-      'Ошибка': { id: '1', username: 'zhukovsd', roles: ['STUDENT'], error: true },
-      'Сессия истекла': { id: '', username: '', roles: [], expired: true }
+      'Пустая форма': { method: 'tg', value: '', roles: [] },
+      'Заполнена': { method: 'tg', value: 'zhukovsd', roles: ['STUDENT'] },
+      'Загрузка': { method: 'tg', value: 'zhukovsd', roles: ['STUDENT'], loading: true },
+      'Не найден': { method: 'tg', value: 'someone_else', roles: ['STUDENT'], notFound: true },
+      'Неверная ссылка': { method: 'gh', value: 'zhukovsd/java-backend', roles: ['STUDENT'], invalid: true },
+      'Ошибка': { method: 'tg', value: 'zhukovsd', roles: ['STUDENT'], error: true },
+      'Сессия истекла': { method: 'tg', value: 'zhukovsd', roles: ['STUDENT'], expired: true }
     };
     const p = presets[scenario] || presets['Пустая форма'];
-    const id = this.state.id ?? p.id;
-    const username = this.state.username ?? p.username;
+    const method = this.state.method ?? p.method;
+    const values = this.state.values ?? { id: '', tg: '', gh: '', [p.method]: p.value };
+    const value = values[method];
     const roles = this.state.roles ?? p.roles;
     const loading = this.state.loading ?? !!p.loading;
-    const edited = this.state.id !== null || this.state.username !== null || this.state.roles !== null;
+    const edited = this.state.method !== null || this.state.values !== null || this.state.roles !== null;
     const notFound = !!p.notFound && !edited;
-    const valid = Number(id) >= 1 && Number.isInteger(Number(id)) && username.trim() !== '' && roles.length > 0;
+    // Only the username is typed; the fixed prefix makes the link (https://t.me/…, https://github.com/…).
+    // A pasted full link or @username is cut down to the username as it's entered.
+    const strip = { id: (v) => v, tg: (v) => v.trim().replace(/^@/, '').replace(/^(https?:\/\/)?t\.me\//, ''), gh: (v) => v.trim().replace(/^(https?:\/\/)?(www\.)?github\.com\//, '') };
+    const patterns = { id: /^[1-9][0-9]*$/, tg: /^[A-Za-z0-9_]{4,32}\/?$/, gh: /^[A-Za-z0-9-]+\/?$/ };
+    const formatOk = patterns[method].test(value.trim());
+    const invalid = (!!p.invalid && !edited) || (this.state.checked === true && !formatOk && value.trim() !== '');
+    const filled = value.trim() !== '' && roles.length > 0;
+    const short = (methods[method].prefix || '') + value.trim().replace(/\/$/, '');
+    const notFoundText = method === 'id' ? 'Пользователь с Telegram ID ' + value + ' не найден' : 'Профиль со ссылкой ' + short + ' не найден';
+    const invalidText = method === 'id' ? 'Telegram ID — целое положительное число' : method === 'tg' ? 'Только username — латинские буквы, цифры и _' : 'Только username — латинские буквы, цифры и дефис';
+    const methodOptions = Object.entries(methods).map(([key, m]) => {
+      const on = key === method;
+      return {
+        label: m.label, pressed: on ? 'true' : 'false',
+        bg: on ? t.seg : 'transparent', fg: on ? t.text : t.muted, sh: on ? '0 1px 2px rgba(15, 23, 42, 0.08)' : 'none',
+        pick: () => this.setState({ method: key, values, checked: false })
+      };
+    });
+    const M = methods[method];
     const roleOptions = ['STUDENT', 'MENTOR', 'ADMIN'].map((label) => {
       const on = roles.includes(label);
       return {
@@ -160,20 +194,22 @@ class Component extends DCLogic {
     Object.assign(L, { maxW: '440px', rootPad: wide ? '32px' : '20px 20px 28px', rootBg: wide ? t.card : t.bg, rootBorder: wide ? '1px solid ' + t.border : 'none',
       rootRadius: wide ? '16px' : '0', rootShadow: wide && !dark ? '0 1px 3px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.06)' : 'none',
       areaAlign: wide ? 'center' : 'flex-start', areaPad: wide ? '32px' : '0' });
+    const fieldError = notFound || invalid;
     return { layout, L, dk, tk: dark ? 'd' : 'l',
-      t, id, username, roleOptions, loading, notFound,
+      t, value, roleOptions, methodOptions, loading,
+      isId: method === 'id', isLink: method !== 'id', prefix: M.prefix, inputAria: M.aria, hint: M.hint,
+      fieldError, fieldErrorText: notFound ? notFoundText : invalidText,
       isExpired: !!p.expired,
       isError: !!p.error && !edited && !loading,
-      idInvalid: notFound ? 'true' : 'false',
-      idBorder: notFound ? t.errBorder : t.inputBorder,
+      valueInvalid: fieldError ? 'true' : 'false',
+      valueBorder: fieldError ? t.errBorder : t.inputBorder,
       inputBg: loading ? t.inputDisabled : t.inputBg,
-      submitDisabled: !valid || loading,
-      submitOpacity: valid ? 1 : 0.5,
+      submitDisabled: !filled || loading,
+      submitOpacity: filled ? 1 : 0.5,
       busy: loading ? 'true' : 'false',
       submitLabel: loading ? 'Входим…' : 'Войти',
-      onId: (e) => this.setState({ id: e.target.value }),
-      onUsername: (e) => this.setState({ username: e.target.value.replace(/^@/, '') }),
-      submit: () => this.setState({ loading: true })
+      onValue: (e) => this.setState({ values: { ...values, [method]: strip[method](e.target.value) }, checked: false }),
+      submit: () => (formatOk ? this.setState({ loading: true }) : this.setState({ checked: true, values, method }))
     };
   }
 }
