@@ -111,8 +111,8 @@ export function useRepetitionReview(scope: Readonly<Ref<ReviewScope>>) {
     if (currentGeneration !== generation) return
     answers.value.push({ questionId: currentQuestion.questionId, categoryId: currentQuestion.categoryId, quality })
     remaining.value = Math.max(0, remaining.value - 1)
-    question.value = undefined
-    revealed.value = false
+    // Keep the current content in place during the next GET. Controls are locked by phase;
+    // fetchNext replaces it and resets answer visibility once the next question arrives.
     void refreshCatalog()
     try {
       phase.value = 'loading'
