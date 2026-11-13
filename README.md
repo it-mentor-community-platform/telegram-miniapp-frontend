@@ -59,7 +59,7 @@ Topic names in the dashboard and regular catalog open `/student/repetition/topic
 The topic page loads questions/answers from the API, expands one answer at a time, initially shows
 eight questions and can reveal the rest. Add/remove actions share the catalog's selection state.
 Initial selection has no topic links. Review buttons open `/student/repetition/review` (all selected
-topics) or `?topic=<id>` (one topic). The session reveals an answer before accepting a rating:
+topics) or `?topic=<id>` (one topic). Ratings stay above the question and can be submitted without revealing the answer:
 «Не помню» = 0, «Отрывочно» = 2, «С пробелами» = 3, «Отлично» = 5. Each confirmed POST is followed
 by fetching the next question; 204 ends the session. A failed next-question request retries only GET.
 Network/server errors on POST have an uncertain result: the session never resends that assessment,
