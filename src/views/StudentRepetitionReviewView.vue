@@ -34,7 +34,8 @@ const category = computed(() => {
   return undefined
 })
 const title = computed(() => scope.value.valid && scope.value.topicId !== undefined ? category.value?.name ?? 'Повторить тему' : 'Повторить всё')
-const canRate = computed(() => revealed.value && ['question', 'save-error'].includes(phase.value))
+const canRate = computed(() => Boolean(question.value) && ['question', 'save-error'].includes(phase.value))
+const loadingStatus = computed(() => phase.value === 'saving' ? 'Сохраняем оценку…' : phase.value === 'loading' ? 'Загружаем вопрос…' : '')
 const placeholders = getReviewPlaceholders()
 const isEmpty = computed(() => answers.value.length === 0 && unconfirmed.value === 0)
 const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value?.specialization ?? '')
@@ -42,7 +43,7 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
 </script>
 
 <template>
-  <div class="mx-auto flex w-full max-w-160 flex-1 flex-col gap-5">
+  <div class="mx-auto flex w-full max-w-[640px] flex-1 flex-col gap-5">
     <header class="flex items-center gap-2">
       <Button :as="RouterLink" :to="{ name: 'student-repetition' }" icon="pi pi-times" text rounded severity="secondary" aria-label="Завершить повторение" class="size-11 shrink-0" />
       <h1 class="min-w-0 flex-1 text-center text-base font-semibold wrap-anywhere">{{ title }}</h1>
@@ -79,10 +80,28 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
     </template>
 
     <template v-else>
-      <div v-if="total" class="flex flex-col gap-2">
-        <div class="flex justify-between text-meta text-muted-color"><span>Вопрос {{ Math.min(completed + 1, total) }} из {{ total }}</span><span>осталось {{ question?.questions_left ?? remaining }}</span></div>
+      <div class="flex flex-col gap-2">
+        <div class="flex min-h-4.5 justify-between text-meta text-muted-color">
+          <template v-if="total"><span>Вопрос {{ Math.min(completed + 1, total) }} из {{ total }}</span><span>осталось {{ question?.questions_left ?? remaining }}</span></template>
+          <template v-else><Skeleton width="7rem" height="1.125rem" /><Skeleton width="5rem" height="1.125rem" /></template>
+        </div>
         <ProgressBar :value="progress" :show-value="false" class="h-1.5" aria-label="Прогресс повторения" />
       </div>
+      <Card :aria-busy="phase === 'saving' || phase === 'loading'">
+        <template #content>
+          <div class="flex flex-col gap-3">
+            <div class="text-center">
+              <h3 class="relative px-6 text-md font-semibold">
+                Насколько хорошо вы помните ответ?
+                <i v-show="loadingStatus" class="pi pi-spinner pi-spin absolute top-0.5 right-0" aria-hidden="true" />
+              </h3>
+              <p class="mt-1 text-meta text-muted-color">Оценивайте честно — от этого зависит расписание</p>
+              <span class="sr-only" role="status">{{ loadingStatus }}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2"><Button v-for="rating in REVIEW_RATINGS" :key="rating.quality" severity="secondary" variant="outlined" class="min-h-15" :disabled="!canRate" :loading="phase === 'saving'" @click="rate(rating.quality)"><span class="flex flex-col gap-0.5"><span class="font-semibold">{{ rating.label }}</span><span class="text-note text-muted-color">{{ placeholders.interval }}</span></span></Button></div>
+          </div>
+        </template>
+      </Card>
       <Message v-if="phase === 'load-error'" severity="error" role="alert">
         <div class="flex flex-col items-start gap-3"><span>Не удалось загрузить следующий вопрос. Сохранённые оценки не потеряны.</span><Button label="Попробовать снова" icon="pi pi-refresh" severity="danger" variant="outlined" size="small" @click="loadNext" /></div>
       </Message>
@@ -90,7 +109,7 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
       <Message v-if="phase === 'uncertain'" severity="warn" role="alert">
         <div class="flex flex-col items-start gap-3"><span>Не удалось подтвердить сохранение оценки. Повторная отправка заблокирована, чтобы не записать ответ дважды. Проверьте очередь или вернитесь к моим темам.</span><Button label="Проверить очередь" icon="pi pi-refresh" severity="secondary" variant="outlined" size="small" @click="loadNext" /></div>
       </Message>
-      <div v-if="phase === 'loading'" class="flex flex-col gap-4" role="status" aria-label="Загрузка вопроса" aria-busy="true"><Skeleton width="8rem" height="1.5rem" /><Skeleton height="5rem" /><Skeleton width="9rem" height="2.75rem" /></div>
+      <div v-if="phase === 'loading' && !question" class="flex min-h-60 flex-col gap-4" role="status" aria-label="Загрузка вопроса" aria-busy="true"><Skeleton width="8rem" height="1.5rem" /><Skeleton height="5rem" /><Skeleton width="9rem" height="2.75rem" /></div>
       <template v-else-if="question">
         <section class="flex flex-col gap-4" aria-label="Текущий вопрос">
           <div class="flex flex-wrap gap-2"><Tag :value="category?.name ?? `Тема ${question.categoryId}`" severity="secondary" /></div>
@@ -112,15 +131,6 @@ const referenceUrl = computed(() => /^Java(?:\s+Backend)?$/i.test(category.value
             </template>
           </Card>
         </section>
-        <Card v-if="revealed" class="mt-auto">
-          <template #content>
-            <div class="flex flex-col gap-3">
-              <div class="text-center"><h3 class="text-md font-semibold">Насколько хорошо вы помните ответ?</h3><p class="mt-1 text-meta text-muted-color">Оценивайте честно — от этого зависит расписание</p></div>
-              <span v-if="phase === 'saving'" class="text-center text-meta text-muted-color" role="status"><i class="pi pi-spinner pi-spin mr-2" aria-hidden="true" />Сохраняем оценку…</span>
-              <div class="grid grid-cols-2 gap-2"><Button v-for="rating in REVIEW_RATINGS" :key="rating.quality" severity="secondary" variant="outlined" class="min-h-15" :disabled="!canRate" :loading="phase === 'saving'" @click="rate(rating.quality)"><span class="flex flex-col gap-0.5"><span class="font-semibold">{{ rating.label }}</span><span class="text-note text-muted-color">{{ placeholders.interval }}</span></span></Button></div>
-            </div>
-          </template>
-        </Card>
       </template>
     </template>
   </div>
