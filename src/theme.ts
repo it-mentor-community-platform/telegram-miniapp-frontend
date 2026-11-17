@@ -24,6 +24,7 @@ export const AppPreset = definePreset(Aura, {
         app: { background: '{surface.50}' },
         subtle: { color: '{surface.400}' },
         tint: {
+          error: { ...lightTint('red'), borderColor: '{red.200}' },
           success: lightTint('emerald'),
           warn: lightTint('orange'),
           info: lightTint('blue'),
@@ -49,6 +50,11 @@ export const AppPreset = definePreset(Aura, {
         app: { background: '{surface.950}' },
         subtle: { color: '{surface.500}' },
         tint: {
+          error: {
+            background: 'color-mix(in srgb, {red.400} 14%, transparent)',
+            color: '{red.300}',
+            borderColor: 'color-mix(in srgb, {red.400} 35%, transparent)',
+          },
           success: darkTint('emerald'),
           warn: darkTint('orange', 500),
           info: darkTint('blue'),
