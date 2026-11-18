@@ -92,11 +92,8 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
 ### Project page data
 
 `ProjectType` reads the student's implementations of that project type and submits new ones
-(`POST`, body: language, GitHub URL, optional deploy URL).
-
-> **Not implemented yet:** project-service doesn't store deploy URLs. Until it does, the app
-> sends only language and GitHub URL, has no «Ссылка на деплой» field and shows no deploy line in
-> «Мои реализации». The mockups keep them as the target design.
+(`POST`, body: language, GitHub URL, optional deploy URL). The «Ссылка на деплой» field is shown
+for deployable project types only, and is sent only when filled in.
 
 - **Loading** — first load only. `ProjectType-Loading`: only the implementations list and the
   status derived from it need the request; everything else is known from the route and renders
@@ -115,8 +112,8 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
   («Выберите язык и укажите ссылку на репозиторий»). Format is checked on submit, not while typing.
 - **Validation** (client-side, on submit) — `ProjectType-InvalidUrl`: GitHub URL must match
   `https://github.com/<owner>/<repo>` (allow a trailing `/` or `.git`) → «Укажите ссылку вида
-  https://github.com/username/repo»; deploy URL, if filled, must start with `https://` → «Укажите
-  ссылку, начинающуюся с https://». Inline error under the field (same style as the duplicate
+  https://github.com/username/repo»; deploy URL, if filled, must start with `http://` or `https://` →
+  «Укажите ссылку, начинающуюся с http:// или https://». Inline error under the field (same style as the duplicate
   error), red border, `aria-invalid`. Errors clear when the field is edited.
 - **Submitting** — `ProjectType-Submitting`: «Сдать проект» shows a spinner (`Button :loading`),
   all inputs, the language picker and «Отмена» are disabled.
@@ -201,12 +198,9 @@ falling back to all topics. 204 is completion (including an empty queue at entry
 and deploy links (`PATCH /api/project/projects/{id}`), see
 `meta/system-analytics/services/project-service/index.md`. Every row of «Мои реализации» links here.
 
-> **Mocked:** neither endpoint (nor `deployment_url`) is in project-service yet. `src/mocks/implementations.ts`
-> serves demo implementations (ids from 900001, the mockups' data) and finds any other id among the
-> student's real implementations (`GET /projects/my`). Edits live in memory until a reload. In test
-> environments `?mock=loading | load-error | not-found | save-conflict | save-error` on the page URL
-> forces a corner case; the developer panel on `Main` links to every demo and scenario. Saving the
-> URL of another implementation (e.g. the demo `…/currency-exchange-fastapi`) is a real 409.
+PATCH replaces both links: every save sends the GitHub URL and the current deploy URL (`null` when
+there is none), otherwise the deploy link would be removed.
+
 > **Reviews** are not built yet: no reviews block, the right column on wide layouts stays empty.
 
 - **Loading** — skeletons for the title and the details / GitHub cards.
@@ -222,7 +216,7 @@ and deploy links (`PATCH /api/project/projects/{id}`), see
   `Impl-GithubTaken` text under the field; other errors → «Не удалось сохранить ссылку. Попробуйте
   ещё раз.»; entered value stays.
 - **Deploy** (deployable types only; `Impl-NoDeploy`, `Impl-EditDeploy`) — must start with
-  `https://`; saving an emptied field removes the link, as does «Удалить ссылку на деплой».
+  `http://` or `https://` (same text as the submit form); saving an emptied field removes the link, as does «Удалить ссылку на деплой».
 - The `impl_<id>` deep link is not wired yet: the app has no `startapp` handling.
 
 ### Developer panel (home, test environments only)

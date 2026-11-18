@@ -23,9 +23,8 @@ export type ProjectType = {
   slug: ProjectTypeSlug
   title: string
   icon: ProjectIcon
-  // Whether an implementation can have a deploy link (web projects from currency exchange on).
-  // Used by the implementation page; the submit form has no deploy field until project-service
-  // stores deploy links.
+  // Whether an implementation can have a deploy link (web projects from currency exchange on): the
+  // submit form's deploy field and the implementation page's deploy card.
   deployable: boolean
   // Page of the spec in each roadmap course: <course>/projects/<specPath>/.
   specPath: string
@@ -48,7 +47,7 @@ export type Implementation = {
   submittedAt: Date
 }
 
-export type NewImplementation = Pick<Implementation, 'language' | 'githubUrl'>
+export type NewImplementation = Pick<Implementation, 'language' | 'githubUrl' | 'deployUrl'>
 
 // Languages a student has submitted implementations in, per project type.
 export type LanguagesByProjectType = Record<ProjectTypeId, readonly string[]>
@@ -166,7 +165,7 @@ export function isGithubRepositoryUrl(url: string) {
   return GITHUB_REPOSITORY.test(url.trim())
 }
 
-// Deploy links: any https:// URL; whether the site responds is not checked.
-export function isHttpsUrl(url: string) {
-  return /^https:\/\/\S+$/i.test(url.trim())
+// Deploy links: any http:// or https:// URL; whether the site responds is not checked.
+export function isWebUrl(url: string) {
+  return /^https?:\/\/\S+$/i.test(url.trim())
 }
