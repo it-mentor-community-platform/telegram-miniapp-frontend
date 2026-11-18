@@ -11,6 +11,7 @@ import { ConflictError } from '../../api'
 import {
   canonicalLanguage,
   isGithubRepositoryUrl,
+  isWebUrl,
   TRACKED_LANGUAGES,
   type Implementation,
   type NewImplementation,
@@ -18,7 +19,7 @@ import {
 } from '../../roadmap'
 
 // Submit form of the project page; see design/ProjectType.dc.html and README → "Project page data".
-// No deploy link field until project-service stores deploy links.
+// The optional deploy link field is shown for deployable project types only.
 const props = defineProps<{
   projectType: ProjectType
   // The first implementation of this project: "Сдать проект" and no cancel button.
@@ -40,17 +41,20 @@ const languageOptions = [...TRACKED_LANGUAGES, OTHER]
 const language = ref<string | null>(languageOptions[0])
 const otherLanguage = ref('')
 const githubUrl = ref('')
+const deployUrl = ref('')
 
 const githubError = ref<string>()
+const deployError = ref<string>()
 const submitFailed = ref(false)
 const submitting = ref(false)
 
-const ids = { otherLanguage: useId(), github: useId(), language: useId() }
+const ids = { otherLanguage: useId(), github: useId(), deploy: useId(), language: useId() }
 
 // Format is checked on submit; editing the field clears its error.
 watch(githubUrl, () => (githubError.value = undefined))
+watch(deployUrl, () => (deployError.value = undefined))
 
-watch([language, otherLanguage, githubUrl], () => emit('edited'), { once: true })
+watch([language, otherLanguage, githubUrl, deployUrl], () => emit('edited'), { once: true })
 
 const missing = computed(() => {
   const parts: string[] = []
@@ -74,7 +78,10 @@ async function onSubmit() {
   githubError.value = isGithubRepositoryUrl(github)
     ? undefined
     : 'Укажите ссылку вида https://github.com/username/repo'
-  if (githubError.value) {
+  const deploy = props.projectType.deployable ? deployUrl.value.trim() : ''
+  deployError.value =
+    !deploy || isWebUrl(deploy) ? undefined : 'Укажите ссылку, начинающуюся с http:// или https://'
+  if (githubError.value || deployError.value) {
     return
   }
 
@@ -84,6 +91,7 @@ async function onSubmit() {
     const implementation = await props.submit({
       language: language.value === OTHER ? canonicalLanguage(otherLanguage.value) : language.value!,
       githubUrl: github,
+      deployUrl: deploy || undefined,
     })
     emit('submitted', implementation)
   } catch (error) {
@@ -159,6 +167,30 @@ async function onSubmit() {
             {{ githubError }}
           </Message>
           <small v-else class="text-note text-muted-color">Репозиторий должен быть публичным</small>
+        </div>
+
+        <div v-if="projectType.deployable" class="flex flex-col gap-1.5">
+          <label :for="ids.deploy" class="text-meta font-semibold text-(--p-tint-neutral-color)">
+            Ссылка на деплой <span class="font-normal text-muted-color">· необязательно</span>
+          </label>
+          <IconField>
+            <InputIcon class="pi pi-globe" />
+            <InputText
+              :id="ids.deploy"
+              v-model="deployUrl"
+              type="url"
+              inputmode="url"
+              autocomplete="off"
+              placeholder="https://"
+              :invalid="Boolean(deployError)"
+              :disabled="submitting"
+              fluid
+            />
+          </IconField>
+          <Message v-if="deployError" severity="error" size="small" variant="simple" icon="pi pi-exclamation-circle" role="alert">
+            {{ deployError }}
+          </Message>
+          <small v-else class="text-note text-muted-color">Можно добавить или изменить позже</small>
         </div>
 
         <Message v-if="submitFailed" severity="error" icon="pi pi-exclamation-circle" role="alert">

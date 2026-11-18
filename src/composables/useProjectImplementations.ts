@@ -41,6 +41,7 @@ export function useProjectImplementations(projectType: ProjectTypeId) {
         github_repository_url: canonicalGithubUrl(input.githubUrl),
         programming_language: input.language,
         roadmap_project: projectType,
+        ...(input.deployUrl?.trim() && { deployment_url: input.deployUrl.trim() }),
       }),
     )
     if (implementations.value) {

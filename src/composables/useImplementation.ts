@@ -37,12 +37,14 @@ export function useImplementation(id: number) {
 
   // Rejects with the save error for the card to show (ConflictError for a repository in use).
   // Type and language can't change, so the cached progress summary stays valid.
+  // PATCH replaces both links, so the unchanged one is sent as it is.
   async function update(change: ImplementationChange) {
     const current = implementation.value!
+    const deployUrl = change.deployUrl !== undefined ? change.deployUrl : current.deployUrl
     implementation.value = toImplementation(
       await updateMyProject(id, {
         github_repository_url: canonicalGithubUrl(change.githubUrl ?? current.githubUrl),
-        ...(change.deployUrl !== undefined && { deployment_url: change.deployUrl?.trim() ?? null }),
+        deployment_url: deployUrl?.trim() || null,
       }),
     )
   }

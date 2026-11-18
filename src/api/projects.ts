@@ -1,5 +1,4 @@
 import { client } from './client'
-import { mockGetProject, mockUpdateProject } from '../mocks/implementations'
 import type {
   CreateProjectRequestDto,
   ProjectResponseDto,
@@ -31,16 +30,14 @@ export async function createProject(request: CreateProjectRequestDto): Promise<P
 
 // One implementation of the current student. Rejects with NotFoundError when it doesn't exist or
 // belongs to someone else, ForbiddenError without the STUDENT role.
-// Mocked until project-service ships GET /api/project/projects/{id}; then:
-// (await client.get<ProjectResponseDto>(`/api/project/projects/${id}`)).data
 export async function getMyProject(id: number): Promise<ProjectResponseDto> {
-  return mockGetProject(id)
+  const response = await client.get<ProjectResponseDto>(`/api/project/projects/${id}`)
+  return response.data
 }
 
-// Changes the GitHub and/or deploy link of the current student's implementation; resolves with its
+// Replaces the GitHub and deploy links of the current student's implementation; resolves with its
 // full new state. Rejects with ConflictError when another implementation has that repository URL.
-// Mocked until project-service ships PATCH /api/project/projects/{id}; then:
-// (await client.patch<ProjectResponseDto>(`/api/project/projects/${id}`, request)).data
 export async function updateMyProject(id: number, request: UpdateProjectRequestDto): Promise<ProjectResponseDto> {
-  return mockUpdateProject(id, request)
+  const response = await client.patch<ProjectResponseDto>(`/api/project/projects/${id}`, request)
+  return response.data
 }

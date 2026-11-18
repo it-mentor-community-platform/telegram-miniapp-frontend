@@ -15,7 +15,7 @@ export type RoadmapProjectDto =
 export type ProjectsSummaryDto = Partial<Record<RoadmapProjectDto, string[]>>
 
 // One implementation (`ProjectResponse`): an item of GET /api/project/projects/my and the body of
-// POST /api/project/project. The spec's POST 201 schema is a camelCase `Project`, but its example
+// GET / PATCH /api/project/projects/{id} and POST /api/project/project. The spec's POST 201 schema is a camelCase `Project`, but its example
 // is this snake_case shape, as is the GET response; we follow the example.
 export type ProjectResponseDto = {
   id: number
@@ -25,24 +25,24 @@ export type ProjectResponseDto = {
   roadmap_project: RoadmapProjectDto
   // Epoch seconds.
   added_timestamp: number
-  // Only for project types with a deploy; null when not set. In the system analytics spec, not yet
-  // in project-service's OpenAPI (absent from its responses so far).
-  deployment_url?: string | null
+  // Only for project types with a deploy; null when not set.
+  deployment_url: string | null
 }
 
-// Body of POST /api/project/project, required fields only (the optional `added_timestamp` and
-// `project_source_type` are not sent). The author comes from the access token: the gateway adds
-// the user headers.
+// Body of POST /api/project/project (the optional `added_timestamp` and `project_source_type` are
+// not sent). The author comes from the access token: the gateway adds the user headers.
 export type CreateProjectRequestDto = {
   github_repository_url: string
   programming_language: string
   roadmap_project: RoadmapProjectDto
+  // Deployable project types only; omitted when not filled in.
+  deployment_url?: string
 }
 
-// Body of PATCH /api/project/projects/{id} (system analytics spec, not yet in OpenAPI). The GitHub
-// URL is always sent: a body without it is a 400. `deployment_url`: omitted - unchanged, null -
-// removed.
+// Body of PATCH /api/project/projects/{id}. Replaces both links: the GitHub URL is required (a body
+// without it is a 400), and an omitted or null `deployment_url` removes the deploy link, so the
+// current one is always sent.
 export type UpdateProjectRequestDto = {
   github_repository_url: string
-  deployment_url?: string | null
+  deployment_url: string | null
 }
