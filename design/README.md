@@ -134,6 +134,19 @@ only; for other roles the card stays as it is). Loaded once per screen visit.
   → «Сдан на Java, Python и Go»). Use the response body, no refetch. Invalidate the cached
   `my/summary` so `Projects` / `Main` show the new progress.
 
+### Repetition loading and errors
+
+The implemented repetition screens follow `Repetition-Loading/Error`, `Categories-Loading/Error`,
+`Topic-Loading/Error` and `Review-Loading/Error` (their markup lives in the base screens).
+Initial loads use skeletons shaped like the data they replace: statistics tiles, topic cards,
+catalog rows and question title/status rows. Breadcrumbs, page headings and known controls remain.
+My Topics keeps its mobile bottom action visible but disabled while loading or after a load error.
+Load errors replace the dependent content with a shared error message and retry; cached data is
+kept in memory. Background refreshes keep loaded content until the request succeeds or fails.
+Review keeps its rating labels and reveal button visible while loading, blocks their actions and
+shows skeletons for the question and interval hints. Previous question/answer text is hidden during
+the next GET. If it fails, only the session header and retry message remain; retry never repeats POST.
+
 ### Topic page data
 
 Topic and review answers use the shared `MarkdownAnswer` renderer: Markdown tables, lists, code,

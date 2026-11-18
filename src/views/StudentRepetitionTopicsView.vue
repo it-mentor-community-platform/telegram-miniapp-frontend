@@ -11,6 +11,7 @@ import SelectButton from 'primevue/selectbutton'
 import Skeleton from 'primevue/skeleton'
 import { ConflictError, NotFoundError } from '../api'
 import Breadcrumbs from '../components/Breadcrumbs.vue'
+import RepetitionLoadError from '../components/RepetitionLoadError.vue'
 import EmptyState from '../components/EmptyState.vue'
 import TopicSelectionRow from '../components/TopicSelectionRow.vue'
 import { useBreadcrumbs } from '../composables/useBreadcrumbs'
@@ -154,22 +155,17 @@ void refresh()
       </div>
     </div>
 
-    <Message v-if="loadError" severity="error" icon="pi pi-exclamation-circle" role="alert">
-      <div class="flex flex-col items-start gap-3">
-        <span>{{ specializations ? 'Не удалось обновить темы. Показаны ранее загруженные данные.' : 'Не удалось загрузить темы. Проверьте соединение и попробуйте ещё раз.' }}</span>
-        <Button label="Попробовать снова" icon="pi pi-refresh" severity="danger" variant="outlined" size="small" :loading="loading" :disabled="saving" @click="refresh" />
-      </div>
-    </Message>
+    <RepetitionLoadError v-if="loadError" text="Не удалось загрузить список тем. Проверьте соединение и попробуйте ещё раз." :loading="loading" :disabled="saving" @retry="refresh" />
 
     <div v-if="!specializations && loading" class="flex flex-col gap-5" role="status" aria-label="Загрузка тем" aria-busy="true">
-      <section v-for="group in 2" :key="group" class="flex flex-col gap-2" aria-hidden="true">
-        <Skeleton width="10rem" height="1rem" />
-        <Card :pt="{ body: { class: 'p-0' } }">
+      <section v-for="(count, group) in [5, 3]" :key="group" class="flex flex-col gap-2" aria-hidden="true">
+        <div class="flex justify-between gap-3 px-1 py-0.5"><Skeleton :width="group ? '9.375rem' : '8.125rem'" height="0.875rem" /><Skeleton width="5.625rem" height="0.875rem" /></div>
+        <Card class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
           <template #content>
             <div class="grid grid-cols-1 md:grid-cols-2">
-              <div v-for="row in 4" :key="row" class="flex min-h-20 items-center gap-3 border-surface px-4 py-3" :class="{ 'border-t md:border-t-0': row === 2, 'border-t': row > 2, 'md:border-l': row % 2 === 0 }">
-                <div class="flex min-w-0 flex-1 flex-col gap-2"><Skeleton width="65%" height="1rem" /><Skeleton width="75%" height="0.75rem" /></div>
-                <Skeleton width="7rem" height="2.75rem" />
+              <div v-for="row in count" :key="row" class="flex min-h-16 items-center gap-3 border-surface py-2.5 pr-3 pl-4" :class="{ 'border-t md:border-t-0': row === 2, 'border-t': row > 2, 'md:border-l': row % 2 === 0 }">
+                <div class="flex min-w-0 flex-1 flex-col gap-1.75"><Skeleton :width="['40%', '55%', '35%', '60%'][(row - 1) % 4]" height="0.9375rem" /><Skeleton :width="['30%', '45%', '38%', '28%'][(row - 1) % 4]" height="0.75rem" /></div>
+                <Skeleton width="6.5rem" height="2.25rem" class="shrink-0" />
               </div>
             </div>
           </template>
@@ -177,7 +173,7 @@ void refresh()
       </section>
     </div>
 
-    <template v-if="specializations">
+    <template v-if="specializations && !loadError">
       <span v-if="loading" class="text-meta text-muted-color" role="status">Обновляем темы…</span>
       <section v-for="group in groups" :key="group.id" class="flex flex-col gap-2" :aria-labelledby="`specialization-${group.id}`">
         <h2 :id="`specialization-${group.id}`" class="flex items-baseline justify-between gap-3 px-1 text-meta text-muted-color">
