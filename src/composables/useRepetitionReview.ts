@@ -87,7 +87,7 @@ export function useRepetitionReview(scope: Readonly<Ref<ReviewScope>>) {
   }
 
   async function rate(quality: ReviewQuality) {
-    if (busy || !revealed.value || !question.value || !['question', 'save-error'].includes(phase.value)) return
+    if (busy || !question.value || !['question', 'save-error'].includes(phase.value)) return
     if (!REVIEW_RATINGS.some((rating) => rating.quality === quality)) return
     busy = true
     const currentGeneration = generation
@@ -111,8 +111,8 @@ export function useRepetitionReview(scope: Readonly<Ref<ReviewScope>>) {
     if (currentGeneration !== generation) return
     answers.value.push({ questionId: currentQuestion.questionId, categoryId: currentQuestion.categoryId, quality })
     remaining.value = Math.max(0, remaining.value - 1)
-    question.value = undefined
-    revealed.value = false
+    // Keep metadata for the loading state; the view masks the old question and answer.
+    // fetchNext replaces the question and resets answer visibility when the GET completes.
     void refreshCatalog()
     try {
       phase.value = 'loading'

@@ -12,9 +12,11 @@ import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 import { ConflictError, NotFoundError } from '../api'
 import Breadcrumbs from '../components/Breadcrumbs.vue'
+import RepetitionLoadError from '../components/RepetitionLoadError.vue'
 import EmptyState from '../components/EmptyState.vue'
 import NotFoundState from '../components/NotFoundState.vue'
 import StatTiles from '../components/StatTiles.vue'
+import RepetitionStatsSkeleton from '../components/RepetitionStatsSkeleton.vue'
 import MarkdownAnswer from '../components/MarkdownAnswer.vue'
 import { useBreadcrumbs } from '../composables/useBreadcrumbs'
 import { useRepetitionTopic } from '../composables/useRepetitionTopic'
@@ -87,21 +89,32 @@ watch(topicId, (id) => {
       :action="{ label: 'Ко всем темам', to: { name: 'student-repetition-topics' } }"
     />
     <template v-else>
-      <Message v-if="error" severity="error" icon="pi pi-exclamation-circle" role="alert">
-        <div class="flex flex-col items-start gap-3">
-          <span>Не удалось загрузить тему. Проверьте соединение и попробуйте ещё раз.</span>
-          <Button label="Попробовать снова" icon="pi pi-refresh" severity="danger" variant="outlined" size="small" :loading="loading" @click="refresh" />
-        </div>
-      </Message>
+      <RepetitionLoadError v-if="error" text="Не удалось загрузить тему. Проверьте соединение и попробуйте ещё раз." :loading="loading" @retry="refresh" />
       <div v-if="!topic && loading" class="flex flex-col gap-4" role="status" aria-label="Загрузка темы" aria-busy="true">
-        <Skeleton width="7rem" height="1.5rem" /><Skeleton width="60%" height="2rem" />
-        <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_24.5rem]" aria-hidden="true">
-          <Card><template #content><div class="flex flex-col gap-4"><Skeleton v-for="item in 5" :key="item" height="3rem" /></div></template></Card>
-          <Card><template #content><Skeleton height="10rem" /></template></Card>
+        <div class="flex flex-col gap-2.5 pt-0.5" aria-hidden="true">
+          <Skeleton width="6rem" height="1.25rem" /><Skeleton width="55%" height="1.75rem" /><Skeleton width="13.75rem" height="1.125rem" />
+        </div>
+        <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_24.5rem] lg:gap-x-6 lg:gap-y-2">
+          <aside class="flex flex-col gap-4 lg:col-start-2 lg:row-start-2" aria-hidden="true">
+            <Card class="border-0 bg-transparent shadow-none lg:border lg:bg-(--p-card-background)" :pt="{ body: { class: 'p-0 lg:p-4' } }">
+              <template #content><div class="flex flex-col gap-4"><RepetitionStatsSkeleton /><Skeleton height="3rem" border-radius="10px" /></div></template>
+            </Card>
+          </aside>
+          <section class="flex min-w-0 flex-col gap-2 lg:contents">
+            <h2 class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase lg:col-start-1 lg:row-start-1">Вопросы</h2>
+            <Card class="overflow-hidden lg:col-start-1 lg:row-start-2" :pt="{ body: { class: 'p-0' } }">
+              <template #content>
+                <div v-for="(width, index) in ['85%', '70%', '90%', '60%', '78%', '66%']" :key="index" class="flex min-h-14 gap-3 border-surface px-4 py-3.5" :class="{ 'border-t': index > 0 }" aria-hidden="true">
+                  <Skeleton shape="circle" size="0.5rem" class="mt-1.75 shrink-0" />
+                  <div class="flex min-w-0 flex-1 flex-col gap-2 pt-0.75"><Skeleton :width="width" height="0.9375rem" /><Skeleton :width="index % 2 ? '28%' : '38%'" height="0.75rem" /></div>
+                </div>
+              </template>
+            </Card>
+          </section>
         </div>
       </div>
 
-      <template v-if="topic">
+      <template v-if="topic && !error">
         <header class="flex flex-col items-start gap-2">
           <Tag :value="topic.specialization" severity="secondary" />
           <h1 class="text-2xl font-bold wrap-anywhere">{{ topic.name }}</h1>

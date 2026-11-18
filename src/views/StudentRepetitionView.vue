@@ -3,12 +3,13 @@ import { computed, onBeforeUnmount } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
-import Message from 'primevue/message'
 import ProgressBar from 'primevue/progressbar'
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 import Breadcrumbs from '../components/Breadcrumbs.vue'
+import RepetitionLoadError from '../components/RepetitionLoadError.vue'
 import StatTiles from '../components/StatTiles.vue'
+import RepetitionStatsSkeleton from '../components/RepetitionStatsSkeleton.vue'
 import { useBreadcrumbs } from '../composables/useBreadcrumbs'
 import { useRepetitionTopics } from '../composables/useRepetitionTopics'
 import { getTopicLearnedPercent } from '../mocks/repetition'
@@ -45,29 +46,47 @@ void refresh()
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-1 flex-col gap-5">
     <Breadcrumbs :items="breadcrumbs" />
     <header class="flex flex-wrap items-center gap-3">
       <h1 class="text-page font-bold">Повторение</h1>
       <Button :as="RouterLink" :to="{ name: 'student-repetition-topics' }" label="Все темы" icon="pi pi-plus" severity="secondary" variant="outlined" class="ml-auto" />
-      <Button :as="available ? RouterLink : 'BUTTON'" :to="available ? { name: 'student-repetition-review' } : undefined" :label="repeatLabel" icon="pi pi-play" :disabled="!available" class="hidden md:inline-flex" />
+      <Button v-if="selectedCategories && !loadError" :as="available ? RouterLink : 'BUTTON'" :to="available ? { name: 'student-repetition-review' } : undefined" :label="repeatLabel" icon="pi pi-play" :disabled="!available" class="hidden md:inline-flex" />
     </header>
 
-    <Message v-if="loadError" severity="error" icon="pi pi-exclamation-circle" role="alert">
-      <div class="flex flex-col items-start gap-3">
-        <span>{{ selectedCategories ? 'Не удалось обновить темы. Показаны ранее загруженные данные.' : 'Не удалось загрузить ваши темы. Проверьте соединение и попробуйте ещё раз.' }}</span>
-        <Button label="Попробовать снова" icon="pi pi-refresh" severity="danger" variant="outlined" size="small" :loading="loading" @click="refresh" />
-      </div>
-    </Message>
+    <RepetitionLoadError v-if="loadError" text="Не удалось загрузить ваши темы. Проверьте соединение и попробуйте ещё раз." :loading="loading" @retry="refresh" />
 
-    <div v-if="!selectedCategories" class="flex flex-col gap-4" :aria-busy="loading" aria-label="Загрузка выбранных тем">
-      <Card v-if="loading"><template #content><Skeleton height="4rem" /></template></Card>
-      <div v-if="loading" class="grid gap-3 md:grid-cols-2" aria-hidden="true">
-        <Card v-for="item in 4" :key="item"><template #content><Skeleton height="6rem" /></template></Card>
-      </div>
+    <div v-if="!selectedCategories && loading" class="flex flex-col gap-5" role="status" aria-busy="true" aria-label="Загрузка выбранных тем">
+      <Card class="overflow-hidden" :pt="{ body: { class: 'p-0' } }">
+        <template #content>
+          <div class="p-4"><RepetitionStatsSkeleton /></div>
+          <div class="flex min-h-12 items-center justify-between gap-3 border-t border-surface px-4" aria-hidden="true">
+            <Skeleton width="10.625rem" height="0.875rem" /><Skeleton width="5rem" height="0.75rem" />
+          </div>
+        </template>
+      </Card>
+      <section class="flex flex-col gap-2" aria-label="Загрузка тем">
+        <h2 class="px-1 text-meta font-semibold tracking-[0.04em] text-muted-color uppercase">Мои темы</h2>
+        <div class="grid gap-2.5 md:grid-cols-2" aria-hidden="true">
+          <Card v-for="(width, index) in ['40%', '55%', '35%']" :key="index" :pt="{ body: { class: 'px-4 py-3.5' } }">
+            <template #content>
+              <div class="flex flex-col gap-3.5">
+                <div class="flex items-center gap-3">
+                  <div class="flex min-w-0 flex-1 flex-col gap-2">
+                    <div class="flex items-center gap-2"><Skeleton :width="width" height="1.125rem" /><Skeleton width="2.5rem" height="1.125rem" /></div>
+                    <Skeleton width="75%" height="0.8125rem" />
+                  </div>
+                  <Skeleton shape="circle" size="2.75rem" class="shrink-0" />
+                </div>
+                <Skeleton height="0.375rem" />
+              </div>
+            </template>
+          </Card>
+        </div>
+      </section>
     </div>
 
-    <template v-else-if="topics.length">
+    <template v-else-if="!loadError && topics.length">
       <span v-if="loading" class="text-meta text-muted-color" role="status">Обновляем темы…</span>
       <Card>
         <template #content>
@@ -108,7 +127,9 @@ void refresh()
           </Card>
         </div>
       </section>
-      <Button :as="available ? RouterLink : 'BUTTON'" :to="available ? { name: 'student-repetition-review' } : undefined" :label="repeatLabel" icon="pi pi-play" :disabled="!available" class="md:hidden" />
     </template>
+    <div class="sticky bottom-0 z-10 -mx-4 mt-auto border-t border-surface bg-(--p-content-background) px-4 pt-3 pb-5 md:hidden">
+      <Button :as="available && !loading && !loadError ? RouterLink : 'BUTTON'" :to="available && !loading && !loadError ? { name: 'student-repetition-review' } : undefined" :label="loading || loadError ? 'Повторить всё' : repeatLabel" icon="pi pi-play" :disabled="!available || loading || !!loadError" class="min-h-13 w-full" />
+    </div>
   </div>
 </template>

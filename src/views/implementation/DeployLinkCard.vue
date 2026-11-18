@@ -4,7 +4,7 @@ import Button from 'primevue/button'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Message from 'primevue/message'
-import { isHttpsUrl } from '../../roadmap'
+import { isWebUrl } from '../../roadmap'
 import LinkView from './LinkView.vue'
 
 // Deploy link of an implementation, for deployable project types; see design/Implementation.dc.html,
@@ -62,8 +62,8 @@ function onSave() {
   if (!url) {
     return props.url ? send(null, 'remove') : cancel()
   }
-  if (!isHttpsUrl(url)) {
-    error.value = 'Укажите ссылку, начинающуюся с https://'
+  if (!isWebUrl(url)) {
+    error.value = 'Укажите ссылку, начинающуюся с http:// или https://'
     return
   }
   if (url === props.url) {
