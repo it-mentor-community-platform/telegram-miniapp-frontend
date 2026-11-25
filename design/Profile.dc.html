@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Профиль</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+@keyframes sk-pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes pf-spin{to{transform:rotate(360deg)}}
+.hv-btn,.hv-card{transition:background-color .15s,border-color .15s,box-shadow .15s}
+@media (hover:hover){.hv-l.hv-card:hover{border-color:#cbd5e1!important;background:#f8fafc!important}.hv-d.hv-card:hover{border-color:#52525b!important;background:#1f1f23!important}.hv-l.hv-btn:hover{background:#065f46!important}.hv-d.hv-btn:hover{background:#6ee7b7!important}}
+input::placeholder{color:#94a3b8}
+</style>
+</helmet>
+<div style="width: {{L.frameW}}px; height: {{L.frameH}}px; display: flex; background: {{t.bg}}">
+<sc-if value="{{L.shell}}" hint-placeholder-val="{{ false }}">
+<dc-import name="AppShell" layout="{{layout}}" active="none" role="{{L.role}}" height="{{L.frameH}}" dark="{{dark}}" hint-size="248px,100%"></dc-import>
+</sc-if>
+<div style="flex: 1; min-width: 0; box-sizing: border-box; padding: {{L.areaPad}}; display: flex; justify-content: center; align-items: {{L.areaAlign}}">
+<div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 16px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
+
+<sc-if value="{{showCrumbs}}" hint-placeholder-val="{{ true }}">
+<div style="margin: -12px 0 -8px 0">
+<dc-import name="Breadcrumbs" items="{{crumbs}}" home-href="{{L.home}}" dark="{{dark}}" hint-size="100%,44px"></dc-import>
+</div>
+</sc-if>
+
+<!-- Website visitor who is not signed in: no shell or breadcrumbs, only ways into the app. -->
+<sc-if value="{{guest}}" hint-placeholder-val="{{ false }}">
+<nav aria-label="Вход" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<a href="{{deepLink}}" class="hv-btn hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border-radius: 8px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 14px; font-weight: 600; text-decoration: none">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>
+Открыть в Telegram
+</a>
+<a href="#" class="hv-card hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; height: 44px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.primaryText}}; font-size: 14px; font-weight: 600; text-decoration: none">Войти</a>
+</nav>
+</sc-if>
+
+<sc-if value="{{loaded}}" hint-placeholder-val="{{ true }}">
+
+<section aria-label="Профиль" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<div style="display: flex; align-items: center; gap: 14px">
+<sc-if value="{{p.photo}}" hint-placeholder-val="{{ true }}">
+<span role="img" aria-label="Фото профиля" style="position: relative; width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; overflow: hidden; background: {{t.photoBg}}">
+<svg aria-hidden="true" width="64" height="64" viewBox="0 0 64 64" style="display: block"><circle cx="32" cy="25" r="11" fill="{{t.photoFg}}"></circle><path d="M10 60c2-12 11-19 22-19s20 7 22 19z" fill="{{t.photoFg}}"></path></svg>
+</span>
+</sc-if>
+<sc-if value="{{p.noPhoto}}" hint-placeholder-val="{{ false }}">
+<span aria-hidden="true" style="width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: {{t.primarySoft}}; color: {{t.primaryText}}; font-size: 22px; font-weight: 600">{{p.initials}}</span>
+</sc-if>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{nameView}}" hint-placeholder-val="{{ true }}">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px; overflow-wrap: anywhere">{{p.name}}</h1>
+</sc-if>
+<sc-if value="{{hasRoles}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{roles}}" as="r" hint-placeholder-count="1">
+<span style="font-size: 12px; font-weight: 600; line-height: 16px; padding: 2px 8px; border-radius: 6px; background: {{r.bg}}; color: {{r.fg}}">{{r.label}}</span>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{namePencil}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{nameStart}}" aria-label="Изменить имя" style="width: 44px; height: 44px; flex-shrink: 0; align-self: flex-start; border-radius: 8px; border: 1px solid {{t.border}}; background: {{t.card}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"></path><path d="m13.5 6.5 4 4"></path></svg>
+</button>
+</sc-if>
+</div>
+
+<sc-if value="{{nameEdit}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Имя</span>
+<input type="text" defaultValue="{{firstDraft}}" onInput="{{onFirst}}" maxlength="64" autocomplete="given-name" aria-invalid="{{firstInvalid}}" style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{firstBorder}}; box-shadow: 0 0 0 3px {{firstRing}}; background: {{t.card}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
+<sc-if value="{{firstErr}}" hint-placeholder-val="{{ false }}">
+<span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Укажите имя</span>
+</span>
+</sc-if>
+</label>
+<label style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Фамилия</span>
+<input type="text" defaultValue="{{p.last}}" maxlength="64" autocomplete="family-name" placeholder="Необязательно" style="height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text}}; font: inherit; font-size: 15px; outline: none">
+</label>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button type="button" onClick="{{cancel}}" style="height: 44px; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text2}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Отмена</button>
+<button type="button" onClick="{{nameSave}}" class="hv-btn hv-{{tk}}" style="height: 44px; border-radius: 8px; border: none; background: {{t.btnBg}}; color: {{t.btnText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Сохранить</button>
+</div>
+</div>
+</sc-if>
+</section>
+
+<section aria-labelledby="pf-contacts" style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<h2 id="pf-contacts" style="margin: 0; padding: 14px 16px 2px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.text2}}">Контакты</h2>
+
+<div style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 10px 16px; box-sizing: border-box">
+<span style="width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; align-self: flex-start; margin-top: 2px; display: flex; align-items: center; justify-content: center; background: {{t.chip}}; color: {{t.text2}}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 3.5 2.5 11l7 2.5 2.5 7z"></path><path d="m21.5 3.5-12 10"></path></svg>
+</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">Telegram</span>
+<sc-if value="{{tgNone}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 15px; line-height: 20px; color: {{t.muted}}">Не указан</span>
+</sc-if>
+<sc-if value="{{tgLink}}" hint-placeholder-val="{{ true }}">
+<a href="https://{{p.tg}}" style="align-self: flex-start; max-width: 100%; display: inline-flex; align-items: center; gap: 6px; min-height: 24px; font-size: 15px; font-weight: 500; line-height: 20px; color: {{t.primaryText}}; text-decoration: none">
+<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{p.tg}}</span>
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>
+</a>
+</sc-if>
+<sc-if value="{{own}}" hint-placeholder-val="{{ true }}">
+<span style="display: flex; align-items: center; gap: 5px; font-size: 12px; line-height: 16px; color: {{t.muted}}">
+<svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+{{tgNote}}
+</span>
+</sc-if>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px; min-height: 56px; padding: 10px 16px 12px; box-sizing: border-box; border-top: 1px solid {{t.border}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: {{t.chip}}; color: {{t.text2}}">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+</span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">GitHub</span>
+<sc-if value="{{ghLink}}" hint-placeholder-val="{{ true }}">
+<a href="https://github.com/{{ghUser}}" style="align-self: flex-start; max-width: 100%; display: inline-flex; align-items: center; gap: 6px; min-height: 24px; font-size: 15px; font-weight: 500; line-height: 20px; color: {{t.primaryText}}; text-decoration: none">
+<span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">github.com/{{ghUser}}</span>
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M14 4h6v6"></path><path d="M20 4 10 14"></path><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>
+</a>
+</sc-if>
+<sc-if value="{{ghNone}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 15px; line-height: 20px; color: {{t.muted}}">Не указан</span>
+</sc-if>
+<sc-if value="{{ghHint}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 12px; line-height: 16px; color: {{t.muted}}">Подставится из первого сданного проекта</span>
+</sc-if>
+</div>
+<sc-if value="{{ghPencil}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{ghStart}}" aria-label="Изменить ссылку на GitHub" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 8px; border: 1px solid {{t.border}}; background: {{t.card}}; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"></path><path d="m13.5 6.5 4 4"></path></svg>
+</button>
+</sc-if>
+</div>
+<sc-if value="{{ghAdd}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{ghStart}}" class="hv-card hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; gap: 6px; height: 44px; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.primaryText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+Добавить GitHub
+</button>
+</sc-if>
+
+<sc-if value="{{ghEdit}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="display: flex; height: 44px; box-sizing: border-box; border-radius: 8px; border: 1px solid {{ghBorder}}; box-shadow: 0 0 0 3px {{ghRing}}; background: {{ghBg}}; overflow: hidden">
+<span aria-hidden="true" style="display: flex; align-items: center; padding: 0 10px 0 12px; background: {{t.chip}}; border-right: 1px solid {{t.inputBorder}}; color: {{t.muted}}; font-size: 15px; white-space: nowrap">github.com/</span>
+<input type="text" defaultValue="{{ghDraft}}" disabled="{{saving}}" aria-label="Username на GitHub" aria-invalid="{{ghInvalid}}" placeholder="username" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex: 1; min-width: 0; padding: 0 12px; border: none; outline: none; background: transparent; color: {{ghFg}}; font: inherit; font-size: 15px">
+</span>
+<sc-if value="{{ghErr}}" hint-placeholder-val="{{ false }}">
+<span role="alert" style="display: flex; gap: 6px; font-size: 12px; line-height: 17px; color: {{t.errText}}">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>{{ghErrText}}</span>
+</span>
+</sc-if>
+<sc-if value="{{ghHelp}}" hint-placeholder-val="{{ true }}">
+<span style="font-size: 12px; line-height: 17px; color: {{t.muted}}">Только username, без ссылки на репозиторий</span>
+</sc-if>
+</div>
+<sc-if value="{{saveErr}}" hint-placeholder-val="{{ false }}">
+<div role="alert" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: {{t.errSoft}}; color: {{t.errText}}; font-size: 14px; line-height: 20px">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Не удалось сохранить. Попробуйте ещё раз.</span>
+</div>
+</sc-if>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<button type="button" onClick="{{cancel}}" disabled="{{saving}}" style="height: 44px; border-radius: 8px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.text2}}; opacity: {{cancelOpacity}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Отмена</button>
+<button type="button" onClick="{{ghSave}}" aria-busy="{{busy}}" class="hv-btn hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border-radius: 8px; border: none; background: {{t.btnBg}}; color: {{t.btnText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+<sc-if value="{{saving}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation: pf-spin 0.9s linear infinite"><path d="M21 12a9 9 0 1 1-9-9"></path></svg></sc-if>
+{{saveLabel}}
+</button>
+</div>
+</sc-if>
+</div>
+</section>
+
+<sc-if value="{{showProgress}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Прогресс по роадмапам</h2>
+<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<sc-for list="{{tracks}}" as="tr" hint-placeholder-count="1">
+<dc-import name="RoadmapProgress" label="{{tr.label}}" steps="{{tr.steps}}" dark="{{dark}}" hint-size="100%,40px"></dc-import>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{showProjects}}" hint-placeholder-val="{{ true }}">
+<section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">{{projectsTitle}}</h2>
+<sc-if value="{{hasProjects}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{projects}}" as="pr" hint-placeholder-count="3">
+<dc-import name="ProfileProjectRow" icon="{{pr.icon}}" title="{{pr.title}}" impls="{{pr.impls}}" href="{{pr.href}}" divider="{{pr.divider}}" dark="{{dark}}" hint-size="100%,88px"></dc-import>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{noProjects}}" hint-placeholder-val="{{ false }}">
+<dc-import name="EmptyState" icon="info" title="Проектов пока нет" text="{{emptyText}}" dark="{{dark}}" hint-size="100%,100px"></dc-import>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{showShare}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<!-- Mini App: Telegram share sheet with startapp=profile_<profileId>. Website: copies /profiles/<profileId>. -->
+<button type="button" onClick="{{share}}" class="hv-card hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 10px; border: 1px solid {{t.inputBorder}}; background: {{t.card}}; color: {{t.primaryText}}; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer">
+<sc-if value="{{shareTg}}" hint-placeholder-val="{{ true }}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></sc-if>
+<sc-if value="{{web}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"></path><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"></path></svg></sc-if>
+{{shareLabel}}
+</button>
+<sc-if value="{{copied}}" hint-placeholder-val="{{ false }}">
+<span role="status" style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; line-height: 18px; color: {{t.primaryText}}">
+<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg>
+Ссылка скопирована · {{webPath}}
+</span>
+</sc-if>
+</div>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}">
+<div aria-busy="true" aria-label="Загрузка профиля" style="display: flex; flex-direction: column; gap: 16px">
+<div aria-hidden="true" style="display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<span style="display: block; width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 10px">
+<span style="display: block; width: 62%; height: 24px; border-radius: 6px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<span style="display: flex; gap: 6px"><span style="display: block; width: 64px; height: 20px; border-radius: 6px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span><span style="display: block; width: 56px; height: 20px; border-radius: 6px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span></span>
+</span>
+</div>
+<div aria-hidden="true" style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<span style="display: block; width: 72px; height: 14px; margin: 16px 16px 4px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<sc-for list="{{skelContacts}}" as="k" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 10px 16px; box-sizing: border-box; border-top: 1px solid {{k.sep}}">
+<span style="display: block; width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="display: block; width: 64px; height: 12px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span><span style="display: block; width: {{k.w}}; height: 15px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span></span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{skelSections}}" hint-placeholder-val="{{ false }}">
+<div aria-hidden="true" style="display: flex; flex-direction: column; gap: 8px">
+<span style="display: block; width: 180px; height: 14px; margin: 2px 4px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}">
+<sc-for list="{{skelTracks}}" as="k" hint-placeholder-count="2">
+<span style="display: flex; flex-direction: column; gap: 10px">
+<span style="display: flex; justify-content: space-between"><span style="display: block; width: {{k.w}}; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span><span style="display: block; width: 40px; height: 14px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span></span>
+<span style="display: block; height: 8px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+</span>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{skelProjectsOn}}" hint-placeholder-val="{{ false }}">
+<div aria-hidden="true" style="display: flex; flex-direction: column; gap: 8px">
+<span style="display: block; width: 96px; height: 14px; margin: 2px 4px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<div style="display: flex; flex-direction: column; border-radius: 12px; background: {{t.card}}; border: 1px solid {{t.border}}; box-shadow: {{t.shadow}}; overflow: hidden">
+<sc-for list="{{skelProjects}}" as="k" hint-placeholder-count="2">
+<div style="display: flex; gap: 12px; padding: 12px 16px; border-top: 1px solid {{k.sep}}">
+<span style="display: block; width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 10px; padding-top: 2px"><span style="display: block; width: {{k.w}}; height: 15px; border-radius: 4px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span><span style="display: block; width: 84px; height: 28px; border-radius: 8px; background: {{t.skel}}; animation: sk-pulse 1.4s ease-in-out infinite"></span></span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{isError}}" hint-placeholder-val="{{ false }}">
+<section role="alert" style="display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border-radius: 12px; background: {{t.errSoft}}; border: 1px solid {{t.errBorderSoft}}">
+<div style="display: flex; gap: 10px; align-items: flex-start; color: {{t.errText}}; font-size: 14px; line-height: 20px">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+<span>Не удалось загрузить профиль. Проверьте соединение и попробуйте ещё раз.</span>
+</div>
+<button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 8px; border: 1px solid {{t.errBorderSoft}}; background: {{t.card}}; color: {{t.errText}}; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
+Попробовать снова
+</button>
+</section>
+</sc-if>
+
+<sc-if value="{{notFound}}" hint-placeholder-val="{{ false }}">
+<main style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: {{L.nfPad}}; text-align: center">
+<span style="width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{t.chip}}; color: {{t.muted}}">
+<svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path><path d="M9 9l4 4M13 9l-4 4"></path></svg>
+</span>
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 300px">
+<h1 style="margin: 0; font-size: 22px; font-weight: 700; line-height: 28px">Профиль не найден</h1>
+<p style="margin: 0; font-size: 15px; line-height: 22px; color: {{t.muted}}">Проверьте ссылку — возможно, в ней ошибка.</p>
+</div>
+<a href="{{L.home}}" class="hv-btn hv-{{tk}}" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; border-radius: 10px; background: {{t.btnBg}}; color: {{t.btnText}}; font-size: 15px; font-weight: 600; text-decoration: none">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h5v-6h4v6h5V10"></path></svg>
+На главную
+</a>
+</main>
+</sc-if>
+
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["own","public"],"default":"own"},"scenario":{"editor":"enum","options":["Студент","Пустой профиль","Редактирование имени","Имя не указано","Редактирование GitHub","GitHub — неверный формат","GitHub — занят","Сохранение","Ошибка сохранения","Ментор","Без username в Telegram","Загрузка","Ошибка загрузки","Профиль не найден","Сегодняшний API","Без имени","Сайт","Гость на сайте"],"default":"Студент"},"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { edit: undefined, first: undefined, checked: false, copied: undefined };
+  }
+  renderVals() {
+    const dark = this.props.dark ?? false;
+    const own = (this.props.mode ?? 'own') !== 'public';
+    const scenario = this.props.scenario ?? 'Студент';
+    const t = dark ? {
+      bg: '#09090b', card: '#18181b', border: '#27272a', inputBorder: '#3f3f46', shadow: 'none',
+      text: '#fafafa', text2: '#d4d4d8', muted: '#a1a1aa', disabled: '#71717a',
+      chip: '#27272a', skel: '#27272a', inputDisabled: '#27272a', photoBg: '#3f3f46', photoFg: '#71717a',
+      primarySoft: 'rgba(52, 211, 153, 0.16)', primaryText: '#6ee7b7', focus: '#34d399', focusRing: 'rgba(52, 211, 153, 0.25)',
+      infoSoft: 'rgba(96, 165, 250, 0.16)', infoText: '#93c5fd', violetSoft: 'rgba(167, 139, 250, 0.16)', violetText: '#c4b5fd',
+      btnBg: '#34d399', btnText: '#022c22', errText: '#fca5a5', errBorder: '#f87171', errRing: 'rgba(248, 113, 113, 0.22)',
+      errSoft: 'rgba(248, 113, 113, 0.14)', errBorderSoft: 'rgba(248, 113, 113, 0.35)'
+    } : {
+      bg: '#f8fafc', card: '#ffffff', border: '#e2e8f0', inputBorder: '#cbd5e1', shadow: '0 1px 2px rgba(15, 23, 42, 0.04)',
+      text: '#0f172a', text2: '#334155', muted: '#64748b', disabled: '#94a3b8',
+      chip: '#f1f5f9', skel: '#e2e8f0', inputDisabled: '#f1f5f9', photoBg: '#cbd5e1', photoFg: '#f1f5f9',
+      primarySoft: '#ecfdf5', primaryText: '#047857', focus: '#10b981', focusRing: 'rgba(16, 185, 129, 0.2)',
+      infoSoft: '#eff6ff', infoText: '#1d4ed8', violetSoft: '#f5f3ff', violetText: '#6d28d9',
+      btnBg: '#047857', btnText: '#ffffff', errText: '#b91c1c', errBorder: '#ef4444', errRing: 'rgba(239, 68, 68, 0.15)',
+      errSoft: '#fef2f2', errBorderSoft: '#fecaca'
+    };
+    const roleTag = {
+      'Студент': { bg: t.primarySoft, fg: t.primaryText },
+      'Ментор': { bg: t.infoSoft, fg: t.infoText },
+      'Админ': { bg: t.violetSoft, fg: t.violetText }
+    };
+    const java3 = [true, true, true, false, false, false];
+    // Example data. Own profile: GET /api/profile/profile; public: GET /api/profile/profile/{id} (no login needed).
+    // first_name / last_name / telegram_url can be absent (imported profiles, no Telegram username).
+    const people = {
+      own: {
+        first: 'Сергей', last: 'Иванов', initials: 'СИ', photo: true, roles: ['Студент'],
+        tg: 't.me/sergey_dev', gh: 'sergey-dev',
+        tracks: [], projects: []
+      },
+      public: {
+        first: 'Анна', last: 'Смирнова', initials: 'АС', photo: false, roles: ['Студент'],
+        tg: 't.me/anna_smirnova', gh: 'annasmirnova',
+        tracks: [{ label: 'Python Backend', steps: [true, true, false, false, false, false] }],
+        projects: [
+          { icon: 'hangman', title: 'Виселица', href: '', impls: [{ lang: 'Python', counted: true, repo: 'github.com/annasmirnova/hangman' }] },
+          { icon: 'simulation', title: 'Симуляция', href: '', impls: [{ lang: 'Python', counted: true, repo: 'github.com/annasmirnova/simulation' }] }
+        ]
+      }
+    };
+    const base = people[own ? 'own' : 'public'];
+    // Per scenario: what is open, the field values and the mobile frame height.
+    const cfgOwn = {
+      'Студент': { h: 1040 },
+      'Пустой профиль': { p: { gh: '' }, h: 1040 },
+      'Редактирование имени': { edit: 'name', h: 1040 },
+      'Имя не указано': { edit: 'name', first: '', checked: true, h: 1040 },
+      'Редактирование GitHub': { edit: 'gh', h: 1040 },
+      'GitHub — неверный формат': { edit: 'gh', draft: 'sergey-dev/hangman', ghErr: 'format', h: 1040 },
+      'GitHub — занят': { edit: 'gh', draft: 'sivanov', ghErr: 'taken', h: 1040 },
+      'Сохранение': { edit: 'gh', draft: 'sergey-ivanov', saving: true, h: 1040 },
+      'Ошибка сохранения': { edit: 'gh', draft: 'sergey-ivanov', saveErr: true, h: 1040 },
+      'Ментор': { p: { roles: ['Ментор'] }, h: 1040 },
+      'Без username в Telegram': { p: { tg: '' }, h: 1040 },
+      'Загрузка': { mode: 'loading', h: 1040 },
+      'Ошибка загрузки': { mode: 'error', h: 1040 },
+      'Сегодняшний API': { today: true, h: 1040 },
+      // Website: the share button copies the website link; shown right after a click.
+      'Сайт': { web: true, copied: true, h: 1040 }
+    };
+    const cfgPublic = {
+      'Студент': { h: 1040 },
+      'Загрузка': { mode: 'loading', h: 1040 },
+      'Ошибка загрузки': { mode: 'error', h: 1040 },
+      'Профиль не найден': { mode: 'notFound', h: 1040 },
+      'Сегодняшний API': { today: true, p: { roles: [] }, h: 1040 },
+      // Website visitor who is not signed in.
+      'Гость на сайте': { guest: true, h: 1040 },
+      // Imported from the spreadsheet, never opened the app: no name yet.
+      'Без имени': { p: {
+        first: '', last: '', tg: 't.me/dkozlov_dev', gh: 'dkozlov',
+        tracks: [{ label: 'Java Backend', steps: [true, true, false, false, false, false] }],
+        projects: [
+          { icon: 'hangman', title: 'Виселица', href: '', impls: [{ lang: 'Java', counted: true, repo: 'github.com/dkozlov/hangman' }] },
+          { icon: 'simulation', title: 'Симуляция', href: '', impls: [{ lang: 'Java', counted: true, repo: 'github.com/dkozlov/simulation' }] }
+        ] }, h: 1040 }
+    };
+    const c = (own ? cfgOwn : cfgPublic)[scenario] || (own ? cfgOwn : cfgPublic)['Студент'];
+    const p0 = { ...base, ...(c.p || {}) };
+    // Today's public API has only the name and the contacts.
+    const today = !!c.today;
+    // No name (imported profile) → @telegram username, else GitHub username, else a neutral title.
+    const tgUser = p0.tg ? p0.tg.replace(/^t\.me\//, '') : '';
+    const fullName = [p0.first, p0.last].filter(Boolean).join(' ');
+    const name = fullName || (tgUser ? '@' + tgUser : p0.gh || 'Участник сообщества');
+    const initials = fullName ? p0.initials : name.replace(/^@/, '').charAt(0).toUpperCase();
+    const p = { ...p0, name, initials, noPhoto: !(own && p0.photo) };
+    p.photo = !p.noPhoto;
+    const mode = c.mode || 'loaded';
+    const student = p.roles.includes('Студент');
+    // Roadmap progress and projects are shown on someone else's profile only; your own profile is name and contacts.
+    const showSections = !own && student && !today;
+
+    // Only one field is edited at a time; opening one closes the other.
+    const edit = this.state.edit !== undefined ? this.state.edit : (c.edit || null);
+    const fresh = this.state.edit === undefined;
+    const first = this.state.first !== undefined ? this.state.first : (c.first !== undefined ? c.first : p.first);
+    const firstErr = edit === 'name' && (fresh ? !!c.checked : this.state.checked) && first.trim() === '';
+    const saving = fresh && !!c.saving && edit === 'gh';
+    const ghErrKind = fresh && edit === 'gh' ? c.ghErr : undefined;
+    const saveErr = fresh && !!c.saveErr && edit === 'gh';
+    const ghUser = p.gh;
+    const tracks = p.tracks;
+    const projects = p.projects.map((x, i) => ({ ...x, divider: i > 0, href: own ? x.href : '' }));
+    const roles = p.roles.map((r) => ({ label: r, ...roleTag[r] }));
+
+    const layout = this.props.layout ?? 'mobile';
+    const wide = layout !== 'mobile';
+    const desk = layout === 'desktop';
+    const DESK = ['Main', 'Repetition', 'Categories', 'Topic', 'Stats', 'Review', 'Review-Done', 'Projects', 'Projects-Multi', 'Projects-Loading', 'ProjectType', 'ProjectType-List', 'ProjectType-Submitted', 'ProjectType-Loading', 'ProjectType-NotFound', 'Implementation', 'Impl-Hangman', 'AuthError', 'DevLogin'];
+    const dk = (h) => (wide && typeof h === 'string' && DESK.includes(h.replace('.dc.html', ''))) ? h.replace('.dc.html', '-Desktop.dc.html') : h;
+    const L = {
+      wide, desk, mobileOnly: !wide, shell: wide && !c.guest, role: 'Студент',
+      frameW: desk ? 1280 : wide ? 834 : 390,
+      frameH: wide ? (desk ? 1000 : 1240) : c.h,
+      areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
+      colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
+      rootH: wide ? 'auto' : c.h + 'px', rootPad: wide ? '0' : '20px 16px 24px',
+      display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
+      rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
+      full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
+      home: wide ? 'Main-Desktop.dc.html' : 'Main.dc.html'
+    };
+    // Tablet/desktop boards come later: for now the wide layout is the phone column, centred.
+    Object.assign(L, { maxW: wide ? '640px' : 'none', nfPad: wide ? '48px 0' : '0 8px 48px' });
+    const ghBorder = ghErrKind ? t.errBorder : saving ? t.inputBorder : t.focus;
+    // Profile links use the profile id (Profiles.id); example ids.
+    const profileId = own ? '17' : '42';
+    const web = !!c.web;
+    const copied = web && (this.state.copied !== undefined ? this.state.copied : !!c.copied);
+    return {
+      layout, L, dk, tk: dark ? 'd' : 'l', t, dark, own, p, roles, tracks, projects,
+      crumbs: [], showCrumbs: !c.guest, guest: !!c.guest,
+      deepLink: 'https://t.me/it_mentor_community_bot?startapp=profile_' + profileId,
+      web, shareTg: !web, copied, webPath: '/profiles/' + profileId,
+      shareLabel: web ? 'Скопировать ссылку на профиль' : 'Поделиться профилем',
+      share: () => (web ? this.setState({ copied: true }) : null),
+      loaded: mode === 'loaded', isLoading: mode === 'loading', isError: mode === 'error', notFound: mode === 'notFound',
+      hasRoles: roles.length > 0,
+      nameView: edit !== 'name', nameEdit: edit === 'name', namePencil: own && edit !== 'name',
+      firstDraft: first, firstErr, firstInvalid: firstErr ? 'true' : 'false',
+      firstBorder: firstErr ? t.errBorder : t.focus, firstRing: firstErr ? t.errRing : t.focusRing,
+      tgLink: !!p.tg, tgNone: !p.tg,
+      tgNote: p.tg ? 'Обновляется из Telegram' : 'Появится, когда вы зададите username в настройках Telegram',
+      ghUser, ghLink: ghUser !== '' && edit !== 'gh', ghNone: ghUser === '' && edit !== 'gh',
+      ghHint: own && ghUser === '' && edit !== 'gh',
+      ghPencil: own && ghUser !== '' && edit !== 'gh', ghAdd: own && ghUser === '' && edit !== 'gh', ghEdit: edit === 'gh',
+      ghDraft: fresh && c.draft !== undefined ? c.draft : ghUser,
+      ghErr: !!ghErrKind, ghHelp: !ghErrKind,
+      ghErrText: ghErrKind === 'taken' ? 'Этот GitHub уже привязан к другому профилю' : 'Только username — латинские буквы, цифры и дефис',
+      ghInvalid: ghErrKind ? 'true' : 'false',
+      ghBorder, ghRing: ghErrKind ? t.errRing : saving ? 'transparent' : t.focusRing,
+      ghBg: saving ? t.inputDisabled : t.card, ghFg: saving ? t.muted : t.text,
+      saving, saveErr, busy: saving ? 'true' : 'false', saveLabel: saving ? 'Сохраняем…' : 'Сохранить', cancelOpacity: saving ? 0.5 : 1,
+      showProgress: showSections && tracks.length > 0,
+      // Projects list hidden for now on every profile; the markup stays for when it comes back.
+      showProjects: false, skelProjectsOn: false,
+      hasProjects: projects.length > 0, noProjects: projects.length === 0,
+      projectsTitle: projects.length > 0 ? 'Проекты · ' + projects.length : 'Проекты',
+      emptyText: 'Пользователь ещё не сдал ни одного проекта.',
+      showShare: own && !today,
+      skelSections: !own,
+      skelContacts: [{ w: '55%', sep: 'transparent' }, { w: '65%', sep: t.border }],
+      skelTracks: [{ w: '110px' }, { w: '128px' }],
+      skelProjects: [{ w: '40%', sep: 'transparent' }, { w: '55%', sep: t.border }],
+      nameStart: () => this.setState({ edit: 'name', first: p.first, checked: false }),
+      ghStart: () => this.setState({ edit: 'gh', first: undefined, checked: false }),
+      cancel: () => this.setState({ edit: null, checked: false }),
+      onFirst: (e) => this.setState({ edit: 'name', first: e.target.value }),
+      nameSave: () => (first.trim() === '' ? this.setState({ edit: 'name', first, checked: true }) : this.setState({ edit: null, checked: false })),
+      ghSave: () => this.setState({ edit: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

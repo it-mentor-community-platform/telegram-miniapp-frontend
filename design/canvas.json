@@ -7,14 +7,14 @@
       "title": "ActivityHeatmap",
       "w": 358,
       "x": 2820,
-      "y": 9200
+      "y": 12640
     },
     "Breadcrumbs.dc.html": {
       "h": 44,
       "title": "Breadcrumbs",
       "w": 358,
       "x": 470,
-      "y": 9200
+      "y": 12640
     },
     "Categories.dc.html": {
       "h": 1240,
@@ -25,19 +25,19 @@
       "y": 2980
     },
     "Components.dc.html": {
-      "h": 1940,
+      "h": 2480,
       "is_interactive": true,
       "title": "Каталог компонентов",
       "w": 390,
       "x": 0,
-      "y": 9200
+      "y": 12640
     },
     "EmptyState.dc.html": {
       "h": 120,
       "title": "EmptyState",
       "w": 358,
       "x": 2382,
-      "y": 9200
+      "y": 12640
     },
     "Impl-EditDeploy.dc.html": {
       "h": 1040,
@@ -91,7 +91,7 @@
       "h": 40,
       "w": 80,
       "x": 2222,
-      "y": 9200
+      "y": 12640
     },
     "Main.dc.html": {
       "h": 1200,
@@ -106,7 +106,7 @@
       "title": "NavListRow",
       "w": 358,
       "x": 1784,
-      "y": 9200
+      "y": 12640
     },
     "ProjectType-AddOther.dc.html": {
       "h": 1240,
@@ -225,14 +225,14 @@
       "title": "RoadmapProgress",
       "w": 358,
       "x": 908,
-      "y": 9200
+      "y": 12640
     },
     "StatTiles.dc.html": {
       "h": 64,
       "title": "StatTiles",
       "w": 358,
       "x": 1346,
-      "y": 9200
+      "y": 12640
     },
     "Stats.dc.html": {
       "h": 1120,
@@ -252,7 +252,7 @@
     },
     "ProjectRow.dc.html": {
       "x": 3258,
-      "y": 9200,
+      "y": 12640,
       "w": 358,
       "h": 72,
       "title": "ProjectRow"
@@ -408,7 +408,7 @@
     },
     "Main-Desktop.dc.html": {
       "x": 0,
-      "y": 11700,
+      "y": 15680,
       "w": 1280,
       "h": 800,
       "title": "Главная · десктоп",
@@ -416,7 +416,7 @@
     },
     "Main-Tablet.dc.html": {
       "x": 1360,
-      "y": 11700,
+      "y": 15680,
       "w": 834,
       "h": 1112,
       "title": "Главная · планшет",
@@ -424,7 +424,7 @@
     },
     "AuthError-Desktop.dc.html": {
       "x": 2274,
-      "y": 11700,
+      "y": 15680,
       "w": 1280,
       "h": 800,
       "title": "Вход · вне Telegram · десктоп",
@@ -432,7 +432,7 @@
     },
     "DevLogin-Desktop.dc.html": {
       "x": 3634,
-      "y": 11700,
+      "y": 15680,
       "w": 1280,
       "h": 900,
       "title": "Dev-вход · пустая форма · десктоп",
@@ -440,7 +440,7 @@
     },
     "Repetition-Desktop.dc.html": {
       "x": 0,
-      "y": 13372,
+      "y": 17352,
       "w": 1280,
       "h": 800,
       "title": "Повторение — мои темы · десктоп",
@@ -448,7 +448,7 @@
     },
     "Repetition-Tablet.dc.html": {
       "x": 1360,
-      "y": 13372,
+      "y": 17352,
       "w": 834,
       "h": 1112,
       "title": "Повторение — мои темы · планшет",
@@ -456,7 +456,7 @@
     },
     "Categories-Desktop.dc.html": {
       "x": 2274,
-      "y": 13372,
+      "y": 17352,
       "w": 1280,
       "h": 840,
       "title": "Все темы · десктоп",
@@ -464,7 +464,7 @@
     },
     "Topic-Desktop.dc.html": {
       "x": 3634,
-      "y": 13372,
+      "y": 17352,
       "w": 1280,
       "h": 1000,
       "title": "Тема · десктоп",
@@ -472,7 +472,7 @@
     },
     "Stats-Desktop.dc.html": {
       "x": 4994,
-      "y": 13372,
+      "y": 17352,
       "w": 1280,
       "h": 940,
       "title": "Статистика · десктоп",
@@ -480,7 +480,7 @@
     },
     "Review-Desktop.dc.html": {
       "x": 6354,
-      "y": 13372,
+      "y": 17352,
       "w": 1280,
       "h": 800,
       "title": "Повторение — вопрос · десктоп",
@@ -488,7 +488,7 @@
     },
     "Review-Done-Desktop.dc.html": {
       "x": 7714,
-      "y": 13372,
+      "y": 17352,
       "w": 1280,
       "h": 800,
       "title": "Повторение — итог · десктоп",
@@ -496,7 +496,7 @@
     },
     "Projects-Desktop.dc.html": {
       "x": 0,
-      "y": 15044,
+      "y": 19024,
       "w": 1280,
       "h": 800,
       "title": "1 · Ничего не сдано · десктоп",
@@ -504,7 +504,7 @@
     },
     "Projects-Multi-Desktop.dc.html": {
       "x": 1360,
-      "y": 15044,
+      "y": 19024,
       "w": 1280,
       "h": 800,
       "title": "3 · Несколько языков + C# · десктоп",
@@ -512,7 +512,7 @@
     },
     "Projects-Loading-Desktop.dc.html": {
       "x": 2720,
-      "y": 15044,
+      "y": 19024,
       "w": 1280,
       "h": 800,
       "title": "6 · Загрузка · десктоп",
@@ -520,7 +520,7 @@
     },
     "Projects-Tablet.dc.html": {
       "x": 4080,
-      "y": 15044,
+      "y": 19024,
       "w": 834,
       "h": 1112,
       "title": "Мои проекты · несколько языков · планшет",
@@ -528,7 +528,7 @@
     },
     "ProjectType-Desktop.dc.html": {
       "x": 0,
-      "y": 16716,
+      "y": 20696,
       "w": 1280,
       "h": 840,
       "title": "1 · Виселица — первая сдача · десктоп",
@@ -536,7 +536,7 @@
     },
     "ProjectType-List-Desktop.dc.html": {
       "x": 1360,
-      "y": 16716,
+      "y": 20696,
       "w": 1280,
       "h": 840,
       "title": "3 · Обмен валют — 3 реализации · десктоп",
@@ -544,7 +544,7 @@
     },
     "ProjectType-Loading-Desktop.dc.html": {
       "x": 2720,
-      "y": 16716,
+      "y": 20696,
       "w": 1280,
       "h": 840,
       "title": "6 · Загрузка · десктоп",
@@ -552,7 +552,7 @@
     },
     "ProjectType-Submitted-Desktop.dc.html": {
       "x": 4080,
-      "y": 16716,
+      "y": 20696,
       "w": 1280,
       "h": 840,
       "title": "11 · Сдан впервые · десктоп",
@@ -560,7 +560,7 @@
     },
     "ProjectType-NotFound-Desktop.dc.html": {
       "x": 5440,
-      "y": 16716,
+      "y": 20696,
       "w": 1280,
       "h": 800,
       "title": "13 · Проект не найден · десктоп",
@@ -568,7 +568,7 @@
     },
     "ProjectType-Tablet.dc.html": {
       "x": 6800,
-      "y": 16716,
+      "y": 20696,
       "w": 834,
       "h": 1112,
       "title": "Страница проекта · 3 реализации · планшет",
@@ -576,7 +576,7 @@
     },
     "Implementation-Desktop.dc.html": {
       "x": 0,
-      "y": 18388,
+      "y": 22368,
       "w": 1280,
       "h": 800,
       "title": "1 · Обмен валют — деплой и 2 ревью · десктоп",
@@ -584,7 +584,7 @@
     },
     "Impl-Hangman-Desktop.dc.html": {
       "x": 1360,
-      "y": 18388,
+      "y": 22368,
       "w": 1280,
       "h": 800,
       "title": "2 · Виселица — без ревью · десктоп",
@@ -592,22 +592,22 @@
     },
     "AppShell.dc.html": {
       "x": 0,
-      "y": 19748,
+      "y": 23728,
       "w": 248,
       "h": 800,
       "title": "AppShell · десктоп"
     },
     "Components-Desktop.dc.html": {
       "x": 328,
-      "y": 19748,
+      "y": 23728,
       "w": 1280,
-      "h": 2200,
+      "h": 2640,
       "title": "Каталог компонентов · десктоп",
       "is_interactive": true
     },
     "Projects-Java3-Desktop.dc.html": {
       "x": 4994,
-      "y": 15044,
+      "y": 19024,
       "w": 1280,
       "h": 800,
       "title": "2 · Java 3/6 (один трек) · десктоп",
@@ -615,7 +615,7 @@
     },
     "Projects-TwoTracks-Desktop.dc.html": {
       "x": 6354,
-      "y": 15044,
+      "y": 19024,
       "w": 1280,
       "h": 800,
       "title": "2b · Java и Python (два трека) · десктоп",
@@ -708,6 +708,189 @@
       "h": 844,
       "title": "Dev-вход · неверный username",
       "is_interactive": true
+    },
+    "Profile.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · студент",
+      "w": 390,
+      "x": 0,
+      "y": 9200
+    },
+    "Profile-Empty.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · пустой",
+      "w": 390,
+      "x": 470,
+      "y": 9200
+    },
+    "Profile-EditName.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · редактирование имени",
+      "w": 390,
+      "x": 940,
+      "y": 9200
+    },
+    "Profile-NameInvalid.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · имя не указано",
+      "w": 390,
+      "x": 1410,
+      "y": 9200
+    },
+    "Profile-EditGithub.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · редактирование GitHub",
+      "w": 390,
+      "x": 1880,
+      "y": 9200
+    },
+    "Profile-GithubInvalid.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · неверный GitHub",
+      "w": 390,
+      "x": 2350,
+      "y": 9200
+    },
+    "Profile-GithubTaken.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · GitHub занят",
+      "w": 390,
+      "x": 2820,
+      "y": 9200
+    },
+    "Profile-Saving.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · сохранение",
+      "w": 390,
+      "x": 3290,
+      "y": 9200
+    },
+    "Profile-SaveError.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · ошибка сохранения",
+      "w": 390,
+      "x": 3760,
+      "y": 9200
+    },
+    "Profile-Mentor.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · ментор",
+      "w": 390,
+      "x": 4230,
+      "y": 9200
+    },
+    "Profile-Loading.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · загрузка",
+      "w": 390,
+      "x": 4700,
+      "y": 9200
+    },
+    "Profile-Error.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · ошибка загрузки",
+      "w": 390,
+      "x": 5170,
+      "y": 9200
+    },
+    "Profile-Today.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · текущий API",
+      "w": 390,
+      "x": 5640,
+      "y": 9200
+    },
+    "PublicProfile.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · студент",
+      "w": 390,
+      "x": 0,
+      "y": 10980
+    },
+    "PublicProfile-Today.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · текущий API",
+      "w": 390,
+      "x": 470,
+      "y": 10980
+    },
+    "PublicProfile-Loading.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · загрузка",
+      "w": 390,
+      "x": 940,
+      "y": 10980
+    },
+    "PublicProfile-Error.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · ошибка загрузки",
+      "w": 390,
+      "x": 1410,
+      "y": 10980
+    },
+    "PublicProfile-NotFound.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · не найден",
+      "w": 390,
+      "x": 1880,
+      "y": 10980
+    },
+    "ProfileProjectRow.dc.html": {
+      "h": 88,
+      "title": "ProfileProjectRow",
+      "w": 358,
+      "x": 3696,
+      "y": 12640
+    },
+    "Profile-NoTelegram.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · без username в Telegram",
+      "w": 390,
+      "x": 6110,
+      "y": 9200
+    },
+    "PublicProfile-NoName.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · без имени",
+      "w": 390,
+      "x": 2350,
+      "y": 10980
+    },
+    "Profile-Web.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Мой профиль · сайт",
+      "w": 390,
+      "x": 6580,
+      "y": 9200
+    },
+    "PublicProfile-Guest.dc.html": {
+      "h": 1040,
+      "is_interactive": true,
+      "title": "Профиль участника · гость на сайте",
+      "w": 390,
+      "x": 2820,
+      "y": 10980
     }
   },
   "createdOnFiles": {
@@ -725,7 +908,7 @@
       "text": "Компоненты",
       "w": 240,
       "x": 0,
-      "y": 8940
+      "y": 12380
     },
     "irTitle": {
       "kind": "title1",
@@ -773,7 +956,7 @@
       "text": "Desktop · Главная и вход",
       "w": 240,
       "x": 0,
-      "y": 11440
+      "y": 15420
     },
     "dtRep": {
       "kind": "title1",
@@ -781,7 +964,7 @@
       "text": "Desktop · Интервальное повторение",
       "w": 240,
       "x": 0,
-      "y": 13112
+      "y": 17092
     },
     "dtProj": {
       "kind": "title1",
@@ -789,7 +972,7 @@
       "text": "Desktop · Мои проекты",
       "w": 240,
       "x": 0,
-      "y": 14784
+      "y": 18764
     },
     "dtType": {
       "kind": "title1",
@@ -797,7 +980,7 @@
       "text": "Desktop · Страница проекта",
       "w": 240,
       "x": 0,
-      "y": 16456
+      "y": 20436
     },
     "dtImpl": {
       "kind": "title1",
@@ -805,7 +988,7 @@
       "text": "Desktop · Страница реализации",
       "w": 240,
       "x": 0,
-      "y": 18128
+      "y": 22108
     },
     "dtCmp": {
       "kind": "title1",
@@ -813,7 +996,23 @@
       "text": "Desktop · Компоненты",
       "w": 240,
       "x": 0,
-      "y": 19488
+      "y": 23468
+    },
+    "prTitle": {
+      "kind": "title1",
+      "maxW": 6970,
+      "text": "Профиль · Мой профиль",
+      "w": 240,
+      "x": 0,
+      "y": 8940
+    },
+    "prPubTitle": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "Профиль · Профиль участника",
+      "w": 240,
+      "x": 0,
+      "y": 10720
     }
   },
   "order": [
@@ -906,7 +1105,30 @@
     "Implementation-Desktop.dc.html",
     "Impl-Hangman-Desktop.dc.html",
     "AppShell.dc.html",
-    "Components-Desktop.dc.html"
+    "Components-Desktop.dc.html",
+    "Profile.dc.html",
+    "Profile-Empty.dc.html",
+    "Profile-EditName.dc.html",
+    "Profile-NameInvalid.dc.html",
+    "Profile-EditGithub.dc.html",
+    "Profile-GithubInvalid.dc.html",
+    "Profile-GithubTaken.dc.html",
+    "Profile-Saving.dc.html",
+    "Profile-SaveError.dc.html",
+    "Profile-Mentor.dc.html",
+    "Profile-Loading.dc.html",
+    "Profile-Error.dc.html",
+    "Profile-Today.dc.html",
+    "Profile-NoTelegram.dc.html",
+    "Profile-Web.dc.html",
+    "PublicProfile.dc.html",
+    "PublicProfile-Today.dc.html",
+    "PublicProfile-Loading.dc.html",
+    "PublicProfile-Error.dc.html",
+    "PublicProfile-NotFound.dc.html",
+    "PublicProfile-NoName.dc.html",
+    "PublicProfile-Guest.dc.html",
+    "ProfileProjectRow.dc.html"
   ],
   "pages": [],
   "title": "IT Ментор | Платформа сообщества"

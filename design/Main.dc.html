@@ -26,6 +26,7 @@ a{color:inherit}a:hover{color:inherit}
 <div style="width: {{L.colW}}; max-width: {{L.maxW}}; height: {{L.rootH}}; box-sizing: border-box; padding: {{L.rootPad}}; display: {{L.display}}; flex-direction: column; grid-template-columns: {{L.cols}}; align-content: start; align-items: {{L.items}}; column-gap: {{L.colGap}}; gap: 20px; background: {{L.rootBg}}; border: {{L.rootBorder}}; border-radius: {{L.rootRadius}}; box-shadow: {{L.rootShadow}}; color: {{t.text}}; font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased">
 
 <header style="display: flex; align-items: center; gap: 12px; grid-column: {{L.full}}">
+<a href="Profile.dc.html" aria-label="Мой профиль" style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-decoration: none; color: inherit">
 <div style="width: 48px; height: 48px; border-radius: 50%; background: {{t.primarySoft}}; color: {{t.primaryText}}; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600; flex-shrink: 0">СЖ</div>
 <div style="display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0">
 <div style="font-size: 18px; font-weight: 600; line-height: 22px">Привет, Сергей</div>
@@ -35,6 +36,7 @@ a{color:inherit}a:hover{color:inherit}
 </sc-for>
 </div>
 </div>
+</a>
 <button type="button" aria-label="Настройки" style="width: 44px; height: 44px; border-radius: 50%; border: none; background: transparent; color: {{t.text2}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
 <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"></path><circle cx="15" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>
 </button>
@@ -96,7 +98,7 @@ a{color:inherit}a:hover{color:inherit}
 <section style="display: flex; flex-direction: column; gap: 8px; grid-column: {{L.full}}">
 <h2 style="margin: 0; padding: 0 4px; font-size: 13px; font-weight: 600; line-height: 18px; color: {{t.muted}}; text-transform: uppercase; letter-spacing: 0.04em">Разделы</h2>
 <nav style="display: {{L.navDisplay}}; flex-direction: column; grid-template-columns: {{L.navCols}}; gap: {{L.navGap}}; border-radius: 12px; background: {{L.navBg}}; border: {{L.navBorder}}; box-shadow: {{L.navShadow}}; overflow: {{L.navOverflow}}">
-<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="user" title="Профиль" subtitle="Достижения, проекты и ревью" badge="4 ачивки" href="#" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
+<div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="user" title="Профиль" subtitle="Имя и контакты" href="Profile.dc.html" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
 <div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="review" title="Ревью" subtitle="Ревью на ваши проекты" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
 <div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="mentor" title="Кабинет ментора" subtitle="Цены на ревью и услуги" badge="{{mentorBadge}}" badge-tone="neutral" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>
 <div style="display: {{L.tile}}; flex-direction: column; justify-content: center; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.card}}; box-shadow: {{t.shadow}}; overflow: hidden"><dc-import name="NavListRow" icon="people" title="Участники" subtitle="Поиск по имени, GitHub, Telegram" href="#" divider="{{L.div}}" dark="{{dark}}" hint-size="100%,64px"></dc-import></div>

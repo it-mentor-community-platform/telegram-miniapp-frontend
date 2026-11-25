@@ -84,6 +84,20 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 </section>
 
 <section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">ProfileProjectRow</span><span style="font-size: 12px; color: {{t.muted}}">Сданный проект в профиле. Каждый чип — ссылка на репозиторий реализации. С href (свой профиль) заголовок ведёт на страницу проекта и есть шеврон; без href (чужой профиль) ссылки только у чипов.</span></div>
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">С href</span>
+<div style="display: flex; flex-direction: column; border-radius: 12px; border: 1px solid {{t.border}}; overflow: hidden">
+<dc-import name="ProfileProjectRow" icon="hangman" title="Виселица" impls="{{ppr1}}" href="ProjectType.dc.html" dark="{{dark}}" hint-size="100%,88px"></dc-import>
+<dc-import name="ProfileProjectRow" icon="exchange" title="Обмен валют" impls="{{ppr2}}" href="ProjectType-List.dc.html" divider="{{ true }}" dark="{{dark}}" hint-size="100%,88px"></dc-import>
+</div>
+<span style="font-size: 12px; font-weight: 600; color: {{t.muted}}">Без href</span>
+<div style="display: flex; flex-direction: column; border-radius: 12px; border: 1px solid {{t.border}}; overflow: hidden">
+<dc-import name="ProfileProjectRow" icon="hangman" title="Виселица" impls="{{ppr1}}" dark="{{dark}}" hint-size="100%,88px"></dc-import>
+<dc-import name="ProfileProjectRow" icon="exchange" title="Обмен валют" impls="{{ppr2}}" divider="{{ true }}" dark="{{dark}}" hint-size="100%,88px"></dc-import>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
 <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 700">LanguageTag</span><span style="font-size: 12px; color: {{t.muted}}">Сплошной — язык учитывается в прогрессе; пунктир — не учитывается.</span></div>
 <div style="display: flex; gap: 6px; flex-wrap: wrap">
 <dc-import name="LanguageTag" label="Java" dark="{{dark}}" hint-size="40px,18px"></dc-import>
@@ -117,7 +131,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"$preview":{"width":390,"height":1940}}'>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false},"layout":{"editor":"enum","options":["mobile","tablet","desktop"],"default":"mobile"},"$preview":{"width":390,"height":2480}}'>
 class Component extends DCLogic {
   renderVals() {
     const dark = this.props.dark ?? false;
@@ -132,10 +146,10 @@ class Component extends DCLogic {
     const L = {
       wide, desk, mobileOnly: !wide, shell: wide && false, role: 'Студент',
       frameW: desk ? 1280 : wide ? 834 : 390,
-      frameH: wide ? (desk ? 2200 : 3080) : 1940,
+      frameH: wide ? (desk ? 2640 : 3520) : 2480,
       areaPad: !wide ? '0' : desk ? '32px 40px 48px' : '24px 24px 40px', areaAlign: 'flex-start',
       colW: wide ? '100%' : '390px', maxW: wide ? '1024px' : 'none',
-      rootH: wide ? 'auto' : '1940px', rootPad: wide ? '0' : '20px 16px 24px',
+      rootH: wide ? 'auto' : '2480px', rootPad: wide ? '0' : '20px 16px 24px',
       display: 'flex', cols: 'none', items: 'stretch', colGap: '24px',
       rootBg: t.bg, rootBorder: 'none', rootRadius: '0', rootShadow: 'none', rootGap: '0',
       full: '1 / -1', grp: wide ? 'flex' : 'contents', blk: wide ? 'block' : 'contents',
@@ -152,6 +166,8 @@ class Component extends DCLogic {
       pr1: [{ name: 'Java', counted: true }, { name: 'Python', counted: true }, { name: 'Go', counted: true }],
       pr2: [{ name: 'Java', counted: true }, { name: 'C#', counted: false }],
       pr0: [],
+      ppr1: [{ lang: 'Java', counted: true, repo: 'github.com/sergey-dev/hangman' }],
+      ppr2: [{ lang: 'Java', counted: true, repo: 'github.com/sergey-dev/currency-exchange' }, { lang: 'Python', counted: true, repo: 'github.com/sergey-dev/currency-exchange-fastapi' }],
       c0: [],
       c1: [{ label: 'Мои проекты', href: 'Projects.dc.html' }],
       c2: [{ label: 'Мои проекты', href: 'Projects.dc.html' }, { label: 'Облачное хранилище', href: 'ProjectType.dc.html' }]

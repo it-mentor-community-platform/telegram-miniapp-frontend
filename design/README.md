@@ -33,6 +33,7 @@ state via `<dc-import>`. Change a base screen and every state of it changes too.
 | `Projects.dc.html` (nothing submitted) | `Projects-Java3` (Java 3/6), scenario «Java и Python» (two tracks; desktop board `Projects-TwoTracks-Desktop` only), `Projects-Multi` (Java/Python/Go + C#), `Projects-Java6` (roadmap complete), `Projects-Other` (only C# and Rust), `Projects-Loading` (first load, skeletons), `Projects-Error` (load failed, retry) |
 | `ProjectType.dc.html` (Hangman, first submission, nothing filled in → «Сдать проект» disabled) | `ProjectType-Empty` (Currency Exchange, first submission), `ProjectType-List` (3 implementations), `ProjectType-AddOther` (new implementation, other language "Rust"), `ProjectType-Duplicate` (repository already registered), `ProjectType-Loading` (first load: form shown, status and list are skeletons), `ProjectType-LoadError` (implementations failed to load: form stays, retry in place of the list), `ProjectType-Submitting` (request in flight), `ProjectType-SubmitError` (server / network error on submit), `ProjectType-InvalidUrl` (GitHub and deploy URLs fail validation), `ProjectType-Submitted` (first implementation just submitted), `ProjectType-SubmittedMore` (another implementation added to a list of 3), `ProjectType-NotFound` (unknown slug) |
 | `Implementation.dc.html` (Currency Exchange, deploy + 2 reviews) | `Impl-Hangman` (no reviews, no deploy section), `Impl-NoDeploy`, `Impl-EditGithub`, `Impl-GithubTaken` (new URL already in use), `Impl-EditDeploy` |
+| `Profile.dc.html` (`mode="own"`, student Сергей Иванов: header, contacts, «Поделиться профилем») | `Profile-Empty` (no GitHub), `Profile-EditName`, `Profile-NameInvalid` («Укажите имя»), `Profile-EditGithub`, `Profile-GithubInvalid`, `Profile-GithubTaken`, `Profile-Saving`, `Profile-SaveError`, `Profile-Mentor` («Ментор» tag), `Profile-NoTelegram` (no Telegram username), `Profile-Loading`, `Profile-Error`, `Profile-Today` (what ships with today's API: no «Поделиться профилем»), `Profile-Web` (website: «Скопировать ссылку на профиль» → «Ссылка скопирована»); public mode (`mode="public"`): `PublicProfile` (Анна Смирнова, Python 2/6), `PublicProfile-Today` (name + contacts only), `PublicProfile-Loading`, `PublicProfile-Error`, `PublicProfile-NotFound`, `PublicProfile-NoName` (imported profile without a name), `PublicProfile-Guest` (website, not signed in) |
 | `Review.dc.html` (question) | `Review-Answer` (answer revealed), `Review-Done` (session summary) |
 | `AuthError.dc.html` (opened outside Telegram) | `AuthError-Failed` (Telegram login rejected or backend unavailable), `AuthError-Expired` (session expired) |
 | `DevLogin.dc.html` (dummy login, empty form) | `DevLogin-Filled` (valid values, «Войти» enabled), `DevLogin-Loading` (request in flight), `DevLogin-NotFound` (404 under the user field), `DevLogin-InvalidUrl` (username in the wrong format), `DevLogin-Error` (500 / network), `DevLogin-Expired` (dummy session ran out) |
@@ -60,6 +61,8 @@ Routes (see [Routes](#routes)) and the PrimeVue components each mockup maps to.
 | `Projects` — my projects | `/student/projects` | `Breadcrumb`, `Card`, `Tag`; `Skeleton` (loading), `Message` `severity="error"` + `Button` «Попробовать снова» (load failed) |
 | `ProjectType` — project page | `/student/projects/:projectType` | `Breadcrumb`, `Button`, `SelectButton`, `InputText`, `Message`; `Skeleton` (loading); `Message` `severity="error"` + `Button` «Попробовать снова» (load failed); `Button` `:loading` + `:disabled` (submit); `Message` `severity="error"` above the button (submit failed); `Message` `severity="error"` `variant="simple"` `size="small"` under a field (validation, duplicate) + `invalid` on `InputText`; `Message` `severity="success"` `closable` (submitted) |
 | `Implementation` — implementation page | `/student/projects/:projectType/implementations/:implementationId` | `Breadcrumb`, `InputText`, `Button`, `Message`, `Avatar` |
+| `Profile` (own) — my profile | `/profile` | `Avatar` (`image` = Telegram photo, `label` = initials fallback), `Tag`, `Button` (icon, `aria-label`), `InputText`, `InputGroup` + `InputGroupAddon` («github.com/»), `Message`, `Skeleton`; `EmptyState`, `RoadmapProgress`, `ProfileProjectRow` |
+| `Profile` (public) — another member's profile | `/profiles/:profileId` | as above, without edit controls; `Avatar` with initials only |
 | `DevLogin` — dummy login (test env, browser) | — (auth screen, replaces any route) | `Card`, `Tag` (`severity="warn"`, «Тестовое окружение»), `SelectButton` (user lookup: Telegram ID / Telegram / GitHub), `InputNumber` (`:min="1"`, `:useGrouping="false"`) or `InputGroup` + `InputGroupAddon` («t.me/», «github.com/») + `InputText` (username), `SelectButton` (`multiple`) for roles, `Button` (`:loading`), `Message` |
 
 | `AppShell` — tablet/desktop navigation | every route except auth screens and the review session | `<aside>` with PrimeVue `Menu` (router-link items, `aria-current`); tablet rail: same model rendered as icon + label items; user block: `Avatar` + `Tag` per role |
@@ -263,6 +266,70 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
   implement it.
 - PrimeVue: `Button`, `Message` is not needed — this is a full-screen state.
 
+### Profile data
+
+`Profile` has two modes from one view: `own` (`/profile`) and `public` (`/profiles/:profileId`).
+Layout, top to bottom: header card (avatar, name, role tags) and «Контакты» card (Telegram,
+GitHub). Your own profile then has only «Поделиться профилем» — roadmap progress and projects live
+in «Мои проекты». Someone else's profile instead continues with «Прогресс по роадмапам» (one
+`RoadmapProgress` per track with ≥ 1 project). The «Проекты» list (submitted roadmap projects as
+`ProfileProjectRow`) is **hidden for now** on every profile; `Profile.dc.html` keeps its markup
+behind `showProjects`.
+**Achievements are out of scope** — not shown anywhere on these screens. **Reviews** are also left out
+for now, although `user-profiles.md` lists them as part of a profile (see Open questions).
+
+- **Header** — own: Telegram photo, initials if there is none; public: always initials. Role tags
+  as on the home header («Студент» green, «Ментор» blue, «Админ» purple); another member's roles
+  are shown only when the API returns them (`PublicProfile-Today` has none).
+- **Missing name** — `first_name` / `last_name` can be absent (profiles imported from the spreadsheet
+  whose owner never opened the app). The title falls back to `@telegram_username`, then the GitHub
+  username, then «Участник сообщества»; the initials use its first letter (`PublicProfile-NoName`).
+- **Inline editing (own only)** — pencil buttons like the `Implementation` GitHub card. Only one field
+  is open at a time; opening one closes the other. «Отмена» restores the saved value.
+  - Name: «Имя» (required, «Укажите имя») and «Фамилия» (optional, placeholder «Необязательно»).
+    Both are trimmed and limited to 64 characters.
+  - GitHub: «github.com/» addon + username (as in `DevLogin`). A pasted full link or «@username» is
+    cut down to the username; anything but letters, digits and hyphens → «Только username — латинские
+    буквы, цифры и дефис» (`Profile-GithubInvalid`). Already linked to another profile (409) →
+    «Этот GitHub уже привязан к другому профилю» (`Profile-GithubTaken`). Empty → «Не указан» and
+    «+ Добавить GitHub», which opens the same editor; own profile adds the hint «Подставится из
+    первого сданного проекта» (profile-service fills it on the first submission if it is empty).
+    A server 400 on save shows the same format error under the field.
+  - Saving with an unchanged value closes the editor without a request. While saving: spinner on
+    «Сохранить», input and «Отмена» disabled (`Profile-Saving`). Other errors → «Не удалось
+    сохранить. Попробуйте ещё раз.» above the buttons, entered value stays (`Profile-SaveError`).
+- **Telegram** — read-only; own profile shows «Обновляется из Telegram» under it. A Telegram username
+  is optional, so `telegram_url` can be absent: «Не указан», and on your own profile «Появится, когда
+  вы зададите username в настройках Telegram» (`Profile-NoTelegram`).
+- **Projects (hidden for now; public only when it returns)** — no link on the title; every language chip links to that
+  implementation's GitHub repository. Empty → `EmptyState` «Проектов пока нет» / «Пользователь ещё
+  не сдал ни одного проекта.»
+- **Non-students** (mentor / admin without projects) — progress and projects sections are hidden.
+- **Links to a profile** — keyed by the profile id (`Profiles.id`), in two formats: website
+  `/profiles/<profileId>` and Mini App `startapp=profile_<profileId>` (see [Routes](#routes)). Your
+  own id comes from `GET /api/profile/profile` (not returned yet — see Open questions).
+- **Поделиться профилем** — depends on the UI. Mini App: opens Telegram's share sheet with the
+  `profile_<profileId>` deep link; no extra state. Website (`Profile-Web`): «Скопировать ссылку на
+  профиль» copies the website link and shows «Ссылка скопирована · /profiles/<profileId>» under the
+  button for a few seconds.
+- **Guest on the website** (`PublicProfile-Guest`) — anyone with the website link sees a public
+  profile without logging in. No app shell and no breadcrumbs; at the top two buttons:
+  «Открыть в Telegram» (the deep link to the same profile) and «Войти» (website login — not designed
+  yet). Content is the same as `PublicProfile`.
+- **Loading** — skeletons for the avatar, name and tags and both contact rows; the public profile
+  adds a two-track progress card; breadcrumbs render. **Load failed** — error `Message` «Не удалось загрузить
+  профиль. Проверьте соединение и попробуйте ещё раз.» + «Попробовать снова» in place of the content.
+  Own profile 404 (not created yet — profile-service creates it asynchronously after the first login)
+  uses the same load-failed state. **Not found** (public: 404, or a non-numeric id — checked before
+  any request) — the `ProjectType-NotFound` layout: «Профиль не найден», «Проверьте ссылку —
+  возможно, в ней ошибка.», «На главную» (profiles are never deleted, so the copy doesn't suggest
+  that).
+- **Today's API** — `Profile-Today` (own) is everything except «Поделиться профилем»;
+  `PublicProfile-Today` has only the name and contacts (no roles, progress or projects in the public
+  endpoint yet).
+- Entry points: the «Профиль» row on `Main` («Имя и контакты», no badge) and the
+  avatar + name block in the home header.
+
 ## Routes
 
 ### Structure
@@ -286,6 +353,8 @@ left unchanged so the target page opens once the problem is fixed. Not a route o
 | `/student/projects` | `student-projects` | Мои проекты | 🏠 |
 | `/student/projects/:projectType` | `student-project` | Project page | 🏠 › Мои проекты |
 | `/student/projects/:projectType/implementations/:implementationId` | `student-implementation` | Implementation page | 🏠 › Мои проекты › {project name} |
+| `/profile` | `profile` | My profile (`Profile`, own) | 🏠 |
+| `/profiles/:profileId` | `public-profile` | Another member's profile (`Profile`, public); open without login on the website; your own id redirects to `/profile` | 🏠 (none for a guest) |
 
 Use route **names** in code (`{ name: 'student-project', params: { projectType } }`), not
 hard-coded paths, so prefixes can change without touching screens. A `/student` route record
@@ -302,13 +371,16 @@ guard.
   so Telegram's back button still works. Reuse the same layout for an unknown `:implementationId`
   (backend 404).
 - `:topicId`, `:implementationId` — backend IDs.
+- `:profileId` — profile id (`Profiles.id`), not the Telegram user id. Non-numeric → not-found state
+  without a request.
 - An implementation whose `:projectType` does not match its actual type → redirect to the canonical URL.
 
 ### Telegram deep links
 
-Bot messages open screens via `https://t.me/<bot>/<app>?startapp=<param>`. Telegram allows only
-`A–Z a–z 0–9 _ -` and ≤ 512 characters in `startapp`, so it is a short code mapped to a route on
-startup (read from the launch params, then `router.replace`):
+Bot messages open screens via `https://t.me/<bot>?startapp=<param>` (the bot's main Mini App, as
+`telegramAppUrl` in `src/telegram.ts`). Telegram allows only `A–Z a–z 0–9 _ -` and ≤ 512 characters
+in `startapp`, so it is a short code mapped to a route on startup (read from the launch params, then
+`router.replace`):
 
 | `startapp` | Opens |
 |---|---|
@@ -319,7 +391,16 @@ startup (read from the launch params, then `router.replace`):
 | `projects` | `/student/projects` |
 | `project_<projectType>` | `/student/projects/<projectType>` |
 | `impl_<implementationId>` | the implementation page (type resolved from the API) |
+| `profile` | `/profile` |
+| `profile_<profileId>` | `/profiles/<profileId>` (e.g. `profile_42`) |
 | anything unknown | `/` |
+
+### Website links
+
+The same app also runs as a regular website with its own login. Every route above is also its website
+URL, relative to the app's origin (e.g. `/profiles/42`) — no domain in code. Deep links
+are only for opening the Mini App from Telegram. A public profile is the one route a website visitor
+can open without logging in.
 
 ### Router mode
 
@@ -341,6 +422,7 @@ follows Aura and dark mode. Props below are the design's props — keep the same
 | `StatTiles` | `items: { value, label, tone: 'warn' \| 'info' \| 'success' \| 'neutral' }[]` (3 items) | Three equal tiles. `warn` = due for review, `info` = new, `success` = learned, `neutral` = plain count. | Main, Repetition, Topic |
 | `NavListRow` | `icon`, `title`, `subtitle`, `badge?`, `badgeTone?: 'success' \| 'neutral'`, `href`, `divider?`, `hover?` (design-only preview) | Whole row is a link (router-link), ≥64 px tall. `divider` draws the top border between rows. Badge renders a PrimeVue `Tag`. | Main |
 | `ProjectRow` | `icon: 'hangman' \| 'simulation' \| 'exchange' \| 'tennis' \| 'cloud' \| 'planner'`, `title: string`, `langs: { name, counted }[]`, `href`, `divider?`, `status?: 'loaded' \| 'loading' \| 'unknown'`, `variant?: 'row' \| 'card'`, `hover?` (design-only preview) | One roadmap project in the "Мои проекты" list. Whole row is a link to the project page. Each project type has its own icon (gallows, sprout, swap arrows, tennis ball, cloud, calendar-check); the icon tile is filled when the project has ≥1 implementation in any language. Shows "Сдан" + a `LanguageTag` per language, or "Не сдан". In the app: `ProjectIcon`, the mockup SVGs (PrimeIcons has no equivalents). `status="loading"`: status line is a `Skeleton`; `"unknown"` (load failed): no status line, grey icon. `variant="card"` (tablet/desktop): vertical card for the projects grid — icon, title, status; chevron top-right; the whole card is the link. | Projects |
+| `ProfileProjectRow` | `icon` (as `ProjectRow`), `title: string`, `impls: { lang: string, counted: boolean, repo: string }[]`, `href?`, `divider?` | A submitted roadmap project on a profile: filled 40 px icon tile (as a submitted `ProjectRow`), title, then a wrapping row of chips — each chip is a `LanguageTag` + external-link icon and links to that implementation's GitHub repo (`aria-label` «Репозиторий на Java»). With `href` the title area links to the project page and shows a chevron (not used on a screen yet); without it only the chips are links. | — (the profile «Проекты» list is hidden for now) |
 | `LanguageTag` | `label: string`, `counted: boolean` | Solid when the language counts toward roadmap progress (Java, Python, Go); dashed outline + aria "не учитывается в прогрессе" otherwise. | Projects |
 | `EmptyState` | `title`, `text`, `icon: 'info' \| 'chat' \| 'none'` | Card used for "nothing here yet" and explanatory notices. | Projects, Implementation |
 | `Breadcrumbs` | `items: { label, href }[]`, `homeHref?` | Home icon + items; current page is not repeated (the page title follows). Last item truncates with ellipsis. In the app: wrap PrimeVue `Breadcrumb` and build items from route meta. | Every screen below home except the review session |
@@ -427,6 +509,7 @@ it from `md` up, and grid classes on the view's sections. Desktop boards on the 
 | `ProjectType` | Header full width; left column: specs, success message, «Добавить реализацию» / form; right column: «Мои реализации» (or its skeleton / error / an empty placeholder «Здесь появятся ваши реализации» — wide layouts only). Not-found: centred, full width. |
 | `Implementation` | Left: details, GitHub, deploy; right: reviews. |
 | `AuthError`, `DevLogin` | No shell; the phone content in a centred 440 px card on the app background. |
+| `Profile` | Not designed yet: shell + the phone column centred at up to 640 px (the `layout` prop already renders it this way); no tablet/desktop boards. |
 
 **Desktop state boards:** `Projects-Java3` (one track), `Projects-TwoTracks` (scenario «Java и Python», desktop board only), `Projects-Multi`, `Projects-Loading`, `ProjectType-List`,
 `ProjectType-Loading`, `ProjectType-Submitted`, `ProjectType-NotFound`, `Impl-Hangman`, `Review-Done`.
@@ -461,6 +544,15 @@ The canvas also keeps its own linear version history (no branches), so an overwr
 recovered from there.
 
 ## Open questions
+
+- **Profile** (see `meta/business-analytics/functionality/user-profiles.md` → Открытые вопросы and
+  `meta/system-analytics/services/profile-service/index.md` → Доработки для Mini App): reviews on the
+  profile; profile `id` in responses (needed for «Поделиться профилем», both profile links and the
+  own-id redirect); `GET /api/profile/profile/{id}` readable without login (gateway exception) for
+  website guests; roles, progress and projects in the public profile, also readable without login;
+  409 for a GitHub link taken
+  by another profile (today the value is silently dropped with 200); names edited in the app are
+  overwritten from Telegram on every login; removing the GitHub link.
 
 - Mapping is settled: «Не помню» = 0, «Отрывочно» = 2, «С пробелами» = 3, «Отлично» = 5.
   The API still does not provide intervals for the rating buttons.
